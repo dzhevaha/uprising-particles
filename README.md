@@ -36,12 +36,14 @@ For GitHub Pages: push the repo, then **Settings → Pages → Deploy from branc
 and then show its back, where the silhouette stops reading as the logo — so instead it rocks
 slowly around the front view on two beating sine waves (periods 11 s and 7.3 s, so the loop
 never becomes obvious). The pointer adds a small turn towards the cursor on top of that, a
-**Hover** leans it gently towards the cursor. **Drag** — press and move — turns it directly,
-pixel for pixel, holds the angle until you let go, then drifts back; pointer capture keeps the
-move events coming even if the finger leaves the canvas, which is what makes it work on touch,
-where there is no hover at all. A press that never moved counts as a **tap** and leans the mark
-towards the point touched. Everything is clamped: yaw stays within ±47°, pitch within ±34°, and
-the fitting math below is solved against exactly that range.
+One gesture, two strengths. Moving the cursor over the canvas leans the mark slightly
+towards it. **Holding** the button down — or putting a finger on the screen — grabs it: the
+mark turns much further towards the pointer and keeps following while you **swipe**, because
+the angle is read from where the pointer *is*, not from how far it moved. So a press that
+just sits there still turns the mark, and a swipe steers it continuously. Letting go unwinds
+it back to the resting view slowly. Touch has no hover, so on a phone the swipe is the whole
+interaction and it gets the full angle. Everything is clamped: yaw stays within ±36°, pitch
+within ±23°, and the fitting math below is solved against exactly that range.
 
 ## Tuning
 
@@ -61,11 +63,9 @@ Everything lives in the `CONFIG` object at the top of `particles.js`:
 | `glow` | soft radial bloom behind the shape, `0` to disable |
 | `swayYaw`, `swayPitch` | how far the idle rocking goes, radians |
 | `swayPeriodA`, `swayPeriodB` | the two beating periods of that rocking, ms |
-| `steerYaw`, `steerPitch`, `steerEase` | how far and how smoothly hovering turns it |
-| `dragYaw`, `dragPitch` | how far a drag may turn it |
-| `dragSensitivity` | radians per pixel dragged |
-| `dragReturn` | how slowly it drifts back after release |
-| `nudge`, `nudgeDecay` | tap lean and how fast it eases back |
+| `steerYaw`, `steerPitch`, `steerEase` | how far and how smoothly hovering leans it |
+| `grabYaw`, `grabPitch`, `grabEase` | how far and how closely a held pointer turns it |
+| `releaseEase` | how slowly it unwinds once let go |
 | `swirl`, `swirlSpeed` | how much the particles move inside the shape |
 | `introDuration`, `introStagger` | assemble animation |
 

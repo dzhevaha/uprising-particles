@@ -41,17 +41,14 @@ const CONFIG = {
   swayPitch: 0.07,
   swayPeriodA: 11000,         // two periods beat against each other so it never looks looped
   swayPeriodB: 7300,
-  steerYaw: 0.18,             // hover: how far the cursor alone may turn it, radians
-  steerPitch: 0.12,
-  steerEase: 0.055,
+  steerYaw: 0.14,             // hover: how far the cursor alone leans it, radians
+  steerPitch: 0.09,
+  steerEase: 0.05,            // hover follows lazily
 
-  dragYaw: 0.30,              // drag: how far a press-and-move may turn it, radians
-  dragPitch: 0.20,
-  dragSensitivity: 0.0032,    // radians per pixel dragged
-  dragReturn: 0.985,          // how slowly it drifts back after release
-
-  nudge: 0.10,                // a tap (press without moving) leans it this far
-  nudgeDecay: 0.975,
+  grabYaw: 0.38,              // held down: how far it turns towards the pointer
+  grabPitch: 0.24,
+  grabEase: 0.10,             // held / swiped follows closely
+  releaseEase: 0.025,         // and unwinds slowly once let go
 
   // life inside the shape
   swirl: 5.0,                 // wobble amplitude in model px
@@ -94,18 +91,8 @@ let targetYaw = 0;
 let targetPitch = 0;
 let steerYaw = 0;
 let steerPitch = 0;
-let nudgeYaw = 0;
-let nudgePitch = 0;
-
-// drag state
-let dragging = false;
-let dragYaw = 0;
-let dragPitch = 0;
-let dragFromYaw = 0;
-let dragFromPitch = 0;
-let dragStartX = 0;
-let dragStartY = 0;
-let dragMoved = false;
+let holding = false;
+let hasHover = false;
 
 let introStart = 0;
 let glowSprite = null;
@@ -124,9 +111,8 @@ function fitScale() {
   const uh = MARK.height / 2;
   const ud = (MARK.height * CONFIG.depth) / 2;
 
-  const maxYaw = CONFIG.swayYaw + CONFIG.steerYaw + CONFIG.dragYaw + CONFIG.nudge;
-  const maxPitch = Math.abs(PITCH_BASE) + CONFIG.swayPitch
-    + CONFIG.steerPitch + CONFIG.dragPitch + CONFIG.nudge;
+  const maxYaw = CONFIG.swayYaw + CONFIG.grabYaw;
+  const maxPitch = Math.abs(PITCH_BASE) + CONFIG.swayPitch + CONFIG.grabPitch;
 
   // walk the rotation range the mark can actually reach and keep the widest projection
   let ux = 0;
@@ -266,20 +252,14 @@ function update(now) {
   const dt = Math.min(64, now - lastTime);
   lastTime = now;
 
-  // camera — a slow sway around the front view, plus whatever the pointer asks for
-  steerYaw += (targetYaw - steerYaw) * CONFIG.steerEase;
-  steerPitch += (targetPitch - steerPitch) * CONFIG.steerEase;
+  // camera — a slow sway around the front view, plus whatever the pointer asks for.
+  // Held down it tracks closely; let go, it unwinds slowly back to the resting view.
+  const ease = holding
+    ? CONFIG.grabEase
+    : (targetYaw === 0 && targetPitch === 0 ? CONFIG.releaseEase : CONFIG.steerEase);
 
-  const decay = Math.pow(CONFIG.nudgeDecay, dt / 16.67);
-  nudgeYaw *= decay;
-  nudgePitch *= decay;
-
-  // a released drag drifts back to centre instead of snapping
-  if (!dragging) {
-    const back = Math.pow(CONFIG.dragReturn, dt / 16.67);
-    dragYaw *= back;
-    dragPitch *= back;
-  }
+  steerYaw += (targetYaw - steerYaw) * ease;
+  steerPitch += (targetPitch - steerPitch) * ease;
 
   let swayY = 0;
   let swayP = 0;
@@ -290,8 +270,8 @@ function update(now) {
     swayP = (b * 0.72 - a * 0.28) * CONFIG.swayPitch;
   }
 
-  const ry = swayY + steerYaw + dragYaw + nudgeYaw;
-  const rx = PITCH_BASE + swayP + steerPitch + dragPitch + nudgePitch;
+  const ry = swayY + steerYaw;
+  const rx = PITCH_BASE + swayP + steerPitch;
 
   const cosY = Math.cos(ry), sinY = Math.sin(ry);
   const cosX = Math.cos(rx), sinX = Math.sin(rx);
@@ -395,66 +375,59 @@ function resize() {
   return true;
 }
 
-function clamp(v, limit) {
-  return v < -limit ? -limit : v > limit ? limit : v;
-}
-
 /*
- * Two separate gestures:
- *   hover  — the cursor alone leans the mark a little towards itself;
- *   drag   — pressing and moving turns it directly, pixel for pixel, and the turn
- *            is held until the pointer is released, then drifts back.
- * Touch devices have no hover, so dragging is what they get. Pointer capture keeps
- * the move events coming even if the finger leaves the canvas mid-gesture.
+ * One gesture, two strengths. Moving the cursor over the canvas leans the mark
+ * slightly towards it. Holding the button down — or putting a finger on the screen —
+ * grabs it: the mark turns much further towards the pointer and follows it while you
+ * swipe, since the angle is read from where the pointer is, not from how far it moved.
+ * That way a press that just sits there still turns the mark. Letting go unwinds it
+ * back to the resting view slowly. Touch has no hover, so on a phone the swipe is the
+ * whole interaction, and it gets the full angle.
  */
-canvas.addEventListener('pointerdown', (e) => {
-  dragging = true;
-  dragMoved = false;
-  dragStartX = e.clientX;
-  dragStartY = e.clientY;
-  dragFromYaw = dragYaw;
-  dragFromPitch = dragPitch;
-  try { canvas.setPointerCapture(e.pointerId); } catch (err) { /* not fatal */ }
-});
-
-canvas.addEventListener('pointermove', (e) => {
-  if (dragging) {
-    const dx = e.clientX - dragStartX;
-    const dy = e.clientY - dragStartY;
-    if (Math.abs(dx) > 5 || Math.abs(dy) > 5) dragMoved = true;
-
-    dragYaw = clamp(dragFromYaw + dx * CONFIG.dragSensitivity, CONFIG.dragYaw);
-    dragPitch = clamp(dragFromPitch - dy * CONFIG.dragSensitivity, CONFIG.dragPitch);
-    return;
-  }
-
+function aim(e, strengthYaw, strengthPitch) {
   const rect = canvas.getBoundingClientRect();
   const nx = (e.clientX - rect.left) / rect.width - 0.5;
   const ny = (e.clientY - rect.top) / rect.height - 0.5;
-  targetYaw = nx * 2 * CONFIG.steerYaw;
-  targetPitch = -ny * 2 * CONFIG.steerPitch;
+  targetYaw = nx * 2 * strengthYaw;
+  targetPitch = -ny * 2 * strengthPitch;
+}
+
+canvas.addEventListener('pointermove', (e) => {
+  if (holding) {
+    aim(e, CONFIG.grabYaw, CONFIG.grabPitch);
+    return;
+  }
+  if (e.pointerType === 'mouse') {
+    hasHover = true;
+    aim(e, CONFIG.steerYaw, CONFIG.steerPitch);
+  }
 });
 
-function endDrag(e) {
-  if (!dragging) return;
-  dragging = false;
+canvas.addEventListener('pointerdown', (e) => {
+  holding = true;
+  try { canvas.setPointerCapture(e.pointerId); } catch (err) { /* not fatal */ }
+  aim(e, CONFIG.grabYaw, CONFIG.grabPitch);
+});
+
+function release(e) {
+  if (!holding) return;
+  holding = false;
   try { canvas.releasePointerCapture(e.pointerId); } catch (err) { /* not fatal */ }
 
-  // a press that never moved is a tap: lean towards the point that was touched
-  if (!dragMoved) {
-    const rect = canvas.getBoundingClientRect();
-    const nx = (e.clientX - rect.left) / rect.width - 0.5;
-    const ny = (e.clientY - rect.top) / rect.height - 0.5;
-    nudgeYaw = nx * 2 * CONFIG.nudge;
-    nudgePitch = -ny * 2 * CONFIG.nudge;
+  if (e.pointerType === 'mouse' && hasHover) {
+    aim(e, CONFIG.steerYaw, CONFIG.steerPitch);   // fall back to the gentle hover lean
+  } else {
+    targetYaw = 0;                                // touch: drift back to the resting view
+    targetPitch = 0;
   }
 }
 
-canvas.addEventListener('pointerup', endDrag);
-canvas.addEventListener('pointercancel', endDrag);
+canvas.addEventListener('pointerup', release);
+canvas.addEventListener('pointercancel', release);
 
 canvas.addEventListener('pointerleave', () => {
-  if (dragging) return;
+  if (holding) return;
+  hasHover = false;
   targetYaw = 0;
   targetPitch = 0;
 });
