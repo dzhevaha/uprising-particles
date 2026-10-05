@@ -7,7 +7,8 @@
  *      pixel becomes a particle. Each one gets a random Z inside a slab, so the flat
  *      silhouette turns into an extruded volume.
  *   3. The cloud is rotated (yaw + pitch) and projected with a perspective divide.
- *      It spins on its own; the pointer steers it, a click spins it harder.
+ *      It rocks gently around the front view and never turns past a three-quarter
+ *      angle, so the mark stays readable; the pointer steers it within that range.
  *   4. Particles are drawn as tiny squares, sorted into opacity buckets by depth, so
  *      a full frame costs ~8 fillStyle changes instead of 12 000 — and the buckets
  *      double as the depth cue.
@@ -18,7 +19,7 @@ const CONFIG = {
   color: [254, 114, 65],      // #FE7241 — Uprising orange
 
   // shape
-  margin: 0.88,               // free space left around the cloud, 1 = touch the edges
+  margin: 0.93,               // free space left around the cloud, 1 = touch the edges
   maxFill: 0.72,              // never let the mark get wider than this share of the viewport
   step: 1.5,                  // sampling grid in px — lower = denser = more particles
   maxParticles: 30000,        // safety cap; the grid relaxes until it fits
@@ -35,13 +36,16 @@ const CONFIG = {
   focal: 900,                 // perspective strength — smaller = wider lens
   glow: 0.14,                 // soft radial bloom behind the mark, 0 to disable
 
-  // motion
-  spin: 0.00042,              // idle yaw speed, radians per ms
-  spinDamping: 0.94,          // how fast a click impulse dies out
-  spinImpulse: 0.012,
-  steerYaw: 1.25,             // how far the pointer can turn the cloud, radians
-  steerPitch: 0.65,
+  // motion — the mark must stay readable, so it never turns past three-quarter view
+  swayYaw: 0.26,              // idle rocking around the front view, radians
+  swayPitch: 0.07,
+  swayPeriodA: 11000,         // two periods beat against each other so it never looks looped
+  swayPeriodB: 7300,
+  steerYaw: 0.30,             // how far the pointer may turn it, radians
+  steerPitch: 0.20,
   steerEase: 0.055,
+  nudge: 0.15,                // extra turn on click / tap, eases back out
+  nudgeDecay: 0.975,
 
   // life inside the shape
   swirl: 5.0,                 // wobble amplitude in model px
@@ -78,15 +82,14 @@ let particles = [];
 let buckets = [];
 let bucketStyles = [];
 
-const PITCH_BASE = 0.12;
+const PITCH_BASE = 0.10;
 
-let yaw = -0.5;
-let pitch = PITCH_BASE;
-let yawVel = 0;
 let targetYaw = 0;
 let targetPitch = 0;
 let steerYaw = 0;
 let steerPitch = 0;
+let nudgeYaw = 0;
+let nudgePitch = 0;
 
 let introStart = 0;
 let glowSprite = null;
@@ -105,20 +108,31 @@ function fitScale() {
   const uh = MARK.height / 2;
   const ud = (MARK.height * CONFIG.depth) / 2;
 
-  const radius = Math.hypot(uw, ud);               // widest the box ever projects on X
-  const maxPitch = Math.abs(PITCH_BASE) + CONFIG.steerPitch;
+  const maxYaw = CONFIG.swayYaw + CONFIG.steerYaw + CONFIG.nudge * 2;
+  const maxPitch = Math.abs(PITCH_BASE) + CONFIG.swayPitch
+    + CONFIG.steerPitch + CONFIG.nudge * 2;
 
-  const ux = radius;
-  const uy = uh * Math.cos(maxPitch) + radius * Math.sin(maxPitch);
+  // walk the rotation range the mark can actually reach and keep the widest projection
+  let ux = 0;
+  let uy = 0;
+  for (let y = 0; y <= maxYaw + 1e-6; y += maxYaw / 12 || 1) {
+    const ex = uw * Math.cos(y) + ud * Math.sin(y);
+    const ez = ud * Math.cos(y) + uw * Math.sin(y);
+    if (ex > ux) ux = ex;
+    for (let p = 0; p <= maxPitch + 1e-6; p += maxPitch / 8 || 1) {
+      const ey = uh * Math.cos(p) + ez * Math.sin(p);
+      if (ey > uy) uy = ey;
+    }
+  }
 
-  const perspective = 1.15;                        // worst-case near-side magnification
+  const perspective = 1.22;                        // worst-case near-side magnification
 
   const fit = Math.min(
     (width / 2) / (ux * perspective),
     (height / 2) / (uy * perspective)
   ) * CONFIG.margin;
 
-  const cap = (Math.min(width, height) * CONFIG.maxFill) / (radius * 2);
+  const cap = (Math.min(width, height) * CONFIG.maxFill) / (uw * 2);
 
   return Math.min(fit, cap);
 }
@@ -236,15 +250,25 @@ function update(now) {
   const dt = Math.min(64, now - lastTime);
   lastTime = now;
 
-  // camera
+  // camera — a slow sway around the front view, plus whatever the pointer asks for
   steerYaw += (targetYaw - steerYaw) * CONFIG.steerEase;
   steerPitch += (targetPitch - steerPitch) * CONFIG.steerEase;
 
-  if (!reduceMotion) yaw += (CONFIG.spin + yawVel) * dt;
-  yawVel *= Math.pow(CONFIG.spinDamping, dt / 16.67);
+  const decay = Math.pow(CONFIG.nudgeDecay, dt / 16.67);
+  nudgeYaw *= decay;
+  nudgePitch *= decay;
 
-  const ry = yaw + steerYaw;
-  const rx = pitch + steerPitch;
+  let swayY = 0;
+  let swayP = 0;
+  if (!reduceMotion) {
+    const a = Math.sin((now * Math.PI * 2) / CONFIG.swayPeriodA);
+    const b = Math.sin((now * Math.PI * 2) / CONFIG.swayPeriodB);
+    swayY = (a * 0.72 + b * 0.28) * CONFIG.swayYaw;
+    swayP = (b * 0.72 - a * 0.28) * CONFIG.swayPitch;
+  }
+
+  const ry = swayY + steerYaw + nudgeYaw;
+  const rx = PITCH_BASE + swayP + steerPitch + nudgePitch;
 
   const cosY = Math.cos(ry), sinY = Math.sin(ry);
   const cosX = Math.cos(rx), sinX = Math.sin(rx);
@@ -361,10 +385,15 @@ canvas.addEventListener('pointerleave', () => {
   targetPitch = 0;
 });
 
+// A tap leans the mark towards the point that was touched, then it drifts back.
 canvas.addEventListener('pointerdown', (e) => {
   const rect = canvas.getBoundingClientRect();
-  const dir = (e.clientX - rect.left) / rect.width - 0.5 >= 0 ? 1 : -1;
-  yawVel += dir * CONFIG.spinImpulse;
+  const nx = (e.clientX - rect.left) / rect.width - 0.5;
+  const ny = (e.clientY - rect.top) / rect.height - 0.5;
+  nudgeYaw = nx * 2 * CONFIG.nudge;
+  nudgePitch = -ny * 2 * CONFIG.nudge;
+  targetYaw = nx * CONFIG.steerYaw;
+  targetPitch = -ny * CONFIG.steerPitch;
 });
 
 let resizeTimer = null;

@@ -32,8 +32,13 @@ For GitHub Pages: push the repo, then **Settings → Pages → Deploy from branc
 5. **Life.** Each particle also drifts on its own 3D sine wobble, so the surface keeps moving
    even when the rotation is slow.
 
-Interaction: the cloud spins by itself, the pointer steers yaw and pitch, a click adds a
-spin impulse that damps out.
+**The mark never turns past a three-quarter view.** A full 360° spin would swing it edge-on
+and then show its back, where the silhouette stops reading as the logo — so instead it rocks
+slowly around the front view on two beating sine waves (periods 11 s and 7.3 s, so the loop
+never becomes obvious). The pointer adds a small turn towards the cursor on top of that, a
+tap leans it towards the point touched and it drifts back. Everything is clamped: yaw stays
+within ±49°, pitch within ±38°, and the fitting math below is solved against exactly that
+range.
 
 ## Tuning
 
@@ -51,9 +56,10 @@ Everything lives in the `CONFIG` object at the top of `particles.js`:
 | `focal` | perspective strength — smaller = wider lens, stronger distortion |
 | `sizeMin` / `sizeMax`, `alphaMin` / `alphaMax`, `buckets` | grain and depth falloff |
 | `glow` | soft radial bloom behind the shape, `0` to disable |
-| `spin` | idle rotation speed, radians per ms |
-| `spinImpulse`, `spinDamping` | click kick and how fast it dies |
+| `swayYaw`, `swayPitch` | how far the idle rocking goes, radians |
+| `swayPeriodA`, `swayPeriodB` | the two beating periods of that rocking, ms |
 | `steerYaw`, `steerPitch`, `steerEase` | how far and how smoothly the pointer turns it |
+| `nudge`, `nudgeDecay` | tap lean and how fast it eases back |
 | `swirl`, `swirlSpeed` | how much the particles move inside the shape |
 | `introDuration`, `introStagger` | assemble animation |
 
@@ -65,12 +71,13 @@ Anything that fills as a closed shape works — a logo, an icon, a letterform.
 
 ## Notes
 
-- `prefers-reduced-motion` is respected: rotation and wobble are switched off.
+- `prefers-reduced-motion` is respected: the rocking and the wobble are switched off.
 - **Portrait screens.** The cloud is a rotating box, so at some angles it projects wider than
   the mark itself. The scale is therefore solved from the worst-case projected extents —
-  half the mark plus half the extrusion, tilted by the maximum pitch and magnified by
-  perspective — instead of from the flat silhouette. Nothing gets cropped at any angle on
-  any aspect ratio. Height uses `dvh`, so the mobile browser bar sliding in doesn't clip it.
+  the scale is solved by walking the yaw and pitch range the mark can actually reach and
+  keeping the widest projection found, instead of measuring the flat silhouette. Nothing gets
+  cropped at any reachable angle on any aspect ratio. Height uses `dvh`, so the mobile browser
+  bar sliding in doesn't clip it.
 - Phones get a smaller particle budget (`maxParticlesMobile`); the sampling grid relaxes
   automatically until the count fits, so the look is identical and only the grain changes.
 - Device pixel ratio is capped at 2; the field re-samples on resize.
