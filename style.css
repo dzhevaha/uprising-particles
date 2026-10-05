@@ -1,0 +1,61 @@
+:root {
+  --bg: #000000;
+  --brand: #FE7241;
+  --hint: rgba(255, 255, 255, 0.28);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+/* iOS/Android browser chrome changes the viewport height mid-scroll — dvh follows it. */
+@supports (height: 100dvh) {
+  html, body { height: 100dvh; }
+}
+
+body {
+  background: var(--bg);
+  color: #fff;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  overflow: hidden;
+}
+
+.stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+#scene {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.hint {
+  position: absolute;
+  left: 50%;
+  bottom: calc(28px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  margin: 0;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--hint);
+  pointer-events: none;
+  user-select: none;
+}
+
+@media (max-width: 640px) {
+  .hint { bottom: 18px; font-size: 10px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hint { display: none; }
+}
