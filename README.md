@@ -36,9 +36,12 @@ For GitHub Pages: push the repo, then **Settings → Pages → Deploy from branc
 and then show its back, where the silhouette stops reading as the logo — so instead it rocks
 slowly around the front view on two beating sine waves (periods 11 s and 7.3 s, so the loop
 never becomes obvious). The pointer adds a small turn towards the cursor on top of that, a
-tap leans it towards the point touched and it drifts back. Everything is clamped: yaw stays
-within ±49°, pitch within ±38°, and the fitting math below is solved against exactly that
-range.
+**Hover** leans it gently towards the cursor. **Drag** — press and move — turns it directly,
+pixel for pixel, holds the angle until you let go, then drifts back; pointer capture keeps the
+move events coming even if the finger leaves the canvas, which is what makes it work on touch,
+where there is no hover at all. A press that never moved counts as a **tap** and leans the mark
+towards the point touched. Everything is clamped: yaw stays within ±47°, pitch within ±34°, and
+the fitting math below is solved against exactly that range.
 
 ## Tuning
 
@@ -58,7 +61,10 @@ Everything lives in the `CONFIG` object at the top of `particles.js`:
 | `glow` | soft radial bloom behind the shape, `0` to disable |
 | `swayYaw`, `swayPitch` | how far the idle rocking goes, radians |
 | `swayPeriodA`, `swayPeriodB` | the two beating periods of that rocking, ms |
-| `steerYaw`, `steerPitch`, `steerEase` | how far and how smoothly the pointer turns it |
+| `steerYaw`, `steerPitch`, `steerEase` | how far and how smoothly hovering turns it |
+| `dragYaw`, `dragPitch` | how far a drag may turn it |
+| `dragSensitivity` | radians per pixel dragged |
+| `dragReturn` | how slowly it drifts back after release |
 | `nudge`, `nudgeDecay` | tap lean and how fast it eases back |
 | `swirl`, `swirlSpeed` | how much the particles move inside the shape |
 | `introDuration`, `introStagger` | assemble animation |
