@@ -36,7 +36,7 @@ block, not by slowing the build.
 | Space, Play | play / pause |
 | ← → | step 0.1 s (Shift: 1 s) |
 | Home | back to start |
-| S, `Subs` | voiceover subtitles on / off |
+| S, `Subs` | voiceover subtitles on / off (reclaims their strip) |
 | C, `Clean` | hide the control bar for screen recording (Esc to exit) |
 | .25× .5× 1× | playback speed |
 
@@ -56,6 +56,11 @@ Three deliberate departures from the export, each marked in the source:
 reference PNG; the doc-icon paths in frame 04 are drawn at about twice the size
 they appear at in the PNG and are scaled back; the haircut highlights are inset
 so they read as separate rows rather than one block.
+
+The subtitle band and the control bar live outside the 1920x1080 stage: `fit()`
+reserves a strip for them under the frame and scales the stage into what is
+left, so neither can ever sit over the picture. In clean mode both are gone and
+the frame fills the window.
 
 Typefaces are Commissioner and IBM Plex Mono, loaded from Google Fonts.
 

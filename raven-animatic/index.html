@@ -17,14 +17,18 @@
   #wrap{position:fixed;inset:0;overflow:hidden;background:#000}
   #stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:50% 50%;will-change:transform}
   #stage svg{display:block;width:1920px;height:1080px}
+  #shade{position:fixed;left:0;right:0;bottom:0;height:0;pointer-events:none}
 
   .scene{opacity:0;visibility:hidden}
   .scene.on{visibility:visible}
 
-  /* subtitle band — a review aid, not part of the film */
-  #cap{position:absolute;left:0;right:0;bottom:92px;text-align:center;pointer-events:none;padding:0 90px}
-  #cap span{display:inline-block;max-width:1500px;font-size:30px;line-height:1.35;color:#fff;
-    background:rgba(0,0,0,.62);padding:10px 22px;border-radius:8px;opacity:0;transition:opacity .18s}
+  /* Subtitle band — a review aid, not part of the film. It lives OUTSIDE the
+     1920x1080 stage and the stage is scaled to leave room for it, so it can
+     never cover the frame. In clean mode it is gone and the stage fills. */
+  #cap{position:fixed;left:0;right:0;text-align:center;pointer-events:none;padding:0 16px;z-index:8}
+  #cap span{display:inline-block;max-width:min(1100px,94vw);
+    font-size:clamp(13px,1.45vw,21px);line-height:1.4;color:#e9eaec;
+    padding:2px 4px;opacity:0;transition:opacity .18s}
   body.clean #cap,body.nosubs #cap{display:none}
 
   /* controls */
@@ -47,8 +51,8 @@
 <div id="wrap">
   <div id="stage">
     <svg id="svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid meet" shape-rendering="geometricPrecision"></svg>
-    <div id="cap"><span id="capt"></span></div>
   </div>
+  <div id="cap"><span id="capt"></span></div>
 </div>
 
 <div id="bar">
@@ -683,8 +687,8 @@ function setPlay(v){
 }
 document.getElementById('play').onclick = ()=> setPlay(!playing);
 scrub.oninput = e => { T = e.target.value/1000*TL.total; render(T); setPlay(false); };
-document.getElementById('cleanb').onclick = ()=> document.body.classList.toggle('clean');
-document.getElementById('subsb').onclick  = ()=> document.body.classList.toggle('nosubs');
+document.getElementById('cleanb').onclick = ()=>{ document.body.classList.toggle('clean'); fit(); };
+document.getElementById('subsb').onclick  = ()=>{ document.body.classList.toggle('nosubs'); fit(); };
 
 addEventListener('keydown', e=>{
   const step = e.shiftKey ? 1 : 0.1;
@@ -692,21 +696,43 @@ addEventListener('keydown', e=>{
   else if(e.key==='ArrowRight'){ T = cl(T+step,0,TL.total); render(T); setPlay(false); }
   else if(e.key==='ArrowLeft'){  T = cl(T-step,0,TL.total); render(T); setPlay(false); }
   else if(e.key==='Home'){ T = 0; render(T); setPlay(false); }
-  else if(e.key==='s'||e.key==='S'){ document.body.classList.toggle('nosubs'); }
-  else if(e.key==='c'||e.key==='C'){ document.body.classList.toggle('clean'); }
-  else if(e.key==='Escape'){ document.body.classList.remove('clean'); }
+  else if(e.key==='s'||e.key==='S'){ document.body.classList.toggle('nosubs'); fit(); }
+  else if(e.key==='c'||e.key==='C'){ document.body.classList.toggle('clean'); fit(); }
+  else if(e.key==='Escape'){ document.body.classList.remove('clean'); fit(); }
 });
 
-/* fit the 1920×1080 stage into the viewport */
+/* Fit the 1920×1080 stage into the viewport, reserving a strip underneath for
+   the control bar and the subtitle band so neither ever sits over the frame. */
 const stage = document.getElementById('stage');
+const capEl = document.getElementById('cap');
 function fit(){
-  const k = Math.min(innerWidth/1920, innerHeight/1080);
+  const clean = document.body.classList.contains('clean');
+  const subs  = !clean && !document.body.classList.contains('nosubs');
+  const barH  = clean ? 0 : (document.getElementById('bar').offsetHeight + 34);
+  const capH  = subs ? Math.round(Math.min(96, Math.max(54, innerHeight*0.085))) : 0;
+  const reserve = barH + capH;
+
+  const avail = Math.max(120, innerHeight - reserve);
+  const k = Math.min(innerWidth/1920, avail/1080);
+  stage.style.top = (avail/2) + 'px';
   stage.style.transform = `translate(-50%,-50%) scale(${k})`;
+  // sit the band just under the frame when the viewport leaves slack above the
+  // control bar (portrait phones), otherwise in the reserved strip
+  const stageBottom = avail/2 + (1080*k)/2;
+  const stripTop    = innerHeight - barH - capH;
+  capEl.style.top    = Math.min(stageBottom + 10, stripTop) + 'px';
+  capEl.style.bottom = 'auto';
+  capEl.style.height = capH + 'px';
+  capEl.style.display = subs ? 'flex' : 'none';
+  capEl.style.alignItems = 'center';
+  capEl.style.justifyContent = 'center';
 }
-addEventListener('resize', fit); fit();
+addEventListener('resize', fit);
+if(document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+fit();
 
 /* fonts settle before the pill row is measured */
-function start(){ SC['02'].layout(); render(0); requestAnimationFrame(loop); }
+function start(){ SC['02'].layout(); fit(); render(0); requestAnimationFrame(loop); }
 if(document.fonts && document.fonts.ready) document.fonts.ready.then(start); else addEventListener('load', start);
 </script>
 </body>
