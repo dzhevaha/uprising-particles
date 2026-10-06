@@ -36,7 +36,7 @@ block, not by slowing the build.
 | Space, Play | play / pause |
 | ← → | step 0.1 s (Shift: 1 s) |
 | Home | back to start |
-| S, `Subs` | voiceover subtitles on / off (reclaims their strip) |
+| S, `Subs` | stand-in captions on / off |
 | C, `Clean` | hide the control bar for screen recording (Esc to exit) |
 | .25× .5× 1× | playback speed |
 
@@ -57,12 +57,32 @@ reference PNG; the doc-icon paths in frame 04 are drawn at about twice the size
 they appear at in the PNG and are scaled back; the haircut highlights are inset
 so they read as separate rows rather than one block.
 
-The subtitle band and the control bar live outside the 1920x1080 stage: `fit()`
-reserves a strip for them under the frame and scales the stage into what is
-left, so neither can ever sit over the picture. In clean mode both are gone and
-the frame fills the window.
+## Safe area
 
-Typefaces are Commissioner and IBM Plex Mono, loaded from Google Fonts.
+The film ships to YouTube, where the player draws its own captions over the
+bottom of the picture. YouTube publishes no pixel spec for this — its help page
+lists only which caption properties a viewer can change, and the player sizes
+captions from the player height at playback time. So `SAFE` is built from what
+is measurable instead: the control bar covers roughly the bottom 10% of the
+frame and captions ride above it, caption text runs about 4–5% of frame height
+at the default size (a viewer can push it to 200% or 300%), and captions are
+bottom-centred. 255 px of 1080 holds a two-line caption at default size plus the
+control bar.
+
+Every scene is scaled and centred into what is left, from its content box in
+`BOXES`. The background and grid still bleed to the frame edge — only content
+is inset. Re-derive a box if `SPEC` changes; scene 02's x range deliberately
+excludes the function ticker, which bleeds off both sides.
+
+`YTCAP` draws stand-in captions inside the frame at the size YouTube renders
+them — Roboto, white on a 75% black box, bottom-centred above the control bar.
+A long voiceover line is split into several timed captions of at most two lines,
+the way a real caption track behaves, so what you see is what will cover the
+picture there. They are a placeholder: the shipped film carries no burnt-in
+text. Press S to hide them.
+
+Typefaces are Commissioner and IBM Plex Mono; the stand-in captions use Roboto.
+All three load from Google Fonts.
 
 ## Status
 

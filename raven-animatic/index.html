@@ -6,7 +6,7 @@
 <title>Raven Shorts 1 — animatic</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{ --ui:#d8dadd; --uibg:rgba(16,18,21,.86); --uiline:rgba(255,255,255,.16); }
   *{box-sizing:border-box}
@@ -17,19 +17,15 @@
   #wrap{position:fixed;inset:0;overflow:hidden;background:#000}
   #stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:50% 50%;will-change:transform}
   #stage svg{display:block;width:1920px;height:1080px}
-  #shade{position:fixed;left:0;right:0;bottom:0;height:0;pointer-events:none}
 
   .scene{opacity:0;visibility:hidden}
   .scene.on{visibility:visible}
 
-  /* Subtitle band — a review aid, not part of the film. It lives OUTSIDE the
-     1920x1080 stage and the stage is scaled to leave room for it, so it can
-     never cover the frame. In clean mode it is gone and the stage fills. */
-  #cap{position:fixed;left:0;right:0;text-align:center;pointer-events:none;padding:0 16px;z-index:8}
-  #cap span{display:inline-block;max-width:min(1100px,94vw);
-    font-size:clamp(13px,1.45vw,21px);line-height:1.4;color:#e9eaec;
-    padding:2px 4px;opacity:0;transition:opacity .18s}
-  body.clean #cap,body.nosubs #cap{display:none}
+  /* Captions are drawn INSIDE the frame now, in the reserved bottom band, at the
+     size YouTube renders them — see YTCAP. They are a stand-in for the real
+     caption track, so what you see here is what will cover the picture there. */
+  #ytcap{opacity:0;transition:opacity .15s}
+  body.nosubs #ytcap{display:none}
 
   /* controls */
   #bar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom,0px));
@@ -52,7 +48,6 @@
   <div id="stage">
     <svg id="svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid meet" shape-rendering="geometricPrecision"></svg>
   </div>
-  <div id="cap"><span id="capt"></span></div>
 </div>
 
 <div id="bar">
@@ -93,7 +88,51 @@ const TL = {
   ]
 };
 
-/* VO cues — subtitle band, review aid only */
+/* ============================================================
+   SAFE AREA — the band at the bottom of the frame that belongs to
+   the player, not to us.
+
+   YouTube publishes no pixel spec for this: its help page lists only
+   which caption properties a viewer can change, and the player sizes
+   captions from the player height at playback time. So this is built
+   from what is measurable instead:
+     · the player control bar covers roughly the bottom 10% of the frame
+       and captions ride above it;
+     · caption text runs about 4–5% of frame height at the default size,
+       and a viewer can push it to 200% or 300%;
+     · captions are bottom-centred, so the bottom strip is the contested one.
+   255 px of 1080 (24%) holds a two-line caption at default size plus the
+   control bar. Everything we care about is fitted above it.
+
+   Change these four numbers to retune; every scene refits automatically.
+   ============================================================ */
+const SAFE = { top: 40, bottom: 255, side: 60 };
+
+/* YouTube-style stand-in captions, drawn in the reserved band at the size
+   YouTube renders them: ~4.5% of frame height, Roboto, white on a 75% black
+   box, bottom-centred above the control bar. Turn them off with S. */
+const YTCAP = {
+  fontSize: 48,          // 4.4% of 1080 — the default-size caption
+  lineGap:  1.30,
+  maxWidth: 1560,        // captions wrap well inside the frame
+  blockBottom: 970,      // bottom of the lowest line; below this is the control bar
+  maxLines: 2,           // a longer cue is split into several timed captions
+  bg: 'rgba(8,8,8,0.75)',
+  pad: { x: 14, y: 6 }
+};
+
+/* Content boxes per scene, in frame coordinates, taken from the geometry in
+   SPEC. Each scene is scaled and centred into the safe area from its box, so
+   nothing it draws lands under a caption. Re-derive these if SPEC changes. */
+const BOXES = {
+  '01': { x1: 683, y1: 340, x2: 1235, y2:  734 },
+  '02': { x1:  70, y1:  44, x2: 1809, y2:  998 },   // x excludes the ticker, which bleeds by design
+  '03': { x1: 148, y1:  59, x2: 1773, y2:  972 },
+  '04': { x1: 166, y1: 355, x2: 1704, y2:  661 },
+  '05': { x1: 775, y1: 277, x2: 1145, y2:  803 }
+};
+
+/* VO cues — stand-in captions, review aid only */
 const CUES = [
   [ 0.0,  3.5, 'Raven was created with the credit professional in mind.'],
   [ 3.5, 12.7, 'With decades of experience in the credit space, we deeply understand the workflows that are important to your team, and above all, that accuracy is key.'],
@@ -227,7 +266,7 @@ function sceneG(frame){
 (function(){
   const f = F('01');
   const g = sceneG(f);
-  const inner = mk('g'); g.appendChild(inner);
+  const inner = mk('g',{class:'inner'}); g.appendChild(inner);
   const bird = node(f.nodes[0]); inner.appendChild(bird);
   SC['01'] = { g, inner, bird };
 })();
@@ -236,7 +275,7 @@ function sceneG(frame){
 (function(){
   const f2a=F('02a'), f2b=F('02b'), f2c=F('02c'), f2d=F('02d');
   const g = sceneG(f2d);
-  const inner = mk('g'); g.appendChild(inner);
+  const inner = mk('g',{class:'inner'}); g.appendChild(inner);
 
   // five source groups (label + two bars) — from 02a, nodes 0..14 in triples
   const sources = [];
@@ -313,7 +352,7 @@ function sceneG(frame){
 (function(){
   const f3a=F('03a'), f3b=F('03b'), f3c=F('03c'), f3d=F('03d');
   const g = sceneG(f3b);
-  const inner = mk('g'); g.appendChild(inner);
+  const inner = mk('g',{class:'inner'}); g.appendChild(inner);
 
   // --- three request bubbles (only one visible at a time) ---
   function bubble(frame){
@@ -375,7 +414,7 @@ function sceneG(frame){
 (function(){
   const f = F('04');
   const g = sceneG(f);
-  const inner = mk('g'); g.appendChild(inner);
+  const inner = mk('g',{class:'inner'}); g.appendChild(inner);
 
   const bigNum   = node(f.nodes.find(n=>n.style==='bigNumber'));
   const numG     = mk('g'); numG.appendChild(bigNum); inner.appendChild(numG);
@@ -410,13 +449,103 @@ function sceneG(frame){
 (function(){
   const f = F('05');
   const g = sceneG(f);
-  const inner = mk('g'); g.appendChild(inner);
+  const inner = mk('g',{class:'inner'}); g.appendChild(inner);
   const bird = node(f.nodes[0]);           inner.appendChild(bird);
   const mark = node(f.nodes[1]);           inner.appendChild(mark);
   const tag  = node(f.nodes[2]);           inner.appendChild(tag);
   const black= mk('rect',{x:0,y:0,width:1920,height:1080,fill:'#000',opacity:0});
   g.appendChild(black);
   SC['05'] = { g, inner, bird, mark, tag, black };
+})();
+
+/* ===================== safe-area fit ===================== */
+/* One constant transform per scene: scale its content box into the safe area
+   and centre it there. Constant, so nothing drifts while the scene animates. */
+(function fitScenesIntoSafeArea(){
+  const availW = 1920 - SAFE.side*2;
+  const availH = 1080 - SAFE.top - SAFE.bottom;
+  const cx = 960, cy = SAFE.top + availH/2;
+  for(const id in BOXES){
+    const b = BOXES[id]; const sc = SC[id]; if(!sc) continue;
+    const w = b.x2-b.x1, h = b.y2-b.y1;
+    const k = Math.min(1, availW/w, availH/h);
+    const bx = (b.x1+b.x2)/2, by = (b.y1+b.y2)/2;
+    sc.safe = `translate(${cx - bx*k} ${cy - by*k}) scale(${k})`;
+    sc.inner.setAttribute('transform', sc.safe);
+    sc.inner.__safe = sc.safe;
+  }
+})();
+/* scene animations set transforms on `inner`; keep the safe fit in front of them */
+function trInner(sc, extra){
+  sc.inner.setAttribute('transform', sc.safe + (extra ? ' ' + extra : ''));
+}
+
+/* ===================== YouTube-style caption layer ===================== */
+const CAPL = (function(){
+  const g = mk('g',{ id:'ytcap' });
+  svg.appendChild(g);
+  const lines = [];
+  for(let i=0;i<YTCAP.maxLines;i++){
+    const box = mk('rect',{ rx:3, fill:YTCAP.bg });
+    const t   = mk('text',{ 'text-anchor':'middle','dominant-baseline':'central',
+      'font-family':'Roboto,Arial,Helvetica,sans-serif','font-size':YTCAP.fontSize,
+      'font-weight':400, fill:'#ffffff' });
+    g.appendChild(box); g.appendChild(t);
+    lines.push({box,t});
+  }
+  const probe = mk('text',{ 'font-family':'Roboto,Arial,Helvetica,sans-serif',
+    'font-size':YTCAP.fontSize, visibility:'hidden' });
+  svg.appendChild(probe);
+  const wcache = {};
+  function width(str){
+    if(wcache[str]!=null) return wcache[str];
+    probe.textContent = str;
+    return (wcache[str] = probe.getComputedTextLength());
+  }
+  function wrap(text){
+    const words = text.split(/\s+/), out = []; let cur = '';
+    for(const w of words){
+      const next = cur ? cur+' '+w : w;
+      if(cur && width(next) > YTCAP.maxWidth){ out.push(cur); cur = w; }
+      else cur = next;
+    }
+    if(cur) out.push(cur);
+    return out;
+  }
+  /* A long VO line is not one caption on YouTube — it is several in sequence.
+     Split each cue into <=maxLines chunks and share its time between them. */
+  let CAPS = null;
+  function build(){
+    CAPS = [];
+    CUES.forEach(([t0,t1,text])=>{
+      const ls = wrap(text);
+      const groups = [];
+      for(let i=0;i<ls.length;i+=YTCAP.maxLines) groups.push(ls.slice(i,i+YTCAP.maxLines));
+      const d = (t1-t0)/groups.length;
+      groups.forEach((grp,i)=> CAPS.push([t0+i*d, t0+(i+1)*d, grp]));
+    });
+  }
+  function show(t){
+    if(!CAPS) build();
+    const c = CAPS.find(x=> t>=x[0] && t<x[1]);
+    if(!c){ g.style.opacity = 0; return; }
+    g.style.opacity = 1;
+    const grp = c[2], lh = YTCAP.fontSize*YTCAP.lineGap;
+    lines.forEach((ln,i)=>{
+      const str = grp[i];
+      if(str==null){ ln.box.setAttribute('opacity',0); ln.t.setAttribute('opacity',0); return; }
+      ln.box.setAttribute('opacity',1); ln.t.setAttribute('opacity',1);
+      // the block's bottom line sits on blockBottom; extra lines stack upward
+      const cyL = YTCAP.blockBottom - (grp.length-1-i)*lh - lh/2;
+      const w = width(str);
+      ln.t.setAttribute('x',960); ln.t.setAttribute('y',cyL); ln.t.textContent = str;
+      ln.box.setAttribute('x', 960 - w/2 - YTCAP.pad.x);
+      ln.box.setAttribute('y', cyL - lh/2 + 1);
+      ln.box.setAttribute('width',  w + YTCAP.pad.x*2);
+      ln.box.setAttribute('height', lh - 2);
+    });
+  }
+  return { show, build };
 })();
 
 /* ===================== per-scene animation ===================== */
@@ -444,7 +573,7 @@ const ANIM = {
     const p = E(lt, 0, 1.6);
     op(s.bird, 0.88 * p);
     const k = lerp(1.07, 1.0, EI(lt,0,2.6));
-    tr(s.inner, `translate(960 540) scale(${k}) translate(-960 -540)`);
+    trInner(s, `translate(960 540) scale(${k}) translate(-960 -540)`);
   },
 
   '02'(lt, dur){
@@ -624,7 +753,7 @@ const ANIM = {
     const p = EI(lt, 0, 1.0);
     op(s.bird, p); op(s.mark, E(lt,0.55,0.7)); op(s.tag, E(lt,0.95,0.7));
     const k = lerp(0.97, 1.0, EI(lt,0,2.6));
-    tr(s.inner, `translate(960 540) scale(${k}) translate(-960 -540)`);
+    trInner(s, `translate(960 540) scale(${k}) translate(-960 -540)`);
     s.black.setAttribute('opacity', seg(lt, dur-0.75, 0.75));
   }
 };
@@ -634,7 +763,6 @@ let T = 0, playing = false, last = 0;
 const scrub = document.getElementById('scrub');
 const tc    = document.getElementById('tc');
 const namesEl = document.getElementById('names');
-const capt  = document.getElementById('capt');
 
 /* Scenes are opaque, full-bleed and stacked in order, so a cross-dissolve is
    just the incoming scene fading in ON TOP of the outgoing one. Fading both at
@@ -661,8 +789,7 @@ function render(t){
   if(!active) active = TL.scenes[TL.scenes.length-1];
   namesEl.textContent = active.id + ' · ' + active.name;
 
-  const cue = CUES.find(c=> t>=c[0] && t<c[1]);
-  if(cue){ capt.textContent = cue[2]; capt.style.opacity = 1; } else { capt.style.opacity = 0; }
+  CAPL.show(t);
 
   tc.textContent = t.toFixed(2) + ' / ' + TL.total.toFixed(2);
   scrub.value = Math.round(t / TL.total * 1000);
@@ -704,35 +831,19 @@ addEventListener('keydown', e=>{
 /* Fit the 1920×1080 stage into the viewport, reserving a strip underneath for
    the control bar and the subtitle band so neither ever sits over the frame. */
 const stage = document.getElementById('stage');
-const capEl = document.getElementById('cap');
 function fit(){
   const clean = document.body.classList.contains('clean');
-  const subs  = !clean && !document.body.classList.contains('nosubs');
-  const barH  = clean ? 0 : (document.getElementById('bar').offsetHeight + 34);
-  const capH  = subs ? Math.round(Math.min(96, Math.max(54, innerHeight*0.085))) : 0;
-  const reserve = barH + capH;
-
-  const avail = Math.max(120, innerHeight - reserve);
+  const barH  = clean ? 0 : (document.getElementById('bar').offsetHeight + 28);
+  const avail = Math.max(120, innerHeight - barH);
   const k = Math.min(innerWidth/1920, avail/1080);
   stage.style.top = (avail/2) + 'px';
   stage.style.transform = `translate(-50%,-50%) scale(${k})`;
-  // sit the band just under the frame when the viewport leaves slack above the
-  // control bar (portrait phones), otherwise in the reserved strip
-  const stageBottom = avail/2 + (1080*k)/2;
-  const stripTop    = innerHeight - barH - capH;
-  capEl.style.top    = Math.min(stageBottom + 10, stripTop) + 'px';
-  capEl.style.bottom = 'auto';
-  capEl.style.height = capH + 'px';
-  capEl.style.display = subs ? 'flex' : 'none';
-  capEl.style.alignItems = 'center';
-  capEl.style.justifyContent = 'center';
 }
 addEventListener('resize', fit);
-if(document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
 fit();
 
 /* fonts settle before the pill row is measured */
-function start(){ SC['02'].layout(); fit(); render(0); requestAnimationFrame(loop); }
+function start(){ SC['02'].layout(); CAPL.build(); fit(); render(0); requestAnimationFrame(loop); }
 if(document.fonts && document.fonts.ready) document.fonts.ready.then(start); else addEventListener('load', start);
 </script>
 </body>
