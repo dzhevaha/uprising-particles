@@ -2,667 +2,710 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Raven Animatic</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Raven Shorts 1 — animatic</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{
-  --dark:#0A1015; --plate:#E1E6EA; --app:#EEECE8; --appAlt:#F3F1ED;
-  --card:#FFFFFF; --border:#D7D5D1; --line:#D9D9D4;
-  --ink:#100E0A; --muted:#54524E; --muted2:#666460; --muted3:#615F5B;
-  --chip:#E6EFF9; --navy:#032B52; --grey:#9BA9B8; --green:#44A047;
-  --bar:rgba(16,14,10,.11); --barStrong:rgba(16,14,10,.17);
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%}
-body{background:#000;font-family:Inter,system-ui,-apple-system,sans-serif;overflow:hidden;color:#fff}
-#wrap{position:fixed;inset:0;overflow:hidden}
-#stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:center center;overflow:hidden;background:var(--dark)}
-.frame{position:absolute;inset:0;opacity:0;visibility:hidden;z-index:1}
-.frame.on{visibility:visible}
-.abs{position:absolute}
-.bar{position:absolute;background:var(--bar);border-radius:999px}
-.barD{position:absolute;background:var(--barStrong);border-radius:999px}
-.card{position:absolute;background:var(--card);border:1px solid var(--border);border-radius:14px}
-.sug{position:absolute;background:var(--app);border:1px solid var(--border);border-radius:12px}
-.t{position:absolute;white-space:nowrap;color:var(--ink);letter-spacing:-.01em}
-.tw{color:#fff}
-.mono{font-family:"JetBrains Mono",ui-monospace,monospace}
-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+  :root{ --ui:#d8dadd; --uibg:rgba(16,18,21,.86); --uiline:rgba(255,255,255,.16); }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:#000;overflow:hidden}
+  body{font-family:Commissioner,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
 
-/* controls */
-#ui{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:center;max-width:calc(100vw - 24px);
-  background:rgba(12,14,18,.82);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.12);
-  border-radius:999px;padding:10px 18px;font-size:13px;transition:opacity .4s;z-index:50}
-#ui.hide{opacity:0;pointer-events:none}
-#ui button{background:none;border:0;color:#fff;cursor:pointer;font:inherit;opacity:.75;padding:4px 6px;border-radius:6px}
-#ui button:hover{opacity:1;background:rgba(255,255,255,.1)}
-#ui button.act{opacity:1;background:rgba(255,255,255,.16)}
-#play{width:30px;font-size:15px}
-#scrub{width:min(420px,52vw);accent-color:#fff;cursor:pointer}
-#tc{font-family:"JetBrains Mono",monospace;font-size:12px;opacity:.8;min-width:96px}
-#lbl{font-size:12px;opacity:.55;min-width:190px;text-align:right}
-@media (max-width:760px){#lbl{display:none}#ui{gap:10px;padding:8px 12px;font-size:12px}}
+  /* stage: absolute + translate centering — survives being wider than the viewport */
+  #wrap{position:fixed;inset:0;overflow:hidden;background:#000}
+  #stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:50% 50%;will-change:transform}
+  #stage svg{display:block;width:1920px;height:1080px}
 
-#subs{position:absolute;left:50%;bottom:120px;transform:translateX(-50%);width:1360px;text-align:center;
-  pointer-events:none;z-index:30;transition:opacity .25s}
-.subRow{display:block}
-#subLine{display:inline;font-size:30px;line-height:1.72;font-weight:500;color:#fff;
-  background:rgba(10,16,21,.88);padding:9px 22px;border-radius:10px;
-  box-decoration-break:clone;-webkit-box-decoration-break:clone}
-#subs.off{opacity:0}
-#hint{position:fixed;left:50%;bottom:0;transform:translateX(-50%);height:90px;width:60vw;z-index:40}
+  .scene{opacity:0;visibility:hidden}
+  .scene.on{visibility:visible}
+
+  /* subtitle band — a review aid, not part of the film */
+  #cap{position:absolute;left:0;right:0;bottom:92px;text-align:center;pointer-events:none;padding:0 90px}
+  #cap span{display:inline-block;max-width:1500px;font-size:30px;line-height:1.35;color:#fff;
+    background:rgba(0,0,0,.62);padding:10px 22px;border-radius:8px;opacity:0;transition:opacity .18s}
+  body.clean #cap,body.nosubs #cap{display:none}
+
+  /* controls */
+  #bar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom,0px));
+    z-index:9;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;
+    max-width:calc(100vw - 20px);padding:9px 12px;background:var(--uibg);border:1px solid var(--uiline);
+    border-radius:12px;color:var(--ui);font-size:13px;backdrop-filter:blur(8px)}
+  body.clean #bar{display:none}
+  #bar button,#bar select{font:inherit;font-family:inherit;color:var(--ui);background:transparent;
+    border:1px solid var(--uiline);border-radius:8px;padding:5px 11px;cursor:pointer}
+  #bar button:hover,#bar select:hover{border-color:rgba(255,255,255,.4)}
+  #bar input[type=range]{width:min(44vw,420px);accent-color:#fff}
+  #tc{font-family:"IBM Plex Mono",monospace;font-size:12px;min-width:92px;text-align:center;opacity:.85}
+  #names{font-size:12px;opacity:.6;min-width:170px;text-align:center}
+  .hint{font-size:11px;opacity:.5;width:100%;text-align:center}
+  @media (max-width:760px){ #names{display:none} .hint{display:none} #bar{gap:7px;padding:7px 9px} }
 </style>
 </head>
 <body>
-<div id="wrap"><div id="stage"><div id="subs"><div class="subRow"><span id="subLine"></span></div></div></div></div>
-
-<div id="ui">
-  <button id="play">❚❚</button>
-  <input id="scrub" type="range" min="0" max="44" step="0.01" value="0">
-  <span id="tc">0.00 / 44.00</span>
-  <button class="sp" data-s="0.25">.25×</button>
-  <button class="sp" data-s="0.5">.5×</button>
-  <button class="sp act" data-s="1">1×</button>
-  <button id="subs-t" class="act">subs</button>
-  <button id="clean">clean</button>
-  <span id="lbl"></span>
+<div id="wrap">
+  <div id="stage">
+    <svg id="svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid meet" shape-rendering="geometricPrecision"></svg>
+    <div id="cap"><span id="capt"></span></div>
+  </div>
 </div>
-<div id="hint"></div>
+
+<div id="bar">
+  <button id="play">Play</button>
+  <input id="scrub" type="range" min="0" max="1000" value="0" step="1">
+  <span id="tc">0.00 / 42.00</span>
+  <select id="spd">
+    <option value="0.25">0.25x</option>
+    <option value="0.5">0.5x</option>
+    <option value="1" selected>1x</option>
+  </select>
+  <button id="subsb">Subs</button>
+  <button id="cleanb">Clean</button>
+  <span id="names"></span>
+  <span class="hint">Space — play/pause · ← → — 0.1s (Shift: 1s) · Home — start · S — subtitles · C — clean mode (Esc to exit)</span>
+</div>
 
 <script>
 /* ============================================================
+   SPEC — exported from Claude Design, 1920×1080, untouched
+   ============================================================ */
+const SPEC = {"canvas":{"w":1920,"h":1080},"tokens":{"color":{"darkField":"#0d0f12","gridLine":"#191d23","plate":"#e3e7ea","plateInk":"#0d0f12","hairline":"#8d949c","white":"#ffffff","barStrong":"#3a4149","barWeak":"#2b3137","pillBorderActive":"#8d949c","pillBorderDim":"#2b3137","pillBorderFaint":"#1f252b","pillTextActive":"#e3e7ea","pillTextDim":"#454c54","pillTextFaint":"#2e353c","captionGrey":"#8d949c","outputLabel":"#e3e7ea","lightField":"#f0efec","surface":"#ffffff","ink":"#1d1d1f","inkMuted":"#5e6066","inkFaint":"#9b9790","accent":"#5b3fd6","accentSoft":"#ede7fb","positive":"#3d8b5a","bubbleFill":"#e3e1dc","tableRule":"#dddad4","barFill":"#d7d4ce","tagOneTimeBg":"#efe9fb","tagOneTimeFg":"#4a32ae","tagNonCashBg":"#e6eef6","tagNonCashFg":"#1d4f8f","tagNormalizingBg":"#e9f2eb","tagNormalizingFg":"#2e6b46","connector":"#c9c6c0","docStroke":"#5b3fd6","docRule":"#b7acdf"},"font":{"family":"Commissioner","weights":[400,500,600],"familyMono":"IBM Plex Mono","weightsMono":[400,500]},"type":{"sourceLabel":{"size":35,"weight":600,"lineHeight":1.25,"letterSpacing":0,"color":"white","mono":false},"squareCaption":{"size":30,"weight":400,"lineHeight":1.4,"letterSpacing":0,"color":"captionGrey","mono":false},"outputLabel":{"size":35,"weight":400,"lineHeight":1.4,"letterSpacing":0,"color":"outputLabel","mono":false},"pillActive":{"size":26,"weight":400,"lineHeight":1.2,"letterSpacing":0,"color":"pillTextActive","mono":false},"pillDim":{"size":26,"weight":400,"lineHeight":1.2,"letterSpacing":0,"color":"pillTextDim","mono":false},"pillFaint":{"size":26,"weight":400,"lineHeight":1.2,"letterSpacing":0,"color":"pillTextFaint","mono":false},"agent":{"size":56,"weight":600,"lineHeight":1.1,"letterSpacing":-0.6,"color":"white","mono":false},"wordmark":{"size":85,"weight":600,"lineHeight":1.2,"letterSpacing":13.6,"color":"plate","mono":false},"tagline":{"size":37,"weight":400,"lineHeight":1.4,"letterSpacing":0.7,"color":"captionGrey","mono":false},"bubble":{"size":37,"weight":400,"lineHeight":1.35,"letterSpacing":0,"color":"ink","mono":false},"status":{"size":33,"weight":400,"lineHeight":1.4,"letterSpacing":0,"color":"inkMuted","mono":false},"check":{"size":24,"weight":400,"lineHeight":1,"letterSpacing":0,"color":"white","mono":false},"legend":{"size":31,"weight":400,"lineHeight":1.4,"letterSpacing":0,"color":"inkMuted","mono":false},"tableHead":{"size":31,"weight":400,"lineHeight":1.4,"letterSpacing":0,"color":"inkMuted","mono":false},"tableHeadAccent":{"size":31,"weight":400,"lineHeight":1.4,"letterSpacing":0,"color":"accent","mono":false},"tableLabel":{"size":35,"weight":400,"lineHeight":1.4,"letterSpacing":0,"color":"ink","mono":false},"tableLabelTotal":{"size":35,"weight":600,"lineHeight":1.4,"letterSpacing":0,"color":"ink","mono":false},"num":{"size":35,"weight":400,"lineHeight":1.4,"letterSpacing":0,"color":"ink","mono":true},"numMuted":{"size":35,"weight":400,"lineHeight":1.4,"letterSpacing":0,"color":"inkMuted","mono":true},"numAccent":{"size":35,"weight":400,"lineHeight":1.4,"letterSpacing":0,"color":"accent","mono":true},"numTotal":{"size":35,"weight":500,"lineHeight":1.4,"letterSpacing":0,"color":"ink","mono":true},"numTotalMuted":{"size":35,"weight":500,"lineHeight":1.4,"letterSpacing":0,"color":"inkMuted","mono":true},"numTotalStrong":{"size":35,"weight":600,"lineHeight":1.4,"letterSpacing":0,"color":"ink","mono":true},"numTotalAccent":{"size":35,"weight":600,"lineHeight":1.4,"letterSpacing":0,"color":"accent","mono":true},"numFaint":{"size":35,"weight":400,"lineHeight":1.4,"letterSpacing":0,"color":"inkFaint","mono":false},"tagOneTime":{"size":28,"weight":400,"lineHeight":1.2,"letterSpacing":0,"color":"tagOneTimeFg","mono":false},"tagNonCash":{"size":28,"weight":400,"lineHeight":1.2,"letterSpacing":0,"color":"tagNonCashFg","mono":false},"tagNormalizing":{"size":28,"weight":400,"lineHeight":1.2,"letterSpacing":0,"color":"tagNormalizingFg","mono":false},"sourceTitle":{"size":39,"weight":600,"lineHeight":1.3,"letterSpacing":0,"color":"ink","mono":false},"sourcePage":{"size":37,"weight":400,"lineHeight":1.3,"letterSpacing":0,"color":"inkMuted","mono":false},"bigNumber":{"size":185,"weight":600,"lineHeight":1,"letterSpacing":-6.5,"color":"ink","mono":false},"bigNumberCaption":{"size":37,"weight":400,"lineHeight":1.4,"letterSpacing":0,"color":"inkMuted","mono":false}}},"bird":{"viewBox":"0 0 58 42","d":"M33.2617 6.31543H38.5947L44.4883 12.6309H32.4189L27.9287 17.4023H34.2441L57.8213 41.2607H19.2266L12.7715 37.752L11.9287 41.2607L4.91211 35.3662V19.0869H0L12.7715 6.31543H9.96387L16.2793 0H27.3672L33.2617 6.31543ZM24.7002 5.05273C23.6803 5.05279 22.8535 5.87953 22.8535 6.89941C22.8536 7.9192 23.6804 8.74604 24.7002 8.74609C25.72 8.74609 26.5468 7.91923 26.5469 6.89941C26.5469 5.8795 25.7201 5.05273 24.7002 5.05273Z"},"frames":[{"id":"01","bg":"darkField","grid":{"step":107,"color":"gridLine","opacity":1},"nodes":[{"type":"image","ref":"bird","x":683,"y":340,"w":554,"h":401,"fill":"plate","opacity":0.88}]},{"id":"02a","bg":"darkField","grid":{"step":107,"color":"gridLine","opacity":1},"nodes":[{"type":"text","x":70,"y":44,"style":"sourceLabel","align":"left","baseline":"top","value":"Deal documents"},{"type":"rect","x":70,"y":107,"w":273,"h":7,"r":0,"fill":"barStrong","stroke":null,"strokeWidth":0},{"type":"rect","x":70,"y":125,"w":192,"h":7,"r":0,"fill":"barWeak","stroke":null,"strokeWidth":0},{"type":"text","x":436,"y":44,"style":"sourceLabel","align":"left","baseline":"top","value":"Third-party data"},{"type":"rect","x":436,"y":107,"w":259,"h":7,"r":0,"fill":"barStrong","stroke":null,"strokeWidth":0},{"type":"rect","x":436,"y":125,"w":170,"h":7,"r":0,"fill":"barWeak","stroke":null,"strokeWidth":0},{"type":"text","x":801,"y":44,"style":"sourceLabel","align":"left","baseline":"top","value":"Firm conventions"},{"type":"rect","x":801,"y":107,"w":284,"h":7,"r":0,"fill":"barStrong","stroke":null,"strokeWidth":0},{"type":"rect","x":801,"y":125,"w":181,"h":7,"r":0,"fill":"barWeak","stroke":null,"strokeWidth":0},{"type":"text","x":1167,"y":44,"style":"sourceLabel","align":"left","baseline":"top","value":"Analysis"},{"type":"rect","x":1167,"y":107,"w":266,"h":7,"r":0,"fill":"barStrong","stroke":null,"strokeWidth":0},{"type":"rect","x":1167,"y":125,"w":159,"h":7,"r":0,"fill":"barWeak","stroke":null,"strokeWidth":0},{"type":"text","x":1532,"y":44,"style":"sourceLabel","align":"left","baseline":"top","value":"Audit history"},{"type":"rect","x":1532,"y":107,"w":277,"h":7,"r":0,"fill":"barStrong","stroke":null,"strokeWidth":0},{"type":"rect","x":1532,"y":125,"w":174,"h":7,"r":0,"fill":"barWeak","stroke":null,"strokeWidth":0}]},{"id":"02b","bg":"darkField","grid":{"step":107,"color":"gridLine","opacity":1},"nodes":[{"type":"path","d":"M229 155 C 229 244 757 281 960 323","stroke":"hairline","strokeWidth":2,"fill":"none","opacity":1},{"type":"path","d":"M595 155 C 595 244 882 292 960 323","stroke":"hairline","strokeWidth":2,"fill":"none","opacity":1},{"type":"path","d":"M960 155 L960 323","stroke":"hairline","strokeWidth":2,"fill":"none","opacity":1},{"type":"path","d":"M1325 155 C 1325 244 1038 292 960 323","stroke":"hairline","strokeWidth":2,"fill":"none","opacity":1},{"type":"path","d":"M1691 155 C 1691 244 1163 281 960 323","stroke":"hairline","strokeWidth":2,"fill":"none","opacity":1},{"type":"text","x":70,"y":44,"style":"sourceLabel","align":"left","baseline":"top","value":"Deal documents"},{"type":"rect","x":70,"y":107,"w":273,"h":7,"r":0,"fill":"barStrong","stroke":null,"strokeWidth":0},{"type":"rect","x":70,"y":125,"w":192,"h":7,"r":0,"fill":"barWeak","stroke":null,"strokeWidth":0},{"type":"text","x":436,"y":44,"style":"sourceLabel","align":"left","baseline":"top","value":"Third-party data"},{"type":"rect","x":436,"y":107,"w":259,"h":7,"r":0,"fill":"barStrong","stroke":null,"strokeWidth":0},{"type":"rect","x":436,"y":125,"w":170,"h":7,"r":0,"fill":"barWeak","stroke":null,"strokeWidth":0},{"type":"text","x":801,"y":44,"style":"sourceLabel","align":"left","baseline":"top","value":"Firm conventions"},{"type":"rect","x":801,"y":107,"w":284,"h":7,"r":0,"fill":"barStrong","stroke":null,"strokeWidth":0},{"type":"rect","x":801,"y":125,"w":181,"h":7,"r":0,"fill":"barWeak","stroke":null,"strokeWidth":0},{"type":"text","x":1167,"y":44,"style":"sourceLabel","align":"left","baseline":"top","value":"Analysis"},{"type":"rect","x":1167,"y":107,"w":266,"h":7,"r":0,"fill":"barStrong","stroke":null,"strokeWidth":0},{"type":"rect","x":1167,"y":125,"w":159,"h":7,"r":0,"fill":"barWeak","stroke":null,"strokeWidth":0},{"type":"text","x":1532,"y":44,"style":"sourceLabel","align":"left","baseline":"top","value":"Audit history"},{"type":"rect","x":1532,"y":107,"w":277,"h":7,"r":0,"fill":"barStrong","stroke":null,"strokeWidth":0},{"type":"rect","x":1532,"y":125,"w":174,"h":7,"r":0,"fill":"barWeak","stroke":null,"strokeWidth":0}]},{"id":"02c","bg":"darkField","grid":{"step":107,"color":"gridLine","opacity":1},"nodes":[{"type":"path","d":"M229 155 C 229 244 757 281 960 323","stroke":"hairline","strokeWidth":2,"fill":"none","opacity":1},{"type":"path","d":"M595 155 C 595 244 882 292 960 323","stroke":"hairline","strokeWidth":2,"fill":"none","opacity":1},{"type":"path","d":"M960 155 L960 323","stroke":"hairline","strokeWidth":2,"fill":"none","opacity":1},{"type":"path","d":"M1325 155 C 1325 244 1038 292 960 323","stroke":"hairline","strokeWidth":2,"fill":"none","opacity":1},{"type":"path","d":"M1691 155 C 1691 244 1163 281 960 323","stroke":"hairline","strokeWidth":2,"fill":"none","opacity":1},{"type":"text","x":70,"y":44,"style":"sourceLabel","align":"left","baseline":"top","value":"Deal documents"},{"type":"rect","x":70,"y":107,"w":273,"h":7,"r":0,"fill":"barStrong","stroke":null,"strokeWidth":0},{"type":"rect","x":70,"y":125,"w":192,"h":7,"r":0,"fill":"barWeak","stroke":null,"strokeWidth":0},{"type":"text","x":436,"y":44,"style":"sourceLabel","align":"left","baseline":"top","value":"Third-party data"},{"type":"rect","x":436,"y":107,"w":259,"h":7,"r":0,"fill":"barStrong","stroke":null,"strokeWidth":0},{"type":"rect","x":436,"y":125,"w":170,"h":7,"r":0,"fill":"barWeak","stroke":null,"strokeWidth":0},{"type":"text","x":801,"y":44,"style":"sourceLabel","align":"left","baseline":"top","value":"Firm conventions"},{"type":"rect","x":801,"y":107,"w":284,"h":7,"r":0,"fill":"barStrong","stroke":null,"strokeWidth":0},{"type":"rect","x":801,"y":125,"w":181,"h":7,"r":0,"fill":"barWeak","stroke":null,"strokeWidth":0},{"type":"text","x":1167,"y":44,"style":"sourceLabel","align":"left","baseline":"top","value":"Analysis"},{"type":"rect","x":1167,"y":107,"w":266,"h":7,"r":0,"fill":"barStrong","stroke":null,"strokeWidth":0},{"type":"rect","x":1167,"y":125,"w":159,"h":7,"r":0,"fill":"barWeak","stroke":null,"strokeWidth":0},{"type":"text","x":1532,"y":44,"style":"sourceLabel","align":"left","baseline":"top","value":"Audit history"},{"type":"rect","x":1532,"y":107,"w":277,"h":7,"r":0,"fill":"barStrong","stroke":null,"strokeWidth":0},{"type":"rect","x":1532,"y":125,"w":174,"h":7,"r":0,"fill":"barWeak","stroke":null,"strokeWidth":0},{"type":"rect","x":720,"y":323,"w":480,"h":480,"r":0,"fill":"plate","stroke":null,"strokeWidth":0},{"type":"image","ref":"bird","x":849,"y":456,"w":222,"h":161,"fill":"plateInk","opacity":1},{"type":"text","x":960,"y":825,"style":"squareCaption","align":"center","baseline":"top","value":"The intelligence layer"}]},{"id":"02d","bg":"darkField","grid":{"step":107,"color":"gridLine","opacity":1},"nodes":[{"type":"path","d":"M229 155 C 229 244 757 281 960 323","stroke":"hairline","strokeWidth":2,"fill":"none","opacity":1},{"type":"path","d":"M595 155 C 595 244 882 292 960 323","stroke":"hairline","strokeWidth":2,"fill":"none","opacity":1},{"type":"path","d":"M960 155 L960 323","stroke":"hairline","strokeWidth":2,"fill":"none","opacity":1},{"type":"path","d":"M1325 155 C 1325 244 1038 292 960 323","stroke":"hairline","strokeWidth":2,"fill":"none","opacity":1},{"type":"path","d":"M1691 155 C 1691 244 1163 281 960 323","stroke":"hairline","strokeWidth":2,"fill":"none","opacity":1},{"type":"line","x1":720,"y1":563,"x2":425,"y2":563,"stroke":"hairline","strokeWidth":2},{"type":"line","x1":1200,"y1":563,"x2":1495,"y2":563,"stroke":"hairline","strokeWidth":2},{"type":"line","x1":960,"y1":881,"x2":960,"y2":925,"stroke":"hairline","strokeWidth":2},{"type":"text","x":70,"y":44,"style":"sourceLabel","align":"left","baseline":"top","value":"Deal documents"},{"type":"rect","x":70,"y":107,"w":273,"h":7,"r":0,"fill":"barStrong","stroke":null,"strokeWidth":0},{"type":"rect","x":70,"y":125,"w":192,"h":7,"r":0,"fill":"barWeak","stroke":null,"strokeWidth":0},{"type":"text","x":436,"y":44,"style":"sourceLabel","align":"left","baseline":"top","value":"Third-party data"},{"type":"rect","x":436,"y":107,"w":259,"h":7,"r":0,"fill":"barStrong","stroke":null,"strokeWidth":0},{"type":"rect","x":436,"y":125,"w":170,"h":7,"r":0,"fill":"barWeak","stroke":null,"strokeWidth":0},{"type":"text","x":801,"y":44,"style":"sourceLabel","align":"left","baseline":"top","value":"Firm conventions"},{"type":"rect","x":801,"y":107,"w":284,"h":7,"r":0,"fill":"barStrong","stroke":null,"strokeWidth":0},{"type":"rect","x":801,"y":125,"w":181,"h":7,"r":0,"fill":"barWeak","stroke":null,"strokeWidth":0},{"type":"text","x":1167,"y":44,"style":"sourceLabel","align":"left","baseline":"top","value":"Analysis"},{"type":"rect","x":1167,"y":107,"w":266,"h":7,"r":0,"fill":"barStrong","stroke":null,"strokeWidth":0},{"type":"rect","x":1167,"y":125,"w":159,"h":7,"r":0,"fill":"barWeak","stroke":null,"strokeWidth":0},{"type":"text","x":1532,"y":44,"style":"sourceLabel","align":"left","baseline":"top","value":"Audit history"},{"type":"rect","x":1532,"y":107,"w":277,"h":7,"r":0,"fill":"barStrong","stroke":null,"strokeWidth":0},{"type":"rect","x":1532,"y":125,"w":174,"h":7,"r":0,"fill":"barWeak","stroke":null,"strokeWidth":0},{"type":"rect","x":720,"y":323,"w":480,"h":480,"r":0,"fill":"plate","stroke":null,"strokeWidth":0},{"type":"image","ref":"bird","x":849,"y":456,"w":222,"h":161,"fill":"plateInk","opacity":1},{"type":"text","x":960,"y":825,"style":"squareCaption","align":"center","baseline":"top","value":"The intelligence layer"},{"type":"text","x":395,"y":541,"style":"outputLabel","align":"right","baseline":"top","value":"Underwriting"},{"type":"text","x":1525,"y":541,"style":"outputLabel","align":"left","baseline":"top","value":"Monitoring"},{"type":"rect","x":386,"y":940,"w":130,"h":46,"r":23,"fill":"none","stroke":"pillBorderFaint","strokeWidth":2},{"type":"text","x":451,"y":963,"style":"pillFaint","align":"center","baseline":"middle","value":"memo"},{"type":"rect","x":541,"y":940,"w":233,"h":46,"r":23,"fill":"none","stroke":"pillBorderDim","strokeWidth":2},{"type":"text","x":658,"y":963,"style":"pillDim","align":"center","baseline":"middle","value":"financial model"},{"type":"rect","x":800,"y":940,"w":239,"h":46,"r":23,"fill":"none","stroke":"pillBorderActive","strokeWidth":2},{"type":"text","x":920,"y":963,"style":"pillActive","align":"center","baseline":"middle","value":"risk assessment"},{"type":"rect","x":1065,"y":940,"w":225,"h":46,"r":23,"fill":"none","stroke":"pillBorderDim","strokeWidth":2},{"type":"text","x":1178,"y":963,"style":"pillDim","align":"center","baseline":"middle","value":"sources & uses"},{"type":"rect","x":1316,"y":940,"w":218,"h":46,"r":23,"fill":"none","stroke":"pillBorderFaint","strokeWidth":2},{"type":"text","x":1425,"y":963,"style":"pillFaint","align":"center","baseline":"middle","value":"comp analysis"},{"type":"text","x":960,"y":963,"style":"agent","align":"center","baseline":"middle","value":"Agent"}],"pillQueue":["memo","financial model","risk assessment","sources & uses","financial projections","comp analysis","merits & risks","diligence gaps"],"pillEndState":"Agent"},{"id":"03a","bg":"lightField","grid":null,"nodes":[{"type":"rect","x":1000,"y":59,"w":773,"h":98,"r":26,"fill":"bubbleFill","stroke":null,"strokeWidth":0},{"type":"text","x":1033,"y":108,"style":"bubble","align":"left","baseline":"middle","value":"Provide the EBITDA walk for Project Alpha"},{"type":"rect","x":148,"y":187,"w":37,"h":37,"r":19,"fill":"positive","stroke":null,"strokeWidth":0},{"type":"text","x":167,"y":206,"style":"check","align":"center","baseline":"middle","value":"✓"},{"type":"text","x":203,"y":206,"style":"status","align":"left","baseline":"middle","value":"Pulling the EBITDA walk from the vault"},{"type":"rect","x":148,"y":241,"w":37,"h":37,"r":19,"fill":"positive","stroke":null,"strokeWidth":0},{"type":"text","x":167,"y":260,"style":"check","align":"center","baseline":"middle","value":"✓"},{"type":"text","x":203,"y":260,"style":"status","align":"left","baseline":"middle","value":"Reading the reconciliation already computed in the vault"},{"type":"rect","x":148,"y":295,"w":37,"h":37,"r":19,"fill":"positive","stroke":null,"strokeWidth":0},{"type":"text","x":167,"y":314,"style":"check","align":"center","baseline":"middle","value":"✓"},{"type":"text","x":203,"y":314,"style":"status","align":"left","baseline":"middle","value":"Loading Deal docs values and pre-filling Firm adj."}]},{"id":"03b","bg":"lightField","grid":null,"nodes":[{"type":"rect","x":1000,"y":59,"w":773,"h":98,"r":26,"fill":"bubbleFill","stroke":null,"strokeWidth":0},{"type":"text","x":1033,"y":108,"style":"bubble","align":"left","baseline":"middle","value":"Provide the EBITDA walk for Project Alpha"},{"type":"text","x":148,"y":254,"style":"legend","align":"left","baseline":"top","value":"Deal docs — source of record, locked · Firm adjustment — pre-filled, editable"},{"type":"rect","x":148,"y":325,"w":1625,"h":647,"r":9,"fill":"surface","stroke":null,"strokeWidth":0},{"type":"line","x1":189,"y1":673,"x2":1732,"y2":673,"stroke":"tableRule","strokeWidth":2},{"type":"line","x1":189,"y1":869,"x2":1732,"y2":869,"stroke":"tableRule","strokeWidth":2},{"type":"rect","x":189,"y":511,"w":388,"h":9,"r":0,"fill":"barFill","stroke":null,"strokeWidth":0},{"type":"rect","x":603,"y":499,"w":157,"h":34,"r":6,"fill":"tagOneTimeBg","stroke":null,"strokeWidth":0},{"type":"text","x":682,"y":516,"style":"tagOneTime","align":"center","baseline":"middle","value":"One-time"},{"type":"rect","x":189,"y":574,"w":299,"h":9,"r":0,"fill":"barFill","stroke":null,"strokeWidth":0},{"type":"rect","x":514,"y":562,"w":157,"h":34,"r":6,"fill":"tagNonCashBg","stroke":null,"strokeWidth":0},{"type":"text","x":593,"y":579,"style":"tagNonCash","align":"center","baseline":"middle","value":"Non-cash"},{"type":"rect","x":189,"y":637,"w":347,"h":9,"r":0,"fill":"barFill","stroke":null,"strokeWidth":0},{"type":"rect","x":562,"y":625,"w":189,"h":34,"r":6,"fill":"tagNormalizingBg","stroke":null,"strokeWidth":0},{"type":"text","x":657,"y":642,"style":"tagNormalizing","align":"center","baseline":"middle","value":"Normalizing"}],"table":{"card":{"x":148,"y":325,"w":1625,"h":647,"r":9,"fill":"surface"},"columns":[{"key":"label","x":189,"w":1025,"align":"left","anchorX":189},{"key":"dealDocs","x":1214,"w":259,"align":"right","anchorX":1455},{"key":"firmAdj","x":1473,"w":259,"align":"right","anchorX":1714}],"rows":[{"key":"head","y":358,"h":63,"ruleTop":false},{"key":"reported","y":421,"h":63,"ruleTop":false},{"key":"adj1","y":484,"h":63,"ruleTop":false},{"key":"adj2","y":547,"h":63,"ruleTop":false},{"key":"adj3","y":610,"h":63,"ruleTop":false},{"key":"adjusted","y":673,"h":70,"ruleTop":true},{"key":"proforma","y":743,"h":63,"ruleTop":false},{"key":"synergy","y":806,"h":63,"ruleTop":false},{"key":"pfadjusted","y":869,"h":70,"ruleTop":true}],"cells":[{"row":"head","col":"dealDocs","value":"Deal docs","style":"tableHead","align":"right","baseline":"middle"},{"row":"head","col":"firmAdj","value":"Firm adj.","style":"tableHeadAccent","align":"right","baseline":"middle"},{"row":"reported","col":"label","value":"Reported EBITDA","style":"tableLabel","align":"left","baseline":"middle"},{"row":"reported","col":"dealDocs","value":"100.0","style":"numMuted","align":"right","baseline":"middle"},{"row":"reported","col":"firmAdj","value":"100.0","style":"num","align":"right","baseline":"middle"},{"row":"adj1","col":"label","value":null,"style":null,"align":"left","baseline":"middle"},{"row":"adj1","col":"dealDocs","value":"6.0","style":"numMuted","align":"right","baseline":"middle"},{"row":"adj1","col":"firmAdj","value":"6.0","style":"num","align":"right","baseline":"middle"},{"row":"adj2","col":"label","value":null,"style":null,"align":"left","baseline":"middle"},{"row":"adj2","col":"dealDocs","value":"4.0","style":"numMuted","align":"right","baseline":"middle"},{"row":"adj2","col":"firmAdj","value":"4.0","style":"num","align":"right","baseline":"middle"},{"row":"adj3","col":"label","value":null,"style":null,"align":"left","baseline":"middle"},{"row":"adj3","col":"dealDocs","value":"2.0","style":"numMuted","align":"right","baseline":"middle"},{"row":"adj3","col":"firmAdj","value":"2.0","style":"num","align":"right","baseline":"middle"},{"row":"adjusted","col":"label","value":"Adjusted EBITDA","style":"tableLabelTotal","align":"left","baseline":"middle"},{"row":"adjusted","col":"dealDocs","value":"112.0","style":"numTotalMuted","align":"right","baseline":"middle"},{"row":"adjusted","col":"firmAdj","value":"112.0","style":"numTotal","align":"right","baseline":"middle"},{"row":"proforma","col":"label","value":"Pro forma","style":"tableLabel","align":"left","baseline":"middle"},{"row":"proforma","col":"dealDocs","value":"4.0","style":"numMuted","align":"right","baseline":"middle"},{"row":"proforma","col":"firmAdj","value":"4.0","style":"num","align":"right","baseline":"middle"},{"row":"synergy","col":"label","value":"Synergy","style":"tableLabel","align":"left","baseline":"middle"},{"row":"synergy","col":"dealDocs","value":"4.0","style":"numMuted","align":"right","baseline":"middle"},{"row":"synergy","col":"firmAdj","value":"4.0","style":"num","align":"right","baseline":"middle"},{"row":"pfadjusted","col":"label","value":"PF Adjusted EBITDA","style":"tableLabelTotal","align":"left","baseline":"middle"},{"row":"pfadjusted","col":"dealDocs","value":"120.0","style":"numTotalMuted","align":"right","baseline":"middle"},{"row":"pfadjusted","col":"firmAdj","value":"120.0","style":"numTotalStrong","align":"right","baseline":"middle"}]}},{"id":"03c","bg":"lightField","grid":null,"nodes":[{"type":"rect","x":1175,"y":59,"w":598,"h":98,"r":26,"fill":"bubbleFill","stroke":null,"strokeWidth":0},{"type":"text","x":1208,"y":108,"style":"bubble","align":"left","baseline":"middle","value":"Haircut the adjustments by 25%"},{"type":"text","x":148,"y":254,"style":"legend","align":"left","baseline":"top","value":"Deal docs — source of record, locked · Firm adjustment — pre-filled, editable"},{"type":"rect","x":148,"y":325,"w":1625,"h":647,"r":9,"fill":"surface","stroke":null,"strokeWidth":0},{"type":"rect","x":1473,"y":484,"w":259,"h":63,"r":6,"fill":"accentSoft","stroke":null,"strokeWidth":0},{"type":"rect","x":1473,"y":547,"w":259,"h":63,"r":6,"fill":"accentSoft","stroke":null,"strokeWidth":0},{"type":"rect","x":1473,"y":610,"w":259,"h":63,"r":6,"fill":"accentSoft","stroke":null,"strokeWidth":0},{"type":"rect","x":1473,"y":673,"w":259,"h":70,"r":6,"fill":"accentSoft","stroke":null,"strokeWidth":0},{"type":"rect","x":1473,"y":743,"w":259,"h":63,"r":6,"fill":"accentSoft","stroke":null,"strokeWidth":0},{"type":"rect","x":1473,"y":806,"w":259,"h":63,"r":6,"fill":"accentSoft","stroke":null,"strokeWidth":0},{"type":"rect","x":1473,"y":869,"w":259,"h":70,"r":6,"fill":"accentSoft","stroke":null,"strokeWidth":0},{"type":"line","x1":189,"y1":673,"x2":1732,"y2":673,"stroke":"tableRule","strokeWidth":2},{"type":"line","x1":189,"y1":869,"x2":1732,"y2":869,"stroke":"tableRule","strokeWidth":2},{"type":"rect","x":189,"y":511,"w":388,"h":9,"r":0,"fill":"barFill","stroke":null,"strokeWidth":0},{"type":"rect","x":603,"y":499,"w":157,"h":34,"r":6,"fill":"tagOneTimeBg","stroke":null,"strokeWidth":0},{"type":"text","x":682,"y":516,"style":"tagOneTime","align":"center","baseline":"middle","value":"One-time"},{"type":"rect","x":189,"y":574,"w":299,"h":9,"r":0,"fill":"barFill","stroke":null,"strokeWidth":0},{"type":"rect","x":514,"y":562,"w":157,"h":34,"r":6,"fill":"tagNonCashBg","stroke":null,"strokeWidth":0},{"type":"text","x":593,"y":579,"style":"tagNonCash","align":"center","baseline":"middle","value":"Non-cash"},{"type":"rect","x":189,"y":637,"w":347,"h":9,"r":0,"fill":"barFill","stroke":null,"strokeWidth":0},{"type":"rect","x":562,"y":625,"w":189,"h":34,"r":6,"fill":"tagNormalizingBg","stroke":null,"strokeWidth":0},{"type":"text","x":657,"y":642,"style":"tagNormalizing","align":"center","baseline":"middle","value":"Normalizing"}],"table":{"card":{"x":148,"y":325,"w":1625,"h":647,"r":9,"fill":"surface"},"columns":[{"key":"label","x":189,"w":1025,"align":"left","anchorX":189},{"key":"dealDocs","x":1214,"w":259,"align":"right","anchorX":1455},{"key":"firmAdj","x":1473,"w":259,"align":"right","anchorX":1714}],"rows":[{"key":"head","y":358,"h":63,"ruleTop":false},{"key":"reported","y":421,"h":63,"ruleTop":false},{"key":"adj1","y":484,"h":63,"ruleTop":false},{"key":"adj2","y":547,"h":63,"ruleTop":false},{"key":"adj3","y":610,"h":63,"ruleTop":false},{"key":"adjusted","y":673,"h":70,"ruleTop":true},{"key":"proforma","y":743,"h":63,"ruleTop":false},{"key":"synergy","y":806,"h":63,"ruleTop":false},{"key":"pfadjusted","y":869,"h":70,"ruleTop":true}],"cells":[{"row":"head","col":"dealDocs","value":"Deal docs","style":"tableHead","align":"right","baseline":"middle"},{"row":"head","col":"firmAdj","value":"Firm adj.","style":"tableHeadAccent","align":"right","baseline":"middle"},{"row":"reported","col":"label","value":"Reported EBITDA","style":"tableLabel","align":"left","baseline":"middle"},{"row":"reported","col":"dealDocs","value":"100.0","style":"numMuted","align":"right","baseline":"middle"},{"row":"reported","col":"firmAdj","value":"100.0","style":"num","align":"right","baseline":"middle"},{"row":"adj1","col":"label","value":null,"style":null,"align":"left","baseline":"middle"},{"row":"adj1","col":"dealDocs","value":"6.0","style":"numMuted","align":"right","baseline":"middle"},{"row":"adj1","col":"firmAdj","value":"4.5","style":"num","align":"right","baseline":"middle"},{"row":"adj2","col":"label","value":null,"style":null,"align":"left","baseline":"middle"},{"row":"adj2","col":"dealDocs","value":"4.0","style":"numMuted","align":"right","baseline":"middle"},{"row":"adj2","col":"firmAdj","value":"3.0","style":"num","align":"right","baseline":"middle"},{"row":"adj3","col":"label","value":null,"style":null,"align":"left","baseline":"middle"},{"row":"adj3","col":"dealDocs","value":"2.0","style":"numMuted","align":"right","baseline":"middle"},{"row":"adj3","col":"firmAdj","value":"1.5","style":"num","align":"right","baseline":"middle"},{"row":"adjusted","col":"label","value":"Adjusted EBITDA","style":"tableLabelTotal","align":"left","baseline":"middle"},{"row":"adjusted","col":"dealDocs","value":"112.0","style":"numTotalMuted","align":"right","baseline":"middle"},{"row":"adjusted","col":"firmAdj","value":"109.0","style":"numTotal","align":"right","baseline":"middle"},{"row":"proforma","col":"label","value":"Pro forma","style":"tableLabel","align":"left","baseline":"middle"},{"row":"proforma","col":"dealDocs","value":"4.0","style":"numMuted","align":"right","baseline":"middle"},{"row":"proforma","col":"firmAdj","value":"3.0","style":"num","align":"right","baseline":"middle"},{"row":"synergy","col":"label","value":"Synergy","style":"tableLabel","align":"left","baseline":"middle"},{"row":"synergy","col":"dealDocs","value":"4.0","style":"numMuted","align":"right","baseline":"middle"},{"row":"synergy","col":"firmAdj","value":"3.0","style":"num","align":"right","baseline":"middle"},{"row":"pfadjusted","col":"label","value":"PF Adjusted EBITDA","style":"tableLabelTotal","align":"left","baseline":"middle"},{"row":"pfadjusted","col":"dealDocs","value":"120.0","style":"numTotalMuted","align":"right","baseline":"middle"},{"row":"pfadjusted","col":"firmAdj","value":"115.0","style":"numTotalStrong","align":"right","baseline":"middle"}]}},{"id":"03d","bg":"lightField","grid":null,"nodes":[{"type":"rect","x":1218,"y":59,"w":555,"h":98,"r":26,"fill":"bubbleFill","stroke":null,"strokeWidth":0},{"type":"text","x":1251,"y":108,"style":"bubble","align":"left","baseline":"middle","value":"Produce an opening cap table"},{"type":"rect","x":148,"y":185,"w":1625,"h":521,"r":9,"fill":"surface","stroke":null,"strokeWidth":0},{"type":"rect","x":1473,"y":603,"w":259,"h":70,"r":6,"fill":"accentSoft","stroke":null,"strokeWidth":0},{"type":"line","x1":189,"y1":470,"x2":1732,"y2":470,"stroke":"tableRule","strokeWidth":2},{"type":"line","x1":189,"y1":603,"x2":1732,"y2":603,"stroke":"tableRule","strokeWidth":2}],"table":{"card":{"x":148,"y":185,"w":1625,"h":521,"r":9,"fill":"surface"},"columns":[{"key":"label","x":189,"w":766,"align":"left","anchorX":189},{"key":"amount","x":955,"w":259,"align":"right","anchorX":1196},{"key":"mult120","x":1214,"w":259,"align":"right","anchorX":1455},{"key":"mult115","x":1473,"w":259,"align":"right","anchorX":1714}],"rows":[{"key":"head","y":218,"h":63,"ruleTop":false},{"key":"revolver","y":281,"h":63,"ruleTop":false},{"key":"firstLien","y":344,"h":63,"ruleTop":false},{"key":"secondLien","y":407,"h":63,"ruleTop":false},{"key":"totalDebt","y":470,"h":70,"ruleTop":true},{"key":"lessCash","y":540,"h":63,"ruleTop":false},{"key":"netDebt","y":603,"h":70,"ruleTop":true}],"cells":[{"row":"head","col":"amount","value":"Amount","style":"tableHead","align":"right","baseline":"middle"},{"row":"head","col":"mult120","value":"/ 120.0","style":"tableHead","align":"right","baseline":"middle"},{"row":"head","col":"mult115","value":"/ 115.0","style":"tableHeadAccent","align":"right","baseline":"middle"},{"row":"revolver","col":"label","value":"Revolver (drawn)","style":"tableLabel","align":"left","baseline":"middle"},{"row":"revolver","col":"amount","value":"50.0","style":"num","align":"right","baseline":"middle"},{"row":"revolver","col":"mult120","value":"0.4×","style":"numMuted","align":"right","baseline":"middle"},{"row":"revolver","col":"mult115","value":"0.4×","style":"numAccent","align":"right","baseline":"middle"},{"row":"firstLien","col":"label","value":"First Lien Term Loan","style":"tableLabel","align":"left","baseline":"middle"},{"row":"firstLien","col":"amount","value":"300.0","style":"num","align":"right","baseline":"middle"},{"row":"firstLien","col":"mult120","value":"2.5×","style":"numMuted","align":"right","baseline":"middle"},{"row":"firstLien","col":"mult115","value":"2.6×","style":"numAccent","align":"right","baseline":"middle"},{"row":"secondLien","col":"label","value":"Second Lien Term Loan","style":"tableLabel","align":"left","baseline":"middle"},{"row":"secondLien","col":"amount","value":"125.0","style":"num","align":"right","baseline":"middle"},{"row":"secondLien","col":"mult120","value":"1.0×","style":"numMuted","align":"right","baseline":"middle"},{"row":"secondLien","col":"mult115","value":"1.1×","style":"numAccent","align":"right","baseline":"middle"},{"row":"totalDebt","col":"label","value":"Total Debt","style":"tableLabelTotal","align":"left","baseline":"middle"},{"row":"totalDebt","col":"amount","value":"475.0","style":"numTotal","align":"right","baseline":"middle"},{"row":"totalDebt","col":"mult120","value":"4.0×","style":"numTotalMuted","align":"right","baseline":"middle"},{"row":"totalDebt","col":"mult115","value":"4.1×","style":"numTotalAccent","align":"right","baseline":"middle"},{"row":"lessCash","col":"label","value":"Less: Cash","style":"tableLabel","align":"left","baseline":"middle"},{"row":"lessCash","col":"amount","value":"(25.0)","style":"num","align":"right","baseline":"middle"},{"row":"lessCash","col":"mult120","value":"—","style":"numFaint","align":"right","baseline":"middle"},{"row":"lessCash","col":"mult115","value":"—","style":"numFaint","align":"right","baseline":"middle"},{"row":"netDebt","col":"label","value":"Net Debt","style":"tableLabelTotal","align":"left","baseline":"middle"},{"row":"netDebt","col":"amount","value":"450.0","style":"numTotal","align":"right","baseline":"middle"},{"row":"netDebt","col":"mult120","value":"3.8×","style":"numTotalMuted","align":"right","baseline":"middle"},{"row":"netDebt","col":"mult115","value":"3.9×","style":"numTotalAccent","align":"right","baseline":"middle"}]}},{"id":"04","bg":"lightField","grid":null,"nodes":[{"type":"rect","x":166,"y":373,"w":37,"h":37,"r":19,"fill":"positive","stroke":null,"strokeWidth":0},{"type":"text","x":185,"y":391,"style":"check","align":"center","baseline":"middle","value":"✓"},{"type":"text","x":222,"y":391,"style":"trailStatus","align":"left","baseline":"middle","value":"Reading from the vault"},{"type":"rect","x":166,"y":451,"w":812,"h":168,"r":9,"fill":"surface","stroke":null,"strokeWidth":0},{"type":"path","d":"M207 487 L255 487 L291 523 L291 595 L207 595 Z","stroke":"docStroke","strokeWidth":2,"fill":"surface","opacity":1},{"type":"path","d":"M255 487 L255 523 L291 523","stroke":"docStroke","strokeWidth":2,"fill":"none","opacity":1},{"type":"path","d":"M225 553 L273 553 M225 571 L261 571","stroke":"docRule","strokeWidth":2,"fill":"none","opacity":1},{"type":"text","x":284,"y":484,"style":"sourceTitle","align":"left","baseline":"top","value":"Project Alpha — Credit Agreement"},{"type":"text","x":284,"y":541,"style":"sourcePage","align":"left","baseline":"top","value":"pp. 12–14"},{"type":"line","x1":997,"y1":536,"x2":1130,"y2":536,"stroke":"connector","strokeWidth":2},{"type":"text","x":1182,"y":355,"style":"bigNumber","align":"left","baseline":"top","value":"3.9×"},{"type":"rect","x":1182,"y":572,"w":222,"h":9,"r":0,"fill":"accent","stroke":null,"strokeWidth":0},{"type":"text","x":1182,"y":615,"style":"bigNumberCaption","align":"left","baseline":"top","value":"Net Debt / PF Adjusted EBITDA"}]},{"id":"05","bg":"darkField","grid":{"step":107,"color":"gridLine","opacity":1},"nodes":[{"type":"image","ref":"bird","x":775,"y":277,"w":369,"h":268,"fill":"plate","opacity":1},{"type":"text","x":960,"y":609,"style":"wordmark","align":"center","baseline":"top","value":"RAVEN"},{"type":"text","x":960,"y":757,"style":"tagline","align":"center","baseline":"top","value":"Your partner in credit"}]}]};
+
+/* ============================================================
    TIMELINE — edit seconds here, nothing else.
+   Scene 02 and 03 are single continuous scenes; their internal
+   phases are listed under `beats` in seconds from the scene start.
    ============================================================ */
 const TL = {
-  total: 44,
-  frames: [
-    { id:'01', name:'A bird out of the dark',   t0: 0.0,  t1: 3.0,  bg:'dark'  },
-    { id:'02', name:'A blank page',             t0: 3.0,  t1: 7.0,  bg:'light' },
-    { id:'03', name:'A page reference',         t0: 7.0,  t1:12.0,  bg:'light' },
-    { id:'04', name:'Five streams into one layer', t0:12.0, t1:24.0, bg:'dark' },
-    { id:'06', name:'Seventy-four skills',      t0:24.0,  t1:27.0,  bg:'light' },
-    { id:'07', name:'Inside a skill',           t0:27.0,  t1:30.0,  bg:'light' },
-    { id:'08', name:'Asking in words',          t0:30.0,  t1:34.0,  bg:'light' },
-    { id:'09', name:'One skill, the whole team',t0:34.0,  t1:37.0,  bg:'light' },
-    { id:'10', name:'Numbers with a trail',     t0:37.0,  t1:41.0,  bg:'light' },
-    { id:'11', name:'Partner in credit',        t0:41.0,  t1:44.0,  bg:'dark'  }
-  ],
-  xfade: 0.45   // cross-fade length between frames
+  total: 42.0,
+  xfade: 0.45,
+  scenes: [
+    { id:'01', name:'A bird out of the dark',        t0: 0.0,  t1: 3.5  },
+    { id:'02', name:'Five streams into one layer',   t0: 3.5,  t1:24.3  },
+    { id:'03', name:'Asking in words',               t0:24.3,  t1:34.9  },
+    { id:'04', name:'Numbers with a trail',          t0:34.9,  t1:38.8  },
+    { id:'05', name:'Your partner in credit',        t0:38.8,  t1:42.0  }
+  ]
 };
 
-
-/* ---- VO cues: [in, out, text] — the subtitle band is a review aid, not part of the film ---- */
+/* VO cues — subtitle band, review aid only */
 const CUES = [
-  [ 0.0,  3.0, 'Raven was created with the credit professional in mind.'],
-  [ 3.0,  7.0, 'With decades of experience in the credit space, we deeply understand the workflows that are important to your team,'],
-  [ 7.0, 12.0, 'and above all, that accuracy is key.'],
-  [12.0, 16.4, 'Raven is the data and intelligence layer for corporate credit.'],
-  [16.4, 21.3, 'Bringing together deal documents, third-party data, firm conventions, analysis, and audit history'],
-  [21.3, 24.0, 'to build intelligence that is available wherever your credit team works.'],
-  [24.0, 27.0, 'Built on thousands of prompts,'],
-  [27.0, 30.0, 'our agentic framework propels any credit team further'],
-  [30.0, 34.0, 'with deep analysis that you can speak to in natural language.'],
-  [34.0, 37.0, 'Our workflows build repeatable sequences for accuracy across your team,'],
-  [37.0, 41.0, 'and our audit capability ensures confidence in the numbers being pulled.'],
-  [41.0, 44.0, 'Raven — your partner in credit.']
+  [ 0.0,  3.5, 'Raven was created with the credit professional in mind.'],
+  [ 3.5, 12.7, 'With decades of experience in the credit space, we deeply understand the workflows that are important to your team, and above all, that accuracy is key.'],
+  [12.7, 16.2, 'Raven is the data and intelligence layer for corporate credit.'],
+  [16.2, 24.3, 'Bringing together deal documents, third-party data, firm conventions, analysis, and audit history to build intelligence that is available wherever your credit team works.'],
+  [24.3, 31.4, 'Our agentic framework propels any credit team further with deep analysis that you can speak with in natural language.'],
+  [31.4, 34.9, 'Our workflows build repeatable sequences for accuracy across your team,'],
+  [34.9, 38.8, 'and our audit capability ensures confidence in the numbers being pulled.'],
+  [38.8, 42.0, 'Raven — your partner in credit.']
 ];
 
-/* ===================== engine ===================== */
-const S = document.getElementById('stage');
-const eo = p => p<=0?0 : p>=1?1 : 1-Math.pow(2,-9*p);                 // expo out
-const es = p => p<=0?0 : p>=1?1 : (p<.5? 4*p*p*p : 1-Math.pow(-2*p+2,3)/2);
-const cl = (v,a,b)=>Math.min(b,Math.max(a,v));
-function seg(t,s,d){ return cl((t-s)/d,0,1); }                        // raw 0..1
-function E(t,s,d){ return eo(seg(t,s,d)); }
+/* ===================== easing & helpers ===================== */
+const cl  = (v,a,b)=> v<a?a : v>b?b : v;
+const seg = (t,s,d)=> d<=0 ? (t>=s?1:0) : cl((t-s)/d,0,1);
+const eo  = p => p<=0?0 : p>=1?1 : 1-Math.pow(2,-9*p);          // expo out
+const eio = p => p<=0?0 : p>=1?1 : (p<.5 ? 4*p*p*p : 1-Math.pow(-2*p+2,3)/2);
+const E   = (t,s,d)=> eo(seg(t,s,d));
+const EI  = (t,s,d)=> eio(seg(t,s,d));
+const lerp= (a,b,p)=> a+(b-a)*p;
 
-const BIRD = 'M33.2617 6.31543H38.5947L44.4883 12.6309H32.4189L27.9287 17.4023H34.2441L57.8213 41.2607H19.2266L12.7715 37.752L11.9287 41.2607L4.91211 35.3662V19.0869H0L12.7715 6.31543H9.96387L16.2793 0H27.3672L33.2617 6.31543ZM24.7002 5.05273C23.6803 5.05279 22.8535 5.87953 22.8535 6.89941C22.8536 7.9192 23.6804 8.74604 24.7002 8.74609C25.72 8.74609 26.5468 7.91923 26.5469 6.89941C26.5469 5.8795 25.7201 5.05273 24.7002 5.05273Z';
+const NS='http://www.w3.org/2000/svg';
+const svg = document.getElementById('svg');
+const C   = SPEC.tokens.color;
+const TY  = SPEC.tokens.type;
+const col = k => (k && C[k]) ? C[k] : (k||'none');
 
-function el(tag, cls, css, html){
-  const n = document.createElement(tag);
-  if(cls) n.className = cls;
-  if(css) Object.assign(n.style, css);
-  if(html!=null) n.innerHTML = html;
+function mk(tag, attrs){
+  const n = document.createElementNS(NS, tag);
+  if(attrs) for(const k in attrs){ if(attrs[k]!==null && attrs[k]!==undefined) n.setAttribute(k, attrs[k]); }
   return n;
 }
-const UNITLESS = {lineHeight:1, opacity:1, zIndex:1, fontWeight:1, flexGrow:1};
-function px(o){ const r={}; for(const k in o){ r[k] = (typeof o[k]==='number' && !UNITLESS[k]) ? o[k]+'px' : o[k]; } return r; }
-function box(parent, cls, x,y,w,h, extra){
-  const n = el('div', cls, px(Object.assign({left:x,top:y,width:w,height:h}, extra||{})));
-  parent.appendChild(n); return n;
-}
-function txt(parent, x,y, size, color, weight, str, extra){
-  const n = el('div','t', px(Object.assign({left:x,top:y,fontSize:size,color:color,fontWeight:weight,lineHeight:1.18},extra||{})), str);
-  parent.appendChild(n); return n;
-}
-function birdSVG(x,y,w,fill){
-  const h = w*42/58;
-  const s = el('div','abs', px({left:x,top:y,width:w,height:h}));
-  s.innerHTML = `<svg viewBox="0 0 58 42" preserveAspectRatio="xMidYMid meet"><path d="${BIRD}" fill="${fill}" fill-rule="evenodd"/></svg>`;
-  return s;
+const ANCHOR   = { left:'start', center:'middle', right:'end' };
+const BASELINE = { top:'text-before-edge', middle:'central', bottom:'text-after-edge' };
+
+/* the export omits `trailStatus`; it measures as 37px / 400 / inkMuted in the reference PNG */
+if(!TY.trailStatus) TY.trailStatus = { size:37, weight:400, lineHeight:1.4, letterSpacing:0, color:'inkMuted', mono:false };
+
+function applyType(el, styleKey){
+  const s = TY[styleKey]; if(!s) return;
+  el.setAttribute('font-size', s.size);
+  el.setAttribute('font-weight', s.weight);
+  el.setAttribute('fill', col(s.color));
+  el.setAttribute('font-family', s.mono ? '"IBM Plex Mono",monospace' : 'Commissioner,sans-serif');
+  if(s.letterSpacing) el.setAttribute('letter-spacing', s.letterSpacing);
 }
 
-const ICONS = {
-  clip:'<path d="M14.5 6.5l-6 6a2.5 2.5 0 1 0 3.5 3.5l6-6a4.5 4.5 0 1 0-6.4-6.4l-6 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>',
-  globe:'<circle cx="10" cy="10" r="7.2" fill="none" stroke="currentColor" stroke-width="1.5"/><ellipse cx="10" cy="10" rx="3.2" ry="7.2" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M3 10h14" stroke="currentColor" stroke-width="1.4"/>',
-  grid:'<rect x="2.6" y="2.6" width="6" height="6" rx="1.4" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="11.4" y="2.6" width="6" height="6" rx="1.4" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="2.6" y="11.4" width="6" height="6" rx="1.4" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="11.4" y="11.4" width="6" height="6" rx="1.4" fill="none" stroke="currentColor" stroke-width="1.5"/>',
-  file:'<path d="M4.5 2.5h6.2L15.5 7v10.5h-11z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M10.6 2.6V7h4.6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>',
-  folder:'<path d="M2.5 5.4a1.4 1.4 0 0 1 1.4-1.4h3.4l1.8 2h7a1.4 1.4 0 0 1 1.4 1.4v7.8a1.4 1.4 0 0 1-1.4 1.4H3.9a1.4 1.4 0 0 1-1.4-1.4z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>',
-  clock:'<circle cx="10" cy="10" r="7.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10 5.6V10l3 1.8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>',
-  wave:'<path d="M2.5 13l3.2-6.6L9 15l3.2-9.6L15 13l2.5-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>',
-  book:'<path d="M2.6 4.2h5.2c1.2 0 2.2.9 2.2 2v9.6c0-.9-1-1.6-2.2-1.6H2.6zM17.4 4.2h-5.2c-1.2 0-2.2.9-2.2 2v9.6c0-.9 1-1.6 2.2-1.6h5.2z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>',
-  search:'<circle cx="8.6" cy="8.6" r="6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M13 13l4.5 4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>',
-  spark:'<path d="M10 2.2l1.9 5.9 5.9 1.9-5.9 1.9L10 17.8l-1.9-5.9L2.2 10l5.9-1.9z" fill="currentColor"/>'
-};
-function icon(parent,name,x,y,size,color,op){
-  const n = el('div','abs', px({left:x,top:y,width:size,height:size,color:color,opacity:op==null?.72:op}));
-  n.innerHTML = `<svg viewBox="0 0 20 20" style="width:100%;height:100%;display:block">${ICONS[name]}</svg>`;
-  parent.appendChild(n); return n;
-}
-
-function svgLayer(parent){
-  const ns='http://www.w3.org/2000/svg';
-  const s=document.createElementNS(ns,'svg');
-  s.setAttribute('viewBox','0 0 1920 1080');
-  s.setAttribute('preserveAspectRatio','none');
-  parent.appendChild(s); return s;
-}
-function path(svg,d,stroke,w,extra){
-  const ns='http://www.w3.org/2000/svg';
-  const p=document.createElementNS(ns,'path');
-  p.setAttribute('d',d); p.setAttribute('fill','none');
-  p.setAttribute('stroke',stroke); p.setAttribute('stroke-width',w);
-  p.setAttribute('pathLength','1');
-  if(extra) for(const k in extra) p.setAttribute(k,extra[k]);
-  svg.appendChild(p); return p;
-}
-function draw(p, amount){ p.style.strokeDasharray='1'; p.style.strokeDashoffset = (1-cl(amount,0,1)); }
-
-/* broken grid marks used on the dark frames */
-function gridMarks(root, marks){
-  marks.forEach(m=>{
-    box(root,'abs',m[0],m[1],m[2],m[3],{background:'rgba(255,255,255,.055)'});
-  });
-  // faint full grid
-  for(let x=160;x<1920;x+=320) box(root,'abs',x,0,1,1080,{background:'rgba(255,255,255,.028)'});
-  for(let y=270;y<1080;y+=270) box(root,'abs',0,y,1920,1,{background:'rgba(255,255,255,.016)'});
-}
-
-/* ===================== frames ===================== */
-const BUILD = {};
-
-/* ---- 01 : bird out of the dark ---- */
-BUILD['01'] = root=>{
-  root.style.background='var(--dark)';
-  const g = box(root,'abs',0,0,1920,1080);
-  gridMarks(g,[[320,0,2,140],[1600,320,2,200],[0,800,220,2],[1280,160,300,2],[640,920,2,160]]);
-  const b = birdSVG(767,400,385,'#ffffff'); root.appendChild(b);
-  return lt=>{
-    const a = E(lt,0.05,1.3);
-    g.style.opacity = E(lt,0,0.9)*0.9;
-    b.style.opacity = a;
-    b.style.filter = `blur(${(1-a)*22}px)`;
-    b.style.transform = `scale(${1.10-0.10*a})`;
-  };
-};
-
-/* ---- 02 : a blank page ---- */
-BUILD['02'] = root=>{
-  root.style.background='var(--app)';
-  // sidebar
-  const sb = box(root,'abs',0,0,263,1080,{background:'var(--card)'});
-  box(sb,'abs',262,0,1,1080,{background:'#E1E1E1'});
-  sb.appendChild(birdSVG(16,21,41,'#100E0A'));
-  box(sb,'bar',67,29,92,17);
-  box(sb,'abs',12,132,238,42,{background:'var(--chip)',borderRadius:'10px'});
-  box(sb,'abs',60,147,112,12,{background:'var(--navy)',borderRadius:'999px',opacity:.9});
-  [[60,193,104],[60,239,92],[60,285,52],[60,331,74]].forEach(b=>box(sb,'bar',b[0],b[1],b[2],12));
-  // topbar
-  const tb = box(root,'abs',263,0,1657,62,{background:'var(--card)'});
-  box(tb,'abs',0,61,1657,1,{background:'#E1E1E1'});
-  box(tb,'bar',32,23,142,16);
-  // centre mark
-  const ctr = box(root,'abs',0,0,1920,1080);
-  ctr.appendChild(birdSVG(932,282,66,'rgba(16,14,10,.78)'));
-  box(ctr,'barD',1014,293,238,26);
-  box(ctr,'bar',970,357,244,16);
-  box(ctr,'bar',874,396,436,10);
-  // composer
-  const comp = box(root,'card',587,503,1009,123,{borderRadius:'16px',boxShadow:'0 18px 48px rgba(16,14,10,.10)'});
-  txt(comp,21,21,18,'var(--ink)',400,'Ask about any deal, or type / for a skill');
-  txt(comp,88,81,16,'var(--ink)',400,'Web');
-  txt(comp,171,81,16,'var(--ink)',400,'Skills');
-  icon(comp,'clip',20,79,19,'var(--ink)',.72);
-  icon(comp,'globe',64,79,19,'var(--ink)',.72);
-  icon(comp,'grid',146,79,19,'var(--ink)',.72);
-  const send = box(comp,'abs',953,72,36,36,{background:'var(--grey)',borderRadius:'50%'});
-  send.innerHTML='<svg viewBox="0 0 36 36"><path d="M18 24V12M12.5 17.5L18 12l5.5 5.5" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>';
-  // suggestions
-  const sug=[];
-  [[587,649,[[25,20,251],[25,42,215]]],[1098,649,[[25,20,368]]],[587,740,[[25,20,318],[25,42,202]]],[1098,740,[[25,20,395]]]]
-  .forEach(c=>{ const n=box(root,'sug',c[0],c[1],498,78); c[2].forEach(b=>box(n,'bar',b[0],b[1],b[2],10)); sug.push(n); });
-
-  return lt=>{
-    const chrome = E(lt,0,0.55);
-    sb.style.opacity = chrome; tb.style.opacity = chrome;
-    sb.style.transform = `translateX(${-24*(1-chrome)}px)`;
-    const c2 = E(lt,0.25,0.7);
-    ctr.style.opacity = c2*0.95;
-    const c3 = E(lt,0.45,0.8);
-    comp.style.opacity = c3;
-    comp.style.transform = `translateY(${26*(1-c3)}px)`;
-    sug.forEach((n,i)=>{ const p=E(lt,0.95+i*0.11,0.6); n.style.opacity=p; n.style.transform=`translateY(${16*(1-p)}px)`; });
-  };
-};
-
-/* ---- 03 : a page reference ---- */
-BUILD['03'] = root=>{
-  root.style.background='var(--app)';
-  const tbl = box(root,'abs',0,0,1920,1080);
-  // faint bottom edge of a table
-  [[360,300,440],[360,340,300],[360,380,380]].forEach((b,i)=>{
-    box(tbl,'bar',b[0],b[1],b[2],13);
-    box(tbl,'bar',1180,b[1],92,13);
-    box(tbl,'bar',1420,b[1],78,13);
-  });
-  box(tbl,'abs',360,268,1140,1,{background:'var(--line)'});
-  box(tbl,'abs',360,418,1140,1,{background:'var(--line)'});
-  tbl.style.filter='blur(2.2px)';
-  const line = txt(root,360,563,36,'var(--ink)',400,'Source: Project Titan — LP (Public), p. 10');
-  return lt=>{
-    const a=E(lt,0,0.9);
-    tbl.style.opacity = a*0.5;
-    const b=E(lt,0.55,1.1);
-    line.style.opacity=b;
-    line.style.transform=`translateY(${14*(1-b)}px) scale(${0.985+0.015*b})`;
-    const push = E(lt,0,4.6);
-    root.style.transform = `scale(${1+0.018*push})`;
-  };
-};
-
-/* ---- 04 : five streams into one layer ---- */
-BUILD['04'] = root=>{
-  root.style.background='var(--dark)';
-  const g = box(root,'abs',0,0,1920,1080);
-  gridMarks(g,[[160,0,2,120],[1760,480,2,280],[0,640,180,2],[1440,960,480,2]]);
-
-  const SRC = [
-    [288,'Deal documents','Credit agreements, LPs, term she…'],
-    [561,'Third-party data','Market and reference data from …'],
-    [834,'Firm conventions','How your desk defines leverage, …'],
-    [1107,'Analysis','Every model run and screen alre…'],
-    [1380,'Audit history','Who pulled which figure, from w…']
-  ];
-  const srcEls = SRC.map(s=>{
-    const n = box(root,'abs',s[0],158,260,70);
-    txt(n,0,0,22,'#fff',600,s[1]);
-    txt(n,0,34,15,'rgba(255,255,255,.55)',400,s[2],{whiteSpace:'normal',width:'252px'});
-    return n;
-  });
-
-  const sv = svgLayer(root);
-  const LINE='rgba(255,255,255,.52)';   // base curve colour
-  const LW  = 2.4;                      // base curve width
-  const FW  = 3.4;                      // travelling-pulse width
-  const inC = [
-    'M413 236 C413 346, 960 356, 960 410',
-    'M686 236 C686 346, 960 356, 960 410',
-    'M960 236 L960 410',
-    'M1232 236 C1232 346, 960 356, 960 410',
-    'M1505 236 C1505 346, 960 356, 960 410'
-  ].map(d=>path(sv,d,LINE,LW));
-  const outC = [
-    'M960 710 C960 766, 544 780, 544 840',
-    'M960 710 L960 840',
-    'M960 710 C960 766, 1376 780, 1376 840'
-  ].map(d=>path(sv,d,LINE,LW));
-  const flow = [...inC,...outC].map(p=>{
-    const q = path(sv, p.getAttribute('d'), '#ffffff', FW, {'stroke-linecap':'round'});
-    q.style.strokeDasharray='0.11 0.89';
-    q.style.filter='drop-shadow(0 0 7px rgba(255,255,255,.5))';
-    return q;
-  });
-
-  const plate = box(root,'abs',480,410,960,300,{background:'var(--plate)',transformOrigin:'50% 0%'});
-  const pTitle = txt(root,528,488,44,'var(--dark)',600,'The intelligence layer');
-  const pBody  = txt(root,528,560,19,'rgba(10,16,21,.78)',400,
-    'Deal documents, third-party data, firm conventions, analysis and audit history, held as<br>one source your team works from.',{whiteSpace:'normal',lineHeight:1.55});
-
-  const OUT=[[544,'Underwriting'],[960,'Monitoring'],[1376,'Agent']];
-  const outEls = OUT.map(o=>{
-    const n = txt(root,0,854,22,'#fff',500,o[1],{left:o[0]+'px',transform:'translateX(-50%)'});
-    n.dataset.x=o[0]; return n;
-  });
-
-  /* --- beats of frame 04, seconds from its own start --- */
-  const B = {
-    grid:      [0.00, 0.35],   // [start, duration]
-    srcStart:   0.30, srcStep: 0.13, srcDur: 0.50,
-    curveStart: 1.20, curveStep:0.09, curveDur: 0.85,
-    plate:     [2.35, 0.55],
-    title:     [2.80, 0.50],
-    body:      [3.00, 0.55],
-    outCurve:  [3.45, 1.00],
-    outLabel:   4.45, outStep: 0.11, outDur: 0.45,
-    flow:       5.10
-  };
-  return lt=>{
-    g.style.opacity = E(lt,B.grid[0],B.grid[1]);
-    srcEls.forEach((n,i)=>{ const p=E(lt,B.srcStart+i*B.srcStep,B.srcDur);
-      n.style.opacity=p; n.style.transform=`translateY(${14*(1-p)}px)`; });
-    inC.forEach((p,i)=> draw(p, es(seg(lt,B.curveStart+i*B.curveStep,B.curveDur))));
-    const gp = E(lt,B.plate[0],B.plate[1]);
-    plate.style.opacity = gp>0?1:0;
-    plate.style.transform = `scaleY(${0.02+0.98*gp})`;
-    const tp = E(lt,B.title[0],B.title[1]), bp = E(lt,B.body[0],B.body[1]);
-    pTitle.style.opacity=tp; pTitle.style.transform=`translateY(${10*(1-tp)}px)`;
-    pBody.style.opacity=bp*0.95; pBody.style.transform=`translateY(${10*(1-bp)}px)`;
-    outC.forEach(p=> draw(p, es(seg(lt,B.outCurve[0],B.outCurve[1]))));
-    outEls.forEach((n,i)=>{ const p=E(lt,B.outLabel+i*B.outStep,B.outDur);
-      n.style.opacity=p; n.style.transform=`translateX(-50%) translateY(${10*(1-p)}px)`; });
-    const fv = cl((lt-B.flow)/0.6,0,1);
-    flow.forEach((q,i)=>{ q.style.opacity = fv*0.9; q.style.strokeDashoffset = (-(lt*0.42)+i*0.07)%1; });
-    /* slow push so the held composition keeps breathing */
-    root.style.transform = `scale(${1+0.016*es(cl(lt/12,0,1))})`;
-  };
-};
-
-/* ---- 06 : seventy-four skills ---- */
-BUILD['06'] = root=>{
-  root.style.background='var(--appAlt)';
-  box(root,'abs',283,190,1354,724,{background:'rgba(16,14,10,.05)',borderRadius:'22px'});
-  const modal = box(root,'card',340,236,1239,609,{borderRadius:'20px',boxShadow:'0 30px 80px rgba(16,14,10,.10)',transformOrigin:'50% 50%'});
-  const search = box(modal,'abs',50,49,1141,55,{border:'1px solid #E1E1E1',borderRadius:'12px'});
-  icon(search,'search',18,18,19,'var(--muted)',.8);
-  const sTxt = txt(search,54,16,20,'var(--ink)',400,'Search 74 skills');
-  const CH=[[50,111],[174,93],[280,131],[424,85],[522,107]];
-  const chips = CH.map((c,i)=>box(modal,'abs',c[0],133,c[1],35,
-    {background:i===0?'var(--ink)':'transparent',border:i===0?'none':'1px solid var(--border)',borderRadius:'999px'}));
-  const CARDS=[
-    [50,197,'Diligence Focus Areas',[[24,68,417],[24,92,285],[24,132,96]]],
-    [633,197,'Diligence Gaps',[[24,68,361],[24,92,244],[24,132,88]]],
-    [50,391,'Initial Deal Review',[[24,68,448],[24,92,229],[24,132,102]]],
-    [633,391,'Lightning Round Q&A',[[24,68,305],[24,92,265],[24,132,92]]]
-  ];
-  const cards = CARDS.map(c=>{
-    const n = box(modal,'abs',c[0],c[1],558,169,{border:'1px solid var(--border)',borderRadius:'14px'});
-    const t = txt(n,24,26,21,'var(--ink)',600,c[2]);
-    c[3].forEach(b=>box(n,'bar',b[0],b[1],b[2],10));
-    n._t=t; return n;
-  });
-  return lt=>{
-    const m=E(lt,0,0.55);
-    modal.style.opacity=m; modal.style.transform=`scale(${0.975+0.025*m})`;
-    sTxt.style.opacity=E(lt,0.3,0.45);
-    chips.forEach((c,i)=>{const p=E(lt,0.42+i*0.05,0.4); c.style.opacity=p;});
-    cards.forEach((n,i)=>{const p=E(lt,0.55+i*0.14,0.55); n.style.opacity=p; n.style.transform=`translateY(${14*(1-p)}px)`;
-      n._t.style.opacity=E(lt,0.75+i*0.14,0.4);});
-  };
-};
-
-/* ---- 07 : inside a skill ---- */
-BUILD['07'] = root=>{
-  root.style.background='var(--appAlt)';
-  box(root,'abs',113,65,673,974,{background:'rgba(16,14,10,.045)',borderRadius:'20px'});
-  const right = box(root,'card',731,111,1019,859,{borderRadius:'16px'});
-  const rb=[[40,40,180,9],[40,77,525,12],[40,107,422,12],[40,137,769,11],[40,178,666,12],[40,208,563,12],[40,238,460,12],[40,268,825,12],[40,310,600,11],[40,340,488,11],[40,370,441,11]]
-    .map(b=>box(right,'bar',b[0],b[1],b[2],b[3]));
-  const left = box(root,'card',170,111,560,859,{borderRadius:'16px',boxShadow:'0 24px 60px rgba(16,14,10,.10)'});
-  txt(left,41,30,13,'var(--muted2)',500,'C O N T E N T S');
-  const sel = box(left,'abs',41,84,479,48,{background:'var(--chip)',borderRadius:'10px'});
-  const ROWS=[
-    [89,96,'SKILL.md','var(--navy)',600,'10,682 chars','var(--navy)',398],
-    [150,96,'assets/','var(--ink)',400,'','',0],
-    [204,130,'loan_coverage_template.docx','var(--ink)',400,'15 KB','var(--muted2)',459],
-    [258,96,'references/','var(--ink)',400,'','',0],
-    [312,130,'design-notes.md','var(--ink)',400,'1,985 chars','var(--muted2)',411],
-    [366,130,'language-standard.md','var(--ink)',400,'5,364 chars','var(--muted2)',408]
-  ];
-  const rows = ROWS.map(r=>{
-    const n = box(left,'abs',0,r[0],560,30);
-    icon(n,r[2].endsWith('/')?'folder':'file',r[1]-28,3,20,r[3]==='var(--navy)'?'var(--navy)':'var(--ink)',.62);
-    txt(n,r[1],0,21,r[3],r[4],r[2]);
-    if(r[5]) txt(n,r[7],3,17,r[6],400,r[5]);
-    return n;
-  });
-  return lt=>{
-    const a=E(lt,0,0.5);
-    right.style.opacity=a*0.98; left.style.opacity=a;
-    left.style.transform=`translateX(${-18*(1-a)}px)`;
-    sel.style.opacity=E(lt,0.35,0.4);
-    rows.forEach((n,i)=>{const p=E(lt,0.3+i*0.12,0.5); n.style.opacity=p; n.style.transform=`translateX(${-14*(1-p)}px)`;});
-    rb.forEach((b,i)=>{ b.style.opacity=E(lt,0.5+i*0.07,0.45); });
-  };
-};
-
-/* ---- 08 : asking in words ---- */
-BUILD['08'] = root=>{
-  root.style.background='var(--appAlt)';
-  const chip = box(root,'card',1602,121,197,41,{borderRadius:'999px'});
-  box(chip,'bar',39,16,140,10);
-  box(root,'abs',403,206,1113,369,{background:'rgba(16,14,10,.04)',borderRadius:'20px'});
-  const cardEl = box(root,'card',461,251,999,255,{borderRadius:'16px',boxShadow:'0 22px 56px rgba(16,14,10,.08)'});
-  const ST=[['Thinking','var(--muted)',400],['Analyzing','var(--muted)',400],['Reading from the vault','var(--muted)',400],['Thinking','var(--ink)',600]];
-  const sts = ST.map((s,i)=>{
-    const n = box(cardEl,'abs',66,38+i*50,900,32);
-    if(i<3){
-      icon(n,['clock','wave','book'][i],0,4,21,'var(--muted)',.78);
-    } else {
-      box(n,'abs',2,11,10,10,{background:'var(--green)',borderRadius:'50%'});
-    }
-    txt(n,i===3?16:36,0,24,s[1],s[2],s[0]);
-    return n;
-  });
-  const work = box(root,'abs',498,595,420,40);
-  icon(work,'spark',-28,4,19,'var(--muted3)',.75);
-  txt(work,0,0,22,'var(--muted3)',400,'Working on it');
-  const comp = box(root,'card',461,761,999,123,{borderRadius:'16px'});
-  const q = box(comp,'bar',20,24,520,11);
-  const stop = box(comp,'abs',942,72,36,36,{background:'var(--grey)',borderRadius:'50%'});
-  stop.innerHTML='<svg viewBox="0 0 36 36"><rect x="13" y="13" width="10" height="10" rx="2" fill="#fff"/></svg>';
-  return lt=>{
-    const a=E(lt,0,0.45);
-    comp.style.opacity=a; chip.style.opacity=E(lt,0.15,0.45);
-    q.style.width = (520*E(lt,0.15,0.75))+'px';
-    const c=E(lt,0.3,0.5);
-    cardEl.style.opacity=c; cardEl.style.transform=`translateY(${12*(1-c)}px)`;
-    sts.forEach((n,i)=>{const p=E(lt,0.7+i*0.48,0.45); n.style.opacity=p; n.style.transform=`translateY(${8*(1-p)}px)`;});
-    const w=E(lt,2.6,0.5); work.style.opacity=w;
-  };
-};
-
-/* ---- 09 : one skill, the whole team ---- */
-BUILD['09'] = root=>{
-  root.style.background='var(--appAlt)';
-  const cardEl = box(root,'card',200,237,1519,605,{borderRadius:'18px',boxShadow:'0 26px 64px rgba(16,14,10,.08)'});
-  const AV=['#032B52','#44A047','#9BA9B8','#32260E','#615F5B'];
-  const W=[[340,520],[268,448],[396,604],[312,392],[356,528]];
-  const DT=[104,96,110,88,102];
-  const rows=[], togs=[];
-  for(let i=0;i<5;i++){
-    const y=33+i*121;
-    if(i) box(cardEl,'abs',1,y-12,1518,1,{background:'var(--line)'});
-    const n = box(cardEl,'abs',0,y,1519,100);
-    box(n,'abs',45,0,56,56,{background:AV[i],borderRadius:'12px',opacity:.9});
-    box(n,'barD',129,7,W[i][0],14);
-    box(n,'bar',129,39,W[i][1],10);
-    box(n,'bar',1165,24,DT[i],10);
-    txt(n,1290,16,20,'var(--muted)',400,'Always');
-    const t = box(n,'abs',1380,12,62,34,{background:'#C9CCD2',borderRadius:'999px',transition:'none'});
-    const k = box(t,'abs',4,4,26,26,{background:'#fff',borderRadius:'50%'});
-    t._k=k; togs.push(t); rows.push(n);
+function node(n){
+  if(n.type==='rect'){
+    const e = mk('rect',{ x:n.x, y:n.y, width:n.w, height:n.h, rx:n.r||0,
+      fill: n.fill==='none' ? 'none' : col(n.fill) });
+    if(n.stroke){ e.setAttribute('stroke', col(n.stroke)); e.setAttribute('stroke-width', n.strokeWidth||1); }
+    if(n.opacity!=null) e.setAttribute('opacity', n.opacity);
+    return e;
   }
-  return lt=>{
-    const a=E(lt,0,0.45);
-    cardEl.style.opacity=a; cardEl.style.transform=`translateY(${14*(1-a)}px)`;
-    rows.forEach((n,i)=>{const p=E(lt,0.2+i*0.1,0.5); n.style.opacity=p;});
-    togs.forEach((t,i)=>{
-      const p=E(lt,0.85+i*0.17,0.42);
-      t.style.background = p>0.5 ? '#0F2B4A' : '#C9CCD2';
-      t._k.style.left = (4+28*p)+'px';
+  if(n.type==='line'){
+    const e = mk('line',{ x1:n.x1, y1:n.y1, x2:n.x2, y2:n.y2,
+      stroke: col(n.stroke), 'stroke-width': n.strokeWidth||1 });
+    return e;
+  }
+  if(n.type==='path'){
+    const e = mk('path',{ d:n.d, fill: n.fill==='none'||!n.fill ? 'none' : col(n.fill),
+      stroke: n.stroke?col(n.stroke):null, 'stroke-width': n.strokeWidth||0,
+      'stroke-linecap':'round', 'stroke-linejoin':'round' });
+    if(n.opacity!=null) e.setAttribute('opacity', n.opacity);
+    return e;
+  }
+  if(n.type==='text'){
+    const e = mk('text',{ x:n.x, y:n.y,
+      'text-anchor': ANCHOR[n.align]||'start',
+      'dominant-baseline': BASELINE[n.baseline]||'text-before-edge' });
+    applyType(e, n.style);
+    e.textContent = n.value==null ? '' : n.value;
+    return e;
+  }
+  if(n.type==='image' && n.ref==='bird'){
+    const g  = mk('g');
+    const vb = SPEC.bird.viewBox.split(/\s+/).map(Number);
+    const sx = n.w/vb[2], sy = n.h/vb[3];
+    g.setAttribute('transform', `translate(${n.x} ${n.y}) scale(${sx} ${sy}) translate(${-vb[0]} ${-vb[1]})`);
+    const p = mk('path',{ d: SPEC.bird.d, fill: col(n.fill) });
+    g.appendChild(p);
+    if(n.opacity!=null) g.setAttribute('opacity', n.opacity);
+    return g;
+  }
+  return mk('g');
+}
+
+function gridFor(frame){
+  const g = mk('g');
+  if(!frame.grid) return g;
+  const {step, color, opacity} = frame.grid;
+  for(let x=step; x<1920; x+=step) g.appendChild(mk('line',{x1:x,y1:0,x2:x,y2:1080,stroke:col(color),'stroke-width':1,opacity:opacity??1}));
+  for(let y=step; y<1080; y+=step) g.appendChild(mk('line',{x1:0,y1:y,x2:1920,y2:y,stroke:col(color),'stroke-width':1,opacity:opacity??1}));
+  return g;
+}
+
+const F = id => SPEC.frames.find(f=>f.id===id);
+
+/* table → elements, grouped by row key */
+function buildTable(tbl, parent){
+  const colOf = {}; tbl.columns.forEach(c=>colOf[c.key]=c);
+  const rowOf = {}; tbl.rows.forEach(r=>rowOf[r.key]=r);
+  const byRow = {};
+  tbl.cells.forEach(c=>{
+    if(c.value==null || !c.style) return;
+    const cc = colOf[c.col], rr = rowOf[c.row]; if(!cc||!rr) return;
+    const x = c.align==='left' ? cc.x : (c.align==='center' ? cc.x+cc.w/2 : cc.anchorX);
+    const e = mk('text',{ x, y: rr.y + rr.h/2,
+      'text-anchor': ANCHOR[c.align]||'start', 'dominant-baseline':'central' });
+    applyType(e, c.style);
+    e.textContent = c.value;
+    parent.appendChild(e);
+    (byRow[c.row] = byRow[c.row]||[]).push(e);
+    e.__cell = c;
+  });
+  return byRow;
+}
+
+/* ===================== scene builders ===================== */
+const SC = {};   // id -> { g, ...refs }
+
+function sceneG(frame){
+  const g = mk('g',{class:'scene'});
+  g.appendChild(mk('rect',{x:0,y:0,width:1920,height:1080,fill:col(frame.bg)}));
+  g.appendChild(gridFor(frame));
+  svg.appendChild(g);
+  return g;
+}
+
+/* ---------- 01 ---------- */
+(function(){
+  const f = F('01');
+  const g = sceneG(f);
+  const inner = mk('g'); g.appendChild(inner);
+  const bird = node(f.nodes[0]); inner.appendChild(bird);
+  SC['01'] = { g, inner, bird };
+})();
+
+/* ---------- 02 : one continuous dark scene ---------- */
+(function(){
+  const f2a=F('02a'), f2b=F('02b'), f2c=F('02c'), f2d=F('02d');
+  const g = sceneG(f2d);
+  const inner = mk('g'); g.appendChild(inner);
+
+  // five source groups (label + two bars) — from 02a, nodes 0..14 in triples
+  const sources = [];
+  for(let i=0;i<5;i++){
+    const sg = mk('g');
+    for(let k=0;k<3;k++) sg.appendChild(node(f2a.nodes[i*3+k]));
+    inner.appendChild(sg); sources.push(sg);
+  }
+  // five arcs — 02b nodes 0..4
+  const arcs = [];
+  for(let i=0;i<5;i++){
+    const p = node(f2b.nodes[i]);
+    inner.appendChild(p); arcs.push(p);
+  }
+  // square + bird + caption — 02c tail nodes
+  const sqSpec = f2c.nodes.find(n=>n.type==='rect' && n.w===480);
+  const square = node(sqSpec);
+  const squareG = mk('g'); squareG.appendChild(square); inner.appendChild(squareG);
+  const bird   = node(f2c.nodes.find(n=>n.type==='image'));
+  inner.appendChild(bird);
+  const caption= node(f2c.nodes.find(n=>n.style==='squareCaption'));
+  inner.appendChild(caption);
+
+  // outputs — 02d lines + labels
+  const lineL = node(f2d.nodes.find(n=>n.type==='line' && n.x2===425));
+  const lineR = node(f2d.nodes.find(n=>n.type==='line' && n.x2===1495));
+  const lineD = node(f2d.nodes.find(n=>n.type==='line' && n.x1===960 && n.y1===881));
+  [lineL,lineR,lineD].forEach(e=>inner.appendChild(e));
+  const labL = node(f2d.nodes.find(n=>n.value==='Underwriting'));
+  const labR = node(f2d.nodes.find(n=>n.value==='Monitoring'));
+  inner.appendChild(labL); inner.appendChild(labR);
+
+  // pill ticker — built from pillQueue, geometry taken from the static pills
+  const protoPill = f2d.nodes.find(n=>n.type==='rect' && n.h===46);
+  const PY = protoPill.y, PH = protoPill.h, PR = protoPill.r, PAD = 33, GAP = 26;
+  const pillRow = mk('g'); inner.appendChild(pillRow);
+  const pills = f2d.pillQueue.map(label=>{
+    const pg = mk('g');
+    const r  = mk('rect',{ x:0, y:PY, width:10, height:PH, rx:PR, fill:'none',
+      stroke:col('pillBorderDim'), 'stroke-width':2 });
+    const t  = mk('text',{ x:0, y:PY+PH/2, 'text-anchor':'middle','dominant-baseline':'central' });
+    applyType(t,'pillActive'); t.textContent = label;
+    pg.appendChild(r); pg.appendChild(t); pillRow.appendChild(pg);
+    return { g:pg, rect:r, text:t, label };
+  });
+  // lay the row out once fonts are ready
+  let pillLaid = false;
+  function layoutPills(){
+    let x = 0;
+    pills.forEach(p=>{
+      const tw = p.text.getComputedTextLength() || 120;
+      const w  = Math.round(tw + PAD*2);
+      p.rect.setAttribute('x', x); p.rect.setAttribute('width', w);
+      p.text.setAttribute('x', x + w/2);
+      p.w = w; p.cx = x + w/2;
+      x += w + GAP;
     });
-  };
-};
+    pillLaid = true;
+  }
+  const agentSpec = f2d.nodes.find(n=>n.style==='agent');
+  const agent = node(agentSpec);
+  const agentG = mk('g'); agentG.appendChild(agent); inner.appendChild(agentG);
 
-/* ---- 10 : numbers with a trail ---- */
-BUILD['10'] = root=>{
-  root.style.background='var(--appAlt)';
-  const trail = box(root,'abs',0,0,1920,1080);
-  const tl = box(trail,'abs',142,415,420,90);
-  icon(tl,'search',-36,6,22,'var(--ink)',.8);
-  txt(tl,0,0,24,'var(--ink)',400,'Searching documents: pricing<br>benchmark floor spread…',{whiteSpace:'normal',lineHeight:1.42});
-  const chip = box(trail,'card',96,601,327,49,{borderRadius:'999px'});
-  txt(chip,55,13,19,'var(--ink)',400,'Project Titan — LP, pp. 3–18');
-  icon(chip,'file',22,14,20,'var(--ink)',.7);
+  // "Agent" grows and whitens the frame — the handover into the light scene 03
+  const white = mk('rect',{x:0,y:0,width:1920,height:1080,fill:'#ffffff',opacity:0});
+  g.appendChild(white);
 
-  const tbl = box(root,'card',661,161,1161,649,{borderRadius:'14px',overflow:'hidden'});
-  box(tbl,'abs',0,0,1160,58,{background:'var(--appAlt)'});
-  [[32,21,180,16],[784,21,140,16],[1008,21,120,16]].forEach(b=>box(tbl,'barD',b[0],b[1],b[2],b[3]));
-  box(tbl,'abs',0,58,1160,1,{background:'var(--line)'});
-  const ROWS=[[112,79,53],[146,79,66],[128,79,66],[190,79,66],[160,66,53],[134,79,66],[118,66,53],[172,79,66]];
-  const bars=[];
-  ROWS.forEach((r,i)=>{
-    const y=82+i*59;
-    bars.push(box(tbl,'bar',32,y,r[0],14));
-    bars.push(box(tbl,'bar',r[1]===66?858:845,y,r[1],14));
-    bars.push(box(tbl,'bar',r[2]===53?1075:1062,y,r[2],14));
-    box(tbl,'abs',0,y+35,1160,1,{background:'var(--line)'});
+  SC['02'] = { g, inner, sources, arcs, squareG, square, sqSpec, bird, caption,
+               lineL, lineR, lineD, labL, labR, pillRow, pills, agent, agentG, agentSpec, white,
+               layout:()=>{ if(!pillLaid) layoutPills(); } };
+})();
+
+/* ---------- 03 : one continuous light scene ---------- */
+(function(){
+  const f3a=F('03a'), f3b=F('03b'), f3c=F('03c'), f3d=F('03d');
+  const g = sceneG(f3b);
+  const inner = mk('g'); g.appendChild(inner);
+
+  // --- three request bubbles (only one visible at a time) ---
+  function bubble(frame){
+    const bg = mk('g');
+    const r  = node(frame.nodes[0]);
+    const tSpec = frame.nodes[1];
+    const t  = node(Object.assign({}, tSpec, {value:''}));
+    bg.appendChild(r); bg.appendChild(t);
+    inner.appendChild(bg);
+    return { g:bg, rect:r, text:t, full:tSpec.value };
+  }
+  const b1 = bubble(f3a), b2 = bubble(f3c), b3 = bubble(f3d);
+
+  // --- agent status lines (03a) ---
+  const statuses = [];
+  for(let i=0;i<3;i++){
+    const sg = mk('g');
+    for(let k=0;k<3;k++) sg.appendChild(node(f3a.nodes[2+i*3+k]));
+    inner.appendChild(sg); statuses.push(sg);
+  }
+  const STATUS_Y = [187,241,295];          // original tops
+  const STATUS_KEEP_Y = 184;               // where the surviving line settles (matches the PNG)
+
+  // --- walk table block (03b) ---
+  const gWalk = mk('g'); inner.appendChild(gWalk);
+  gWalk.appendChild(node(f3b.nodes[2]));                       // legend
+  const walkLegend = gWalk.lastChild;
+  gWalk.appendChild(node(f3b.nodes[3]));                       // card
+  const highlights = [];                                       // 03c accent rows
+  const HL_H = 45;                                           // as measured off the reference PNG
+  f3c.nodes.filter(n=>n.type==='rect' && n.fill==='accentSoft').forEach(n=>{
+    const e = node(Object.assign({}, n, { y: n.y + (n.h - HL_H)/2, h: HL_H }));
+    e.setAttribute('opacity',0); gWalk.appendChild(e); highlights.push(e);
   });
-  const tot=[];
-  [['Total Sources',530],['Total Uses',589]].forEach((t,i)=>{
-    const n = box(tbl,'abs',0,t[1],1160,59,{background:'#EEECE8'});
-    box(n,'abs',0,0,1160,1,{background:'var(--line)'});
-    txt(n,32,17,22,'var(--ink)',600,t[0]);
-    txt(n,847,17,22,'var(--ink)',600,'7398.0');
-    txt(n,1043,17,22,'var(--ink)',600,'100.0%');
-    tot.push(n);
+  f3b.nodes.filter(n=>n.type==='line').forEach(n=>gWalk.appendChild(node(n)));
+  // label bars + type tags, grouped per adjustment row
+  const adjRows = [];
+  [[6,7,8],[9,10,11],[12,13,14]].forEach(ix=>{
+    const rg = mk('g'); ix.forEach(i=>rg.appendChild(node(f3b.nodes[i]))); gWalk.appendChild(rg); adjRows.push(rg);
   });
-  return lt=>{
-    const a=E(lt,0,0.5);
-    tbl.style.opacity=a; tbl.style.transform=`translateY(${14*(1-a)}px)`;
-    bars.forEach((b,i)=>{ b.style.opacity=E(lt,0.3+i*0.012,0.4); });
-    const t1=E(lt,0.6,0.6); tl.style.opacity=t1; tl.style.transform=`translateX(${-14*(1-t1)}px)`;
-    const t2=E(lt,1.15,0.5); chip.style.opacity=t2; chip.style.transform=`translateY(${10*(1-t2)}px)`;
-    const h=E(lt,1.75,0.7);
-    tot.forEach(n=>{ n.style.opacity=0.35+0.65*h; n.style.background = h>0.5?'#E6EFF9':'#EEECE8'; });
-  };
+  const walkCells = buildTable(f3b.table, gWalk);
+  // the haircut values, keyed row|col
+  const HAIR = {};
+  f3c.table.cells.forEach(c=>{ if(c.value!=null) HAIR[c.row+'|'+c.col]=c.value; });
+
+  // --- cap table block (03d) ---
+  const gCap = mk('g'); inner.appendChild(gCap);
+  gCap.appendChild(node(f3d.nodes[2]));                        // card
+  const capAccent = node(f3d.nodes[3]); capAccent.setAttribute('opacity',0); gCap.appendChild(capAccent);
+  f3d.nodes.filter(n=>n.type==='line').forEach(n=>gCap.appendChild(node(n)));
+  const capCells = buildTable(f3d.table, gCap);
+
+  SC['03'] = { g, inner, b1,b2,b3, statuses, STATUS_Y, STATUS_KEEP_Y,
+               gWalk, walkLegend, adjRows, walkCells, highlights, HAIR,
+               gCap, capCells, capAccent };
+})();
+
+/* ---------- 04 ---------- */
+(function(){
+  const f = F('04');
+  const g = sceneG(f);
+  const inner = mk('g'); g.appendChild(inner);
+
+  const bigNum   = node(f.nodes.find(n=>n.style==='bigNumber'));
+  const numG     = mk('g'); numG.appendChild(bigNum); inner.appendChild(numG);
+  const accentBar= node(f.nodes.find(n=>n.type==='rect' && n.fill==='accent'));
+  inner.appendChild(accentBar);
+  const numCap   = node(f.nodes.find(n=>n.style==='bigNumberCaption'));
+  inner.appendChild(numCap);
+
+  const conn = node(f.nodes.find(n=>n.type==='line'));
+  inner.appendChild(conn);
+
+  const statusG = mk('g');
+  f.nodes.slice(0,3).forEach(n=>statusG.appendChild(node(n)));
+  inner.appendChild(statusG);
+
+  const cardG = mk('g');
+  cardG.appendChild(node(f.nodes.find(n=>n.type==='rect' && n.fill==='surface')));
+  /* the exported doc-icon paths are drawn at ~2x the size they appear at in the
+     reference PNG (44x56 at 209,491) — scale them back so they clear the title */
+  const icon = mk('g',{ transform:'translate(209 491) scale(0.52) translate(-207 -487)',
+                        'vector-effect':'non-scaling-stroke' });
+  f.nodes.filter(n=>n.type==='path').forEach(n=>{ const e=node(n); e.setAttribute('vector-effect','non-scaling-stroke'); icon.appendChild(e); });
+  cardG.appendChild(icon);
+  cardG.appendChild(node(f.nodes.find(n=>n.style==='sourceTitle')));
+  cardG.appendChild(node(f.nodes.find(n=>n.style==='sourcePage')));
+  inner.appendChild(cardG);
+
+  SC['04'] = { g, inner, numG, bigNum, accentBar, numCap, conn, statusG, cardG };
+})();
+
+/* ---------- 05 ---------- */
+(function(){
+  const f = F('05');
+  const g = sceneG(f);
+  const inner = mk('g'); g.appendChild(inner);
+  const bird = node(f.nodes[0]);           inner.appendChild(bird);
+  const mark = node(f.nodes[1]);           inner.appendChild(mark);
+  const tag  = node(f.nodes[2]);           inner.appendChild(tag);
+  const black= mk('rect',{x:0,y:0,width:1920,height:1080,fill:'#000',opacity:0});
+  g.appendChild(black);
+  SC['05'] = { g, inner, bird, mark, tag, black };
+})();
+
+/* ===================== per-scene animation ===================== */
+function op(el,v){ el.style.opacity = v; }
+function tr(el,s){ el.setAttribute('transform', s); }
+
+function dash(el, p){                      // draw a path / line 0..1
+  if(el.__len==null){
+    try{ el.__len = el.getTotalLength(); }catch(e){ el.__len = 0; }
+  }
+  const L = el.__len || 0;
+  el.setAttribute('stroke-dasharray', L);
+  el.setAttribute('stroke-dashoffset', L*(1-p));
+}
+
+function typeInto(el, full, p){
+  const n = Math.round(full.length * p);
+  el.textContent = full.slice(0, n);
+}
+
+const ANIM = {
+
+  '01'(lt, dur){
+    const s = SC['01'];
+    const p = E(lt, 0, 1.6);
+    op(s.bird, 0.88 * p);
+    const k = lerp(1.07, 1.0, EI(lt,0,2.6));
+    tr(s.inner, `translate(960 540) scale(${k}) translate(-960 -540)`);
+  },
+
+  '02'(lt, dur){
+    const s = SC['02'];
+    s.layout();
+
+    // 2a — sources appear one by one (0 → 9.2)
+    s.sources.forEach((g,i)=>{
+      const st = 0.25 + i*1.15;
+      const p  = E(lt, st, 0.95);
+      op(g, p);
+      tr(g, `translate(0 ${lerp(-14,0,p)})`);
+    });
+
+    // 2b — arcs draw (9.2 → 14.5)
+    s.arcs.forEach((p,i)=>{
+      const st = 9.2 + i*0.34;
+      const k  = EI(lt, st, 1.7);
+      dash(p, k); op(p, k>0?1:0);
+    });
+
+    // 2c — square, bird, caption (14.5 → 17.5)
+    const sq = EI(lt, 14.5, 0.95);
+    const cx = s.sqSpec.x + s.sqSpec.w/2, cy = s.sqSpec.y + s.sqSpec.h/2;
+    tr(s.squareG, `translate(${cx} ${cy}) scale(${lerp(0.04,1,sq)} ${lerp(0.9,1,sq)}) translate(${-cx} ${-cy})`);
+    op(s.squareG, sq>0?1:0);
+    op(s.bird,    E(lt,15.25,0.85));
+    op(s.caption, E(lt,15.8,0.7));
+
+    // 2d — outputs (17.5 → end)
+    const dl = EI(lt,17.0,0.75), dr = EI(lt,17.0,0.75), dd = EI(lt,17.65,0.45);
+    dash(s.lineL, dl); op(s.lineL, dl>0?1:0);
+    dash(s.lineR, dr); op(s.lineR, dr>0?1:0);
+    dash(s.lineD, dd); op(s.lineD, dd>0?1:0);
+    op(s.labL, E(lt,17.45,0.6));
+    op(s.labR, E(lt,17.45,0.6));
+
+    // pill ticker: index 0 → last, easing out, then the row fades and Agent lands
+    const T0 = 17.6, T1 = 18.9;
+    const prog = eo(seg(lt, T0, T1-T0));
+    const idx  = prog * (s.pills.length - 1);
+    const i0   = Math.floor(idx), i1 = Math.min(i0+1, s.pills.length-1);
+    const cxNow= lerp(s.pills[i0].cx, s.pills[i1].cx, idx-i0);
+    tr(s.pillRow, `translate(${960 - cxNow} 0)`);
+
+    const rowFade = 1 - seg(lt, 18.9, 0.35);
+    const shown   = lt >= T0-0.35 ? E(lt,T0-0.35,0.4) : 0;
+    op(s.pillRow, shown * rowFade);
+    s.pills.forEach(p=>{
+      const dx = Math.abs(p.cx - cxNow);
+      const near = cl(1 - dx/620, 0, 1);
+      const active = dx < 12;
+      p.rect.setAttribute('stroke', col(active ? 'pillBorderActive' : (near>0.55 ? 'pillBorderDim' : 'pillBorderFaint')));
+      p.text.setAttribute('fill',  col(active ? 'pillTextActive'   : (near>0.55 ? 'pillTextDim'   : 'pillTextFaint')));
+      p.g.style.opacity = 0.25 + 0.75*near;
+    });
+    op(s.agent, E(lt, 19.1, 0.6));
+
+    // whiteout handover
+    const wh = EI(lt, 19.85, 0.6);
+    s.white.setAttribute('opacity', wh);
+    const ax = s.agentSpec.x, ay = s.agentSpec.y;
+    tr(s.agentG, `translate(${ax} ${ay}) scale(${lerp(1, 2.6, wh)}) translate(${-ax} ${-ay})`);
+  },
+
+  '03'(lt, dur){
+    const s = SC['03'];
+
+    /* ---- 3a : first request + agent steps (0 → 2.7) ---- */
+    const b1in = E(lt, 0.0, 0.45);
+    op(s.b1.g, b1in * (1 - seg(lt, 5.25, 0.3)));
+    tr(s.b1.g, `translate(0 ${lerp(-12,0,b1in)})`);
+    typeInto(s.b1.text, s.b1.full, seg(lt, 0.35, 1.0));
+
+    s.statuses.forEach((g,i)=>{
+      const p = E(lt, 1.25 + i*0.45, 0.4);
+      op(g, p);
+      let y = 0;
+      if(i < 2){                                   // the first two fold away
+        const f = EI(lt, 2.75, 0.45);
+        op(g, p * (1-f));
+        y = -f * 24;
+      }else{                                        // the third rises and stays as the receipt
+        const f = EI(lt, 2.75, 0.5);
+        y = f * (s.STATUS_KEEP_Y - SC['03'].STATUS_Y[2]);
+      }
+      tr(g, `translate(0 ${y})`);
+    });
+
+    /* ---- 3b : the walk table builds (2.7 → 5.3) ---- */
+    const walkIn = E(lt, 2.75, 0.5);
+    op(s.gWalk, walkIn * (1 - seg(lt, 7.95, 0.45)));
+    tr(s.gWalk, `translate(0 ${lerp(16,0,walkIn)})`);
+    op(s.walkLegend, E(lt, 2.9, 0.45));
+
+    const ROW_ORDER = ['head','reported','adj1','adj2','adj3','adjusted','proforma','synergy','pfadjusted'];
+    ROW_ORDER.forEach((key,i)=>{
+      const st = 3.05 + i*0.17;
+      const p  = E(lt, st, 0.42);
+      (s.walkCells[key]||[]).forEach(e=>{ e.style.opacity = p; });
+      const ai = ['adj1','adj2','adj3'].indexOf(key);
+      if(ai>=0) op(s.adjRows[ai], p);
+    });
+
+    /* ---- 3c : haircut (5.3 → 7.6) ---- */
+    const b2in = E(lt, 5.35, 0.45);
+    op(s.b2.g, b2in * (1 - seg(lt, 7.6, 0.3)));
+    tr(s.b2.g, `translate(0 ${lerp(-12,0,b2in)})`);
+    typeInto(s.b2.text, s.b2.full, seg(lt, 5.6, 0.75));
+
+    s.highlights.forEach((e,i)=>{
+      const p = EI(lt, 5.95 + i*0.09, 0.4);
+      e.setAttribute('opacity', p);
+    });
+    // repaint the Firm adj. column, row by row, with a quick dip
+    ROW_ORDER.forEach((key,i)=>{
+      (s.walkCells[key]||[]).forEach(e=>{
+        const c = e.__cell; if(!c || c.col!=='firmAdj') return;
+        const hv = s.HAIR[c.row+'|'+c.col];
+        const st = 6.05 + i*0.09, d = 0.34;
+        const p  = seg(lt, st, d);
+        if(hv!=null && hv!==c.value){
+          e.textContent = p<0.5 ? c.value : hv;
+          const dip = p<=0 ? 1 : (p<0.5 ? 1-p*1.3 : 0.35 + (p-0.5)*1.3);
+          e.style.opacity = Math.min(Number(e.style.opacity||1), 1) * (p<=0?1:dip);
+        }
+      });
+    });
+
+    /* ---- 3d : cap table (7.6 → end) ---- */
+    const b3in = E(lt, 7.65, 0.45);
+    op(s.b3.g, b3in);
+    tr(s.b3.g, `translate(0 ${lerp(-12,0,b3in)})`);
+    typeInto(s.b3.text, s.b3.full, seg(lt, 7.9, 0.7));
+
+    const walkOut = EI(lt, 7.95, 0.45);
+    tr(s.gWalk, `translate(0 ${lerp(0,-90,walkOut)})`);
+
+    const capIn = EI(lt, 8.2, 0.6);
+    op(s.gCap, capIn);
+    tr(s.gCap, `translate(0 ${lerp(90,0,capIn)})`);
+
+    const CAP_ROWS = ['head','revolver','firstLien','secondLien','totalDebt','lessCash','netDebt'];
+    CAP_ROWS.forEach((key,i)=>{
+      const p = E(lt, 8.45 + i*0.13, 0.4);
+      (s.capCells[key]||[]).forEach(e=>{ e.style.opacity = p; });
+    });
+    s.capAccent.setAttribute('opacity', EI(lt, 9.4, 0.5));
+  },
+
+  '04'(lt, dur){
+    const s = SC['04'];
+    const inP = EI(lt, 0, 0.6);
+    op(s.numG, inP);
+    const pulse = 1 + 0.035 * Math.sin(Math.PI * seg(lt, 0.65, 0.55));
+    tr(s.numG, `translate(1182 450) scale(${lerp(0.94,1,inP)*pulse}) translate(-1182 -450)`);
+
+    const bar = EI(lt, 0.9, 0.5);
+    s.accentBar.setAttribute('transform', `translate(1182 0) scale(${bar} 1) translate(-1182 0)`);
+    op(s.accentBar, bar>0?1:0);
+    op(s.numCap, E(lt, 1.15, 0.5));
+
+    const cp = EI(lt, 1.45, 0.5);                   // the trail runs right → left
+    s.conn.setAttribute('x1', 1130); s.conn.setAttribute('x2', lerp(1130, 997, cp));
+    op(s.conn, cp>0?1:0);
+
+    op(s.statusG, E(lt, 1.9, 0.45));
+    const cg = E(lt, 2.2, 0.55);
+    op(s.cardG, cg);
+    tr(s.cardG, `translate(${lerp(-26,0,cg)} 0)`);
+  },
+
+  '05'(lt, dur){
+    const s = SC['05'];
+    const p = EI(lt, 0, 1.0);
+    op(s.bird, p); op(s.mark, E(lt,0.55,0.7)); op(s.tag, E(lt,0.95,0.7));
+    const k = lerp(0.97, 1.0, EI(lt,0,2.6));
+    tr(s.inner, `translate(960 540) scale(${k}) translate(-960 -540)`);
+    s.black.setAttribute('opacity', seg(lt, dur-0.75, 0.75));
+  }
 };
 
-/* ---- 11 : partner in credit ---- */
-BUILD['11'] = root=>{
-  root.style.background='var(--dark)';
-  const g = box(root,'abs',0,0,1920,1080);
-  gridMarks(g,[[320,0,2,140],[1600,320,2,200],[0,800,220,2],[1280,160,300,2],[640,920,2,160]]);
-  const lock = box(root,'abs',0,0,1920,1080);
-  lock.appendChild(birdSVG(751,425,151,'#ffffff'));
-  txt(lock,931,428,84,'#fff',600,'Raven',{letterSpacing:'-.03em'});
-  const tag = txt(lock,0,575,30,'rgba(255,255,255,.72)',400,'Your partner in credit',{left:'960px',transform:'translateX(-50%)'});
-  const dom = txt(lock,0,632,18,'rgba(255,255,255,.38)',400,'ravenri.ai',{left:'960px',transform:'translateX(-50%)',letterSpacing:'.08em'});
-  return lt=>{
-    g.style.opacity=E(lt,0,0.7)*0.9;
-    const a=E(lt,0,0.9);
-    lock.style.opacity=a; lock.style.transform=`scale(${1.03-0.03*a})`;
-    const b=E(lt,0.55,0.6), c=E(lt,0.9,0.6);
-    tag.style.opacity=b; tag.style.transform=`translateX(-50%) translateY(${8*(1-b)}px)`;
-    dom.style.opacity=c; dom.style.transform=`translateX(-50%) translateY(${6*(1-c)}px)`;
-    const out = cl((lt-2.55)/0.45,0,1);
-    lock.style.opacity = a*(1-out); g.style.opacity = E(lt,0,0.7)*0.9*(1-out);
-  };
-};
+/* ===================== playback ===================== */
+let T = 0, playing = false, last = 0;
+const scrub = document.getElementById('scrub');
+const tc    = document.getElementById('tc');
+const namesEl = document.getElementById('names');
+const capt  = document.getElementById('capt');
 
-/* ===================== assemble ===================== */
-const scenes = TL.frames.map(f=>{
-  const root = el('div','frame');
-  S.appendChild(root);
-  const upd = BUILD[f.id](root);
-  return Object.assign({}, f, {root, upd});
+/* Scenes are opaque, full-bleed and stacked in order, so a cross-dissolve is
+   just the incoming scene fading in ON TOP of the outgoing one. Fading both at
+   once would dip to black through the gap. */
+function sceneAlpha(sc, t){
+  const x = TL.xfade;
+  const last = sc.t1 >= TL.total;
+  if(t < sc.t0 - x) return 0;
+  if(!last && t >= sc.t1) return 0;          // fully covered by the next scene
+  return sc.t0 === 0 ? 1 : cl((t - (sc.t0 - x)) / x, 0, 1);
+}
+
+function render(t){
+  let active = null;
+  TL.scenes.forEach(sc=>{
+    const a = sceneAlpha(sc, t);
+    const g = SC[sc.id].g;
+    if(a<=0){ g.classList.remove('on'); g.style.opacity = 0; return; }
+    g.classList.add('on'); g.style.opacity = a;
+    const lt = cl(t - sc.t0, 0, sc.t1 - sc.t0);
+    ANIM[sc.id](lt, sc.t1 - sc.t0);
+    if(t>=sc.t0 && t<sc.t1) active = sc;
+  });
+  if(!active) active = TL.scenes[TL.scenes.length-1];
+  namesEl.textContent = active.id + ' · ' + active.name;
+
+  const cue = CUES.find(c=> t>=c[0] && t<c[1]);
+  if(cue){ capt.textContent = cue[2]; capt.style.opacity = 1; } else { capt.style.opacity = 0; }
+
+  tc.textContent = t.toFixed(2) + ' / ' + TL.total.toFixed(2);
+  scrub.value = Math.round(t / TL.total * 1000);
+}
+
+function loop(ts){
+  if(playing){
+    if(!last) last = ts;
+    const dt = (ts - last) / 1000 * parseFloat(document.getElementById('spd').value);
+    last = ts;
+    T += dt;
+    if(T >= TL.total){ T = TL.total; playing = false; document.getElementById('play').textContent = 'Replay'; }
+    render(T);
+  }else last = 0;
+  requestAnimationFrame(loop);
+}
+
+function setPlay(v){
+  if(v && T >= TL.total) T = 0;
+  playing = v; last = 0;
+  document.getElementById('play').textContent = playing ? 'Pause' : (T>=TL.total ? 'Replay' : 'Play');
+}
+document.getElementById('play').onclick = ()=> setPlay(!playing);
+scrub.oninput = e => { T = e.target.value/1000*TL.total; render(T); setPlay(false); };
+document.getElementById('cleanb').onclick = ()=> document.body.classList.toggle('clean');
+document.getElementById('subsb').onclick  = ()=> document.body.classList.toggle('nosubs');
+
+addEventListener('keydown', e=>{
+  const step = e.shiftKey ? 1 : 0.1;
+  if(e.code==='Space'){ e.preventDefault(); setPlay(!playing); }
+  else if(e.key==='ArrowRight'){ T = cl(T+step,0,TL.total); render(T); setPlay(false); }
+  else if(e.key==='ArrowLeft'){  T = cl(T-step,0,TL.total); render(T); setPlay(false); }
+  else if(e.key==='Home'){ T = 0; render(T); setPlay(false); }
+  else if(e.key==='s'||e.key==='S'){ document.body.classList.toggle('nosubs'); }
+  else if(e.key==='c'||e.key==='C'){ document.body.classList.toggle('clean'); }
+  else if(e.key==='Escape'){ document.body.classList.remove('clean'); }
 });
 
-function mix(a,b,p){
-  const pa=[10,16,21], pb=[238,236,232];
-  const c = a==='dark'?pa:pb, d = b==='dark'?pa:pb;
-  return `rgb(${c.map((v,i)=>Math.round(v+(d[i]-v)*p)).join(',')})`;
-}
-
-let t=0, playing=true, speed=1, last=performance.now();
-function render(){
-  // background interpolation across the cut
-  let bg = scenes[0].bg;
-  for(let i=0;i<scenes.length;i++){
-    const s=scenes[i];
-    if(t>=s.t0 && t<s.t1){
-      const nxt = scenes[i+1];
-      const toEnd = s.t1-t;
-      if(nxt && toEnd < TL.xfade) bg = mix(s.bg, nxt.bg, 1-toEnd/TL.xfade);
-      else bg = mix(s.bg, s.bg, 0);
-      break;
-    }
-  }
-  S.style.background = bg;
-
-  scenes.forEach(s=>{
-    const fin  = cl((t-s.t0)/TL.xfade,0,1);
-    const fout = cl((s.t1-t)/TL.xfade,0,1);
-    const vis = t > s.t0-TL.xfade && t < s.t1+0.05;
-    s.root.classList.toggle('on', vis);
-    if(!vis){ s.root.style.opacity=0; return; }
-    s.root.style.opacity = Math.min(fin,fout);
-    s.upd(cl(t-s.t0,0,s.t1-s.t0));
-  });
-
-  const cur = scenes.find(s=>t>=s.t0 && t<s.t1) || scenes[scenes.length-1];
-  lbl.textContent = cur.id+' · '+cur.name;
-
-  const cue = CUES.find(c=>t>=c[0] && t<c[1]);
-  subLine.textContent = cue ? cue[2] : '';
-  subLine.parentElement.style.visibility = cue ? 'visible' : 'hidden';
-  tc.textContent = t.toFixed(2)+' / '+TL.total.toFixed(2);
-  if(document.activeElement!==scrub) scrub.value = t;
-}
-function loop(now){
-  const dt=(now-last)/1000; last=now;
-  if(playing){ t+=dt*speed; if(t>=TL.total) t=0; }
-  render(); requestAnimationFrame(loop);
-}
-
-/* fit */
+/* fit the 1920×1080 stage into the viewport */
+const stage = document.getElementById('stage');
 function fit(){
   const k = Math.min(innerWidth/1920, innerHeight/1080);
-  S.style.transform = `translate(-50%,-50%) scale(${k})`;
+  stage.style.transform = `translate(-50%,-50%) scale(${k})`;
 }
 addEventListener('resize', fit); fit();
 
-/* controls */
-const play=document.getElementById('play'), scrub=document.getElementById('scrub'),
-      tc=document.getElementById('tc'), lbl=document.getElementById('lbl'),
-      ui=document.getElementById('ui'), clean=document.getElementById('clean');
-play.onclick=()=>{ playing=!playing; play.textContent = playing?'❚❚':'▶'; };
-scrub.oninput=()=>{ t=parseFloat(scrub.value); };
-document.querySelectorAll('.sp').forEach(b=>b.onclick=()=>{
-  speed=parseFloat(b.dataset.s);
-  document.querySelectorAll('.sp').forEach(x=>x.classList.toggle('act',x===b));
-});
-const subsBox=document.getElementById('subs'),
-      subLine=document.getElementById('subLine'), subsT=document.getElementById('subs-t');
-let subsOn=true;
-subsT.onclick=()=>{ subsOn=!subsOn; subsBox.classList.toggle('off',!subsOn); subsT.classList.toggle('act',subsOn); };
-let cleanMode=false;
-clean.onclick=()=>{ cleanMode=!cleanMode; ui.classList.toggle('hide',cleanMode); };
-let hideT;
-function poke(){ if(cleanMode) return; ui.classList.remove('hide'); clearTimeout(hideT);
-  hideT=setTimeout(()=>ui.classList.add('hide'),3000); }
-addEventListener('mousemove',poke); poke();
-addEventListener('keydown',e=>{
-  if(e.code==='Space'){ e.preventDefault(); play.click(); }
-  if(e.code==='ArrowRight'){ t=Math.min(TL.total,t+(e.shiftKey?1:0.1)); }
-  if(e.code==='ArrowLeft'){ t=Math.max(0,t-(e.shiftKey?1:0.1)); }
-  if(e.code==='KeyC'){ clean.click(); }
-  if(e.code==='KeyS'){ subsT.click(); }
-  if(e.code==='Home'){ t=0; }
-});
-requestAnimationFrame(loop);
+/* fonts settle before the pill row is measured */
+function start(){ SC['02'].layout(); render(0); requestAnimationFrame(loop); }
+if(document.fonts && document.fonts.ready) document.fonts.ready.then(start); else addEventListener('load', start);
 </script>
 </body>
 </html>

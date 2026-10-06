@@ -1,33 +1,62 @@
 # Raven — Shorts №1 · Raven Agent
 
-Animated storyboard (animatic) for a 44-second product film. Ten frames, built as
+Animated storyboard (animatic) for a 42-second product film. Five scenes, built as
 one self-contained HTML page: inline SVG, CSS and plain JS, no libraries, no build step.
 
 Preview: https://dzhevaha.github.io/uprising-particles/raven-animatic/
+
+## What this version is
+
+Second edit, cut from ten frames to five on the client's 5 October notes: less
+"skills", more workflow, and the analysis shown in action — a query typed, the
+response rendered.
+
+| # | Scene | In | Out |
+|---|---|---|---|
+| 01 | A bird out of the dark | 0:00 | 0:03.5 |
+| 02 | Five streams into one layer | 0:03.5 | 0:24.3 |
+| 03 | Asking in words | 0:24.3 | 0:34.9 |
+| 04 | Numbers with a trail | 0:34.9 | 0:38.8 |
+| 05 | Your partner in credit | 0:38.8 | 0:42.0 |
+
+Scenes 02 and 03 are single continuous scenes, not cuts: 02 builds through
+sources → arcs → layer → outputs → function ticker → "Agent", and 03 runs the
+three Project Alpha requests — EBITDA walk, 25% haircut, opening cap table —
+rebuilding the same table in place.
 
 ## Controls
 
 | Key / button | Action |
 |---|---|
-| Space, ▶ | play / pause |
+| Space, Play | play / pause |
 | ← → | step 0.1 s (Shift: 1 s) |
 | Home | back to start |
-| S, `subs` | voiceover subtitles on / off |
-| C, `clean` | hide the control bar for screen recording |
+| S, `Subs` | voiceover subtitles on / off |
+| C, `Clean` | hide the control bar for screen recording (Esc to exit) |
 | .25× .5× 1× | playback speed |
 
-## Editing the timing
+## Editing
 
-`TL` at the top of the script holds every frame's in and out point, plus `xfade`,
-the cross-fade length between frames. `CUES` below it holds the voiceover lines as
-`[in, out, text]`. Each frame's internal beats live in its own build function —
-frame 04–05 has them collected in a `B` object.
+`SPEC` near the top of the script is the geometry export from Claude Design,
+inlined verbatim: tokens, per-frame nodes in 1920×1080 coordinates, table rows
+and cells, and the logo path. Nothing in it is hand-edited — to change a layout,
+re-export and replace it.
 
-Geometry, palette and the logo path were taken from the approved storyboard PDF,
-so the frames match it one to one. Typeface is Inter, loaded from Google Fonts.
+`TL` holds every scene's in and out point plus `xfade`. `CUES` holds the
+voiceover lines as `[in, out, text]`. Each scene's internal beats live in its
+entry in the `ANIM` object, in seconds from that scene's start.
+
+Three deliberate departures from the export, each marked in the source:
+`trailStatus` is missing from the token table and is reconstructed from the
+reference PNG; the doc-icon paths in frame 04 are drawn at about twice the size
+they appear at in the PNG and are scaled back; the haircut highlights are inset
+so they read as separate rows rather than one block.
+
+Typefaces are Commissioner and IBM Plex Mono, loaded from Google Fonts.
 
 ## Status
 
-This is a timing and motion test, not the final film. Voiceover, music, subtitles
-burnt in and the 4K render are done in After Effects. Timecodes here are estimates
-until the recorded voiceover arrives.
+A timing and motion test, not the final film. Voiceover, music, burnt-in
+subtitles and the 4K render are done in After Effects. Timecodes are estimates
+until Lori's recorded voiceover arrives. Figures on screen are illustrative and
+need legal clearance before the final render.
