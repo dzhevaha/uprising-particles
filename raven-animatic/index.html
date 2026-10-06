@@ -132,6 +132,25 @@ const BOXES = {
   '05': { x1: 775, y1: 277, x2: 1145, y2:  803 }
 };
 
+/* ============================================================
+   SCENE 02 — layout and ticker. The SPEC geometry is the approved
+   still; these few numbers retune it for motion: a smaller square so
+   the lower half breathes, and larger function tags that step rather
+   than slide.
+   ============================================================ */
+const S2 = {
+  squareTop:  323,        // unchanged — the five arcs land on this edge
+  squareSize: 400,        // SPEC draws 480; smaller leaves room under it
+  captionGap: 22,         // caption sits this far below the square
+  stem: { top: 805, bottom: 915 },
+  pill: { fontSize: 34, padX: 36, gap: 30, height: 58, centerY: 963, radius: 29 },
+  ticker: {
+    t0: 4.3, t1: 18.9,    // the window the ticker fills
+    moveFrac: 0.26,       // share of each step spent travelling; the rest is the hold
+    bump: 0.13            // how much the held tag grows
+  }
+};
+
 /* VO cues — stand-in captions, review aid only */
 const CUES = [
   [ 0.0,  3.5, 'Raven was created with the credit professional in mind.'],
@@ -290,48 +309,65 @@ function sceneG(frame){
     const p = node(f2b.nodes[i]);
     inner.appendChild(p); arcs.push(p);
   }
-  // square + bird + caption — 02c tail nodes
-  const sqSpec = f2c.nodes.find(n=>n.type==='rect' && n.w===480);
+  // square + bird + caption, resized from S2 about the square's top edge so the
+  // arcs still land where SPEC puts them
+  const spec0 = f2c.nodes.find(n=>n.type==='rect' && n.w===480);
+  const SZ = S2.squareSize, kSq = SZ/spec0.w, TOP = S2.squareTop;
+  const sqSpec = Object.assign({}, spec0, { x: 960 - SZ/2, y: TOP, w: SZ, h: SZ });
   const square = node(sqSpec);
   const squareG = mk('g'); squareG.appendChild(square); inner.appendChild(squareG);
-  const bird   = node(f2c.nodes.find(n=>n.type==='image'));
+
+  const b0 = f2c.nodes.find(n=>n.type==='image');
+  const bird = node(Object.assign({}, b0, {
+    x: 960 + (b0.x - 960)*kSq, y: TOP + (b0.y - spec0.y)*kSq,
+    w: b0.w*kSq, h: b0.h*kSq }));
   inner.appendChild(bird);
-  const caption= node(f2c.nodes.find(n=>n.style==='squareCaption'));
+
+  const capY = TOP + SZ + S2.captionGap;
+  const caption = node(Object.assign({}, f2c.nodes.find(n=>n.style==='squareCaption'), { y: capY }));
   inner.appendChild(caption);
 
-  // outputs — 02d lines + labels
-  const lineL = node(f2d.nodes.find(n=>n.type==='line' && n.x2===425));
-  const lineR = node(f2d.nodes.find(n=>n.type==='line' && n.x2===1495));
-  const lineD = node(f2d.nodes.find(n=>n.type==='line' && n.x1===960 && n.y1===881));
+  // outputs — the side axis follows the square's new centre
+  const axisY = TOP + SZ/2, edgeL = 960 - SZ/2, edgeR = 960 + SZ/2;
+  const l0 = f2d.nodes.find(n=>n.type==='line' && n.x2===425);
+  const r0 = f2d.nodes.find(n=>n.type==='line' && n.x2===1495);
+  const d0 = f2d.nodes.find(n=>n.type==='line' && n.x1===960 && n.y1===881);
+  const lineL = node(Object.assign({}, l0, { x1: edgeL, y1: axisY, y2: axisY }));
+  const lineR = node(Object.assign({}, r0, { x1: edgeR, y1: axisY, y2: axisY }));
+  const lineD = node(Object.assign({}, d0, { y1: S2.stem.top, y2: S2.stem.bottom }));
   [lineL,lineR,lineD].forEach(e=>inner.appendChild(e));
-  const labL = node(f2d.nodes.find(n=>n.value==='Underwriting'));
-  const labR = node(f2d.nodes.find(n=>n.value==='Monitoring'));
+
+  const ul = f2d.nodes.find(n=>n.value==='Underwriting');
+  const ur = f2d.nodes.find(n=>n.value==='Monitoring');
+  const labDY = axisY - 563;                       // SPEC put the labels against y=563
+  const labL = node(Object.assign({}, ul, { y: ul.y + labDY }));
+  const labR = node(Object.assign({}, ur, { y: ur.y + labDY }));
   inner.appendChild(labL); inner.appendChild(labR);
 
-  // pill ticker — built from pillQueue, geometry taken from the static pills
-  const protoPill = f2d.nodes.find(n=>n.type==='rect' && n.h===46);
-  const PY = protoPill.y, PH = protoPill.h, PR = protoPill.r, PAD = 33, GAP = 26;
+  // pill ticker — the functions, at S2.pill size
+  const P = S2.pill, PY = P.centerY - P.height/2;
   const pillRow = mk('g'); inner.appendChild(pillRow);
   const pills = f2d.pillQueue.map(label=>{
     const pg = mk('g');
-    const r  = mk('rect',{ x:0, y:PY, width:10, height:PH, rx:PR, fill:'none',
+    const r  = mk('rect',{ x:0, y:PY, width:10, height:P.height, rx:P.radius, fill:'none',
       stroke:col('pillBorderDim'), 'stroke-width':2 });
-    const t  = mk('text',{ x:0, y:PY+PH/2, 'text-anchor':'middle','dominant-baseline':'central' });
-    applyType(t,'pillActive'); t.textContent = label;
+    const t  = mk('text',{ x:0, y:P.centerY, 'text-anchor':'middle','dominant-baseline':'central',
+      'font-family':'Commissioner,sans-serif', 'font-size':P.fontSize, 'font-weight':400,
+      fill: col('pillTextDim') });
+    t.textContent = label;
     pg.appendChild(r); pg.appendChild(t); pillRow.appendChild(pg);
     return { g:pg, rect:r, text:t, label };
   });
-  // lay the row out once fonts are ready
   let pillLaid = false;
   function layoutPills(){
     let x = 0;
     pills.forEach(p=>{
-      const tw = p.text.getComputedTextLength() || 120;
-      const w  = Math.round(tw + PAD*2);
+      const tw = p.text.getComputedTextLength() || 160;
+      const w  = Math.round(tw + P.padX*2);
       p.rect.setAttribute('x', x); p.rect.setAttribute('width', w);
       p.text.setAttribute('x', x + w/2);
       p.w = w; p.cx = x + w/2;
-      x += w + GAP;
+      x += w + P.gap;
     });
     pillLaid = true;
   }
@@ -502,15 +538,27 @@ const CAPL = (function(){
     probe.textContent = str;
     return (wcache[str] = probe.getComputedTextLength());
   }
-  function wrap(text){
+  function wrapAt(text, maxW){
     const words = text.split(/\s+/), out = []; let cur = '';
     for(const w of words){
       const next = cur ? cur+' '+w : w;
-      if(cur && width(next) > YTCAP.maxWidth){ out.push(cur); cur = w; }
+      if(cur && width(next) > maxW){ out.push(cur); cur = w; }
       else cur = next;
     }
     if(cur) out.push(cur);
     return out;
+  }
+  /* A cue that wraps to an odd number of lines would leave a one-word caption
+     dangling at the end. Narrow the measure until the lines divide evenly. */
+  function wrap(text){
+    const tries = [1, 0.90, 0.82, 0.74, 0.66];
+    let first = null;
+    for(const f of tries){
+      const ls = wrapAt(text, YTCAP.maxWidth*f);
+      if(!first) first = ls;
+      if(ls.length % YTCAP.maxLines === 0) return ls;
+    }
+    return first;
   }
   /* A long VO line is not one caption on YouTube — it is several in sequence.
      Split each cue into <=maxLines chunks and share its time between them. */
@@ -611,28 +659,38 @@ const ANIM = {
     op(s.labL, E(lt,3.8,0.35));
     op(s.labR, E(lt,3.8,0.35));
 
-    // The build is over by ~4.3s; the ticker carries the rest of the scene, scrolling
-    // its eight functions at a readable pace and settling only at the very end.
-    const T0 = 4.3, T1 = 18.9;
-    const raw  = seg(lt, T0, T1-T0);
-    const prog = raw < 0.88 ? (raw/0.88)*0.9 : 0.9 + eo((raw-0.88)/0.12)*0.1;
-    const idx  = prog * (s.pills.length - 1);
-    const i0   = Math.floor(idx), i1 = Math.min(i0+1, s.pills.length-1);
-    const cxNow= lerp(s.pills[i0].cx, s.pills[i1].cx, idx-i0);
+    /* The build is over by ~4.3s; the ticker carries the rest of the scene. It
+       steps rather than slides: a quick glide onto each function, then a hold
+       where that tag grows slightly — the pause is what marks it as one of ours. */
+    const TK = S2.ticker, n = s.pills.length;
+    const cycle = (TK.t1 - TK.t0) / n;
+    const raw   = cl((lt - TK.t0) / cycle, 0, n - 0.0001);
+    const k     = Math.floor(raw), u = raw - k;              // u: 0..1 within this step
+    const glide = u > 1 - TK.moveFrac
+                ? eio((u - (1 - TK.moveFrac)) / TK.moveFrac)
+                : 0;
+    const i0 = Math.min(k, n-1), i1 = Math.min(k+1, n-1);
+    const cxNow = lerp(s.pills[i0].cx, s.pills[i1].cx, glide);
     tr(s.pillRow, `translate(${960 - cxNow} 0)`);
 
-    const rowFade = 1 - seg(lt, 18.9, 0.35);
-    const shown   = E(lt, T0-0.3, 0.4);
+    // the held tag swells in, sits, and relaxes just before the next glide
+    const grow = eo(seg(u, 0.02, 0.16)) * (1 - eio(seg(u, 1 - TK.moveFrac - 0.04, 0.16)));
+
+    const rowFade = 1 - seg(lt, TK.t1, 0.35);
+    const shown   = E(lt, TK.t0-0.3, 0.4);
     op(s.pillRow, shown * rowFade);
-    s.pills.forEach(p=>{
+    s.pills.forEach((p,i)=>{
       const dx = Math.abs(p.cx - cxNow);
-      const near = cl(1 - dx/620, 0, 1);
-      const active = dx < 12;
-      p.rect.setAttribute('stroke', col(active ? 'pillBorderActive' : (near>0.55 ? 'pillBorderDim' : 'pillBorderFaint')));
-      p.text.setAttribute('fill',  col(active ? 'pillTextActive'   : (near>0.55 ? 'pillTextDim'   : 'pillTextFaint')));
-      p.g.style.opacity = 0.25 + 0.75*near;
+      const near = cl(1 - dx/560, 0, 1);
+      const held = (i === i0) && glide < 0.5;
+      const sc = held ? 1 + TK.bump*grow : 1;
+      p.g.setAttribute('transform',
+        `translate(${p.cx} ${S2.pill.centerY}) scale(${sc}) translate(${-p.cx} ${-S2.pill.centerY})`);
+      p.rect.setAttribute('stroke', col(held ? 'pillBorderActive' : (near>0.5 ? 'pillBorderDim' : 'pillBorderFaint')));
+      p.text.setAttribute('fill',  col(held ? 'pillTextActive'   : (near>0.5 ? 'pillTextDim'   : 'pillTextFaint')));
+      p.g.style.opacity = 0.16 + 0.84*near;
     });
-    op(s.agent, E(lt, 19.1, 0.6));
+    op(s.agent, E(lt, S2.ticker.t1 + 0.2, 0.6));
 
     // whiteout handover
     const wh = EI(lt, 19.85, 0.6);

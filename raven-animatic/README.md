@@ -25,9 +25,15 @@ three Project Alpha requests — EBITDA walk, 25% haircut, opening cap table —
 rebuilding the same table in place.
 
 In 02 the schema assembles in the first ~4.3 s; the function ticker then carries
-the remaining ~14 s, scrolling its eight functions at a readable pace and
-settling on "Agent" at the end. Lengthen the scene by moving `T1` in its beat
-block, not by slowing the build.
+the remaining ~14 s and settles on "Agent" at the end. The ticker steps rather
+than slides: it glides quickly onto each function, then holds while that tag
+grows slightly — the pause is what marks it as one of theirs. `S2` holds the
+whole scene's tuning: square size, the caption and stem below it, tag size and
+spacing, and the ticker's window, glide/hold split and growth. Lengthen the
+scene by moving `S2.ticker.t1`, not by slowing the build.
+
+`S2.squareSize` resizes the layer square about its top edge, so the five arcs
+keep landing where SPEC puts them; the side axis, caption and stem follow.
 
 ## Controls
 
