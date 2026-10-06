@@ -24,6 +24,11 @@ sources → arcs → layer → outputs → function ticker → "Agent", and 03 r
 three Project Alpha requests — EBITDA walk, 25% haircut, opening cap table —
 rebuilding the same table in place.
 
+In 02 the schema assembles in the first ~4.3 s; the function ticker then carries
+the remaining ~14 s, scrolling its eight functions at a readable pace and
+settling on "Agent" at the end. Lengthen the scene by moving `T1` in its beat
+block, not by slowing the build.
+
 ## Controls
 
 | Key / button | Action |

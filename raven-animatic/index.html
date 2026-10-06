@@ -447,47 +447,49 @@ const ANIM = {
     const s = SC['02'];
     s.layout();
 
-    // 2a — sources appear one by one (0 → 9.2)
+    // 2a — sources appear one by one (0 → 1.8)
     s.sources.forEach((g,i)=>{
-      const st = 0.25 + i*1.15;
-      const p  = E(lt, st, 0.95);
+      const st = 0.15 + i*0.28;
+      const p  = E(lt, st, 0.5);
       op(g, p);
       tr(g, `translate(0 ${lerp(-14,0,p)})`);
     });
 
-    // 2b — arcs draw (9.2 → 14.5)
+    // 2b — arcs draw (1.9 → 2.8)
     s.arcs.forEach((p,i)=>{
-      const st = 9.2 + i*0.34;
-      const k  = EI(lt, st, 1.7);
+      const st = 1.9 + i*0.09;
+      const k  = EI(lt, st, 0.55);
       dash(p, k); op(p, k>0?1:0);
     });
 
-    // 2c — square, bird, caption (14.5 → 17.5)
-    const sq = EI(lt, 14.5, 0.95);
+    // 2c — square, bird, caption (2.85 → 3.7)
+    const sq = EI(lt, 2.85, 0.45);
     const cx = s.sqSpec.x + s.sqSpec.w/2, cy = s.sqSpec.y + s.sqSpec.h/2;
     tr(s.squareG, `translate(${cx} ${cy}) scale(${lerp(0.04,1,sq)} ${lerp(0.9,1,sq)}) translate(${-cx} ${-cy})`);
     op(s.squareG, sq>0?1:0);
-    op(s.bird,    E(lt,15.25,0.85));
-    op(s.caption, E(lt,15.8,0.7));
+    op(s.bird,    E(lt,3.1,0.4));
+    op(s.caption, E(lt,3.35,0.35));
 
-    // 2d — outputs (17.5 → end)
-    const dl = EI(lt,17.0,0.75), dr = EI(lt,17.0,0.75), dd = EI(lt,17.65,0.45);
+    // 2d — outputs (3.6 → 4.25)
+    const dl = EI(lt,3.6,0.4), dr = EI(lt,3.6,0.4), dd = EI(lt,3.95,0.3);
     dash(s.lineL, dl); op(s.lineL, dl>0?1:0);
     dash(s.lineR, dr); op(s.lineR, dr>0?1:0);
     dash(s.lineD, dd); op(s.lineD, dd>0?1:0);
-    op(s.labL, E(lt,17.45,0.6));
-    op(s.labR, E(lt,17.45,0.6));
+    op(s.labL, E(lt,3.8,0.35));
+    op(s.labR, E(lt,3.8,0.35));
 
-    // pill ticker: index 0 → last, easing out, then the row fades and Agent lands
-    const T0 = 17.6, T1 = 18.9;
-    const prog = eo(seg(lt, T0, T1-T0));
+    // The build is over by ~4.3s; the ticker carries the rest of the scene, scrolling
+    // its eight functions at a readable pace and settling only at the very end.
+    const T0 = 4.3, T1 = 18.9;
+    const raw  = seg(lt, T0, T1-T0);
+    const prog = raw < 0.88 ? (raw/0.88)*0.9 : 0.9 + eo((raw-0.88)/0.12)*0.1;
     const idx  = prog * (s.pills.length - 1);
     const i0   = Math.floor(idx), i1 = Math.min(i0+1, s.pills.length-1);
     const cxNow= lerp(s.pills[i0].cx, s.pills[i1].cx, idx-i0);
     tr(s.pillRow, `translate(${960 - cxNow} 0)`);
 
     const rowFade = 1 - seg(lt, 18.9, 0.35);
-    const shown   = lt >= T0-0.35 ? E(lt,T0-0.35,0.4) : 0;
+    const shown   = E(lt, T0-0.3, 0.4);
     op(s.pillRow, shown * rowFade);
     s.pills.forEach(p=>{
       const dx = Math.abs(p.cx - cxNow);
