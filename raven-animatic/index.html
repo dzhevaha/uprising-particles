@@ -6,14 +6,13 @@
 <title>Raven Shorts 1 — animatic</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif&family=Roboto:wght@400&display=swap" rel="stylesheet">
 <style>
-  :root{ --ui:#d8dadd; --uibg:rgba(16,18,21,.86); --uiline:rgba(255,255,255,.16); }
+  :root{ --ui:#d8dadd; --uibg:rgba(14,16,15,.88); --uiline:rgba(255,255,255,.16); }
   *{box-sizing:border-box}
   html,body{margin:0;height:100%;background:#000;overflow:hidden}
-  body{font-family:Commissioner,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+  body{font-family:"IBM Plex Sans",-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
 
-  /* stage: absolute + translate centering — survives being wider than the viewport */
   #wrap{position:fixed;inset:0;overflow:hidden;background:#000}
   #stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:50% 50%;will-change:transform}
   #stage svg{display:block;width:1920px;height:1080px}
@@ -21,13 +20,10 @@
   .scene{opacity:0;visibility:hidden}
   .scene.on{visibility:visible}
 
-  /* Captions are drawn INSIDE the frame now, in the reserved bottom band, at the
-     size YouTube renders them — see YTCAP. They are a stand-in for the real
-     caption track, so what you see here is what will cover the picture there. */
+  /* Stand-in captions live INSIDE the frame — see YTCAP. */
   #ytcap{opacity:0;transition:opacity .15s}
   body.nosubs #ytcap{display:none}
 
-  /* controls */
   #bar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom,0px));
     z-index:9;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;
     max-width:calc(100vw - 20px);padding:9px 12px;background:var(--uibg);border:1px solid var(--uiline);
@@ -36,9 +32,9 @@
   #bar button,#bar select{font:inherit;font-family:inherit;color:var(--ui);background:transparent;
     border:1px solid var(--uiline);border-radius:8px;padding:5px 11px;cursor:pointer}
   #bar button:hover,#bar select:hover{border-color:rgba(255,255,255,.4)}
-  #bar input[type=range]{width:min(44vw,420px);accent-color:#fff}
-  #tc{font-family:"IBM Plex Mono",monospace;font-size:12px;min-width:92px;text-align:center;opacity:.85}
-  #names{font-size:12px;opacity:.6;min-width:170px;text-align:center}
+  #bar input[type=range]{width:min(44vw,420px);accent-color:#c7d0be}
+  #tc{font-family:"IBM Plex Mono",monospace;font-size:12px;min-width:94px;text-align:center;opacity:.85}
+  #names{font-size:12px;opacity:.6;min-width:180px;text-align:center}
   .hint{font-size:11px;opacity:.5;width:100%;text-align:center}
   @media (max-width:760px){ #names{display:none} .hint{display:none} #bar{gap:7px;padding:7px 9px} }
 </style>
@@ -53,12 +49,8 @@
 <div id="bar">
   <button id="play">Play</button>
   <input id="scrub" type="range" min="0" max="1000" value="0" step="1">
-  <span id="tc">0.00 / 42.00</span>
-  <select id="spd">
-    <option value="0.25">0.25x</option>
-    <option value="0.5">0.5x</option>
-    <option value="1" selected>1x</option>
-  </select>
+  <span id="tc">0.00 / 34.50</span>
+  <select id="spd"><option value="0.25">0.25x</option><option value="0.5">0.5x</option><option value="1" selected>1x</option></select>
   <button id="subsb">Subs</button>
   <button id="cleanb">Clean</button>
   <span id="names"></span>
@@ -67,106 +59,85 @@
 
 <script>
 /* ============================================================
-   SPEC — exported from Claude Design, 1920×1080, untouched
+   SPEC — the geometry export from Claude Design, inlined verbatim.
+   1920x1080 coordinates, tokens, per-frame nodes, the workflow rail,
+   the Financial Summary table and the logo path. Nothing hand-edited:
+   to change a layout, re-export and replace it.
    ============================================================ */
-const SPEC = {"canvas":{"w":1920,"h":1080},"tokens":{"color":{"darkField":"#0d0f12","gridLine":"#191d23","plate":"#e3e7ea","plateInk":"#0d0f12","hairline":"#8d949c","white":"#ffffff","barStrong":"#3a4149","barWeak":"#2b3137","pillBorderActive":"#8d949c","pillBorderDim":"#2b3137","pillBorderFaint":"#1f252b","pillTextActive":"#e3e7ea","pillTextDim":"#454c54","pillTextFaint":"#2e353c","captionGrey":"#8d949c","outputLabel":"#e3e7ea","lightField":"#f0efec","surface":"#ffffff","ink":"#1d1d1f","inkMuted":"#5e6066","inkFaint":"#9b9790","accent":"#5b3fd6","accentSoft":"#ede7fb","positive":"#3d8b5a","bubbleFill":"#e3e1dc","tableRule":"#dddad4","barFill":"#d7d4ce","tagOneTimeBg":"#efe9fb","tagOneTimeFg":"#4a32ae","tagNonCashBg":"#e6eef6","tagNonCashFg":"#1d4f8f","tagNormalizingBg":"#e9f2eb","tagNormalizingFg":"#2e6b46","connector":"#c9c6c0","docStroke":"#5b3fd6","docRule":"#b7acdf"},"font":{"family":"Commissioner","weights":[400,500,600],"familyMono":"IBM Plex Mono","weightsMono":[400,500]},"type":{"sourceLabel":{"size":35,"weight":600,"lineHeight":1.25,"letterSpacing":0,"color":"white","mono":false},"squareCaption":{"size":30,"weight":400,"lineHeight":1.4,"letterSpacing":0,"color":"captionGrey","mono":false},"outputLabel":{"size":35,"weight":400,"lineHeight":1.4,"letterSpacing":0,"color":"outputLabel","mono":false},"pillActive":{"size":26,"weight":400,"lineHeight":1.2,"letterSpacing":0,"color":"pillTextActive","mono":false},"pillDim":{"size":26,"weight":400,"lineHeight":1.2,"letterSpacing":0,"color":"pillTextDim","mono":false},"pillFaint":{"size":26,"weight":400,"lineHeight":1.2,"letterSpacing":0,"color":"pillTextFaint","mono":false},"agent":{"size":56,"weight":600,"lineHeight":1.1,"letterSpacing":-0.6,"color":"white","mono":false},"wordmark":{"size":85,"weight":600,"lineHeight":1.2,"letterSpacing":13.6,"color":"plate","mono":false},"tagline":{"size":37,"weight":400,"lineHeight":1.4,"letterSpacing":0.7,"color":"captionGrey","mono":false},"bubble":{"size":37,"weight":400,"lineHeight":1.35,"letterSpacing":0,"color":"ink","mono":false},"status":{"size":33,"weight":400,"lineHeight":1.4,"letterSpacing":0,"color":"inkMuted","mono":false},"check":{"size":24,"weight":400,"lineHeight":1,"letterSpacing":0,"color":"white","mono":false},"legend":{"size":31,"weight":400,"lineHeight":1.4,"letterSpacing":0,"color":"inkMuted","mono":false},"tableHead":{"size":31,"weight":400,"lineHeight":1.4,"letterSpacing":0,"color":"inkMuted","mono":false},"tableHeadAccent":{"size":31,"weight":400,"lineHeight":1.4,"letterSpacing":0,"color":"accent","mono":false},"tableLabel":{"size":35,"weight":400,"lineHeight":1.4,"letterSpacing":0,"color":"ink","mono":false},"tableLabelTotal":{"size":35,"weight":600,"lineHeight":1.4,"letterSpacing":0,"color":"ink","mono":false},"num":{"size":35,"weight":400,"lineHeight":1.4,"letterSpacing":0,"color":"ink","mono":true},"numMuted":{"size":35,"weight":400,"lineHeight":1.4,"letterSpacing":0,"color":"inkMuted","mono":true},"numAccent":{"size":35,"weight":400,"lineHeight":1.4,"letterSpacing":0,"color":"accent","mono":true},"numTotal":{"size":35,"weight":500,"lineHeight":1.4,"letterSpacing":0,"color":"ink","mono":true},"numTotalMuted":{"size":35,"weight":500,"lineHeight":1.4,"letterSpacing":0,"color":"inkMuted","mono":true},"numTotalStrong":{"size":35,"weight":600,"lineHeight":1.4,"letterSpacing":0,"color":"ink","mono":true},"numTotalAccent":{"size":35,"weight":600,"lineHeight":1.4,"letterSpacing":0,"color":"accent","mono":true},"numFaint":{"size":35,"weight":400,"lineHeight":1.4,"letterSpacing":0,"color":"inkFaint","mono":false},"tagOneTime":{"size":28,"weight":400,"lineHeight":1.2,"letterSpacing":0,"color":"tagOneTimeFg","mono":false},"tagNonCash":{"size":28,"weight":400,"lineHeight":1.2,"letterSpacing":0,"color":"tagNonCashFg","mono":false},"tagNormalizing":{"size":28,"weight":400,"lineHeight":1.2,"letterSpacing":0,"color":"tagNormalizingFg","mono":false},"sourceTitle":{"size":39,"weight":600,"lineHeight":1.3,"letterSpacing":0,"color":"ink","mono":false},"sourcePage":{"size":37,"weight":400,"lineHeight":1.3,"letterSpacing":0,"color":"inkMuted","mono":false},"bigNumber":{"size":185,"weight":600,"lineHeight":1,"letterSpacing":-6.5,"color":"ink","mono":false},"bigNumberCaption":{"size":37,"weight":400,"lineHeight":1.4,"letterSpacing":0,"color":"inkMuted","mono":false}}},"bird":{"viewBox":"0 0 58 42","d":"M33.2617 6.31543H38.5947L44.4883 12.6309H32.4189L27.9287 17.4023H34.2441L57.8213 41.2607H19.2266L12.7715 37.752L11.9287 41.2607L4.91211 35.3662V19.0869H0L12.7715 6.31543H9.96387L16.2793 0H27.3672L33.2617 6.31543ZM24.7002 5.05273C23.6803 5.05279 22.8535 5.87953 22.8535 6.89941C22.8536 7.9192 23.6804 8.74604 24.7002 8.74609C25.72 8.74609 26.5468 7.91923 26.5469 6.89941C26.5469 5.8795 25.7201 5.05273 24.7002 5.05273Z"},"frames":[{"id":"01","bg":"darkField","grid":{"step":107,"color":"gridLine","opacity":1},"nodes":[{"type":"image","ref":"bird","x":683,"y":340,"w":554,"h":401,"fill":"plate","opacity":0.88}]},{"id":"02a","bg":"darkField","grid":{"step":107,"color":"gridLine","opacity":1},"nodes":[{"type":"text","x":70,"y":44,"style":"sourceLabel","align":"left","baseline":"top","value":"Deal documents"},{"type":"rect","x":70,"y":107,"w":273,"h":7,"r":0,"fill":"barStrong","stroke":null,"strokeWidth":0},{"type":"rect","x":70,"y":125,"w":192,"h":7,"r":0,"fill":"barWeak","stroke":null,"strokeWidth":0},{"type":"text","x":436,"y":44,"style":"sourceLabel","align":"left","baseline":"top","value":"Third-party data"},{"type":"rect","x":436,"y":107,"w":259,"h":7,"r":0,"fill":"barStrong","stroke":null,"strokeWidth":0},{"type":"rect","x":436,"y":125,"w":170,"h":7,"r":0,"fill":"barWeak","stroke":null,"strokeWidth":0},{"type":"text","x":801,"y":44,"style":"sourceLabel","align":"left","baseline":"top","value":"Firm conventions"},{"type":"rect","x":801,"y":107,"w":284,"h":7,"r":0,"fill":"barStrong","stroke":null,"strokeWidth":0},{"type":"rect","x":801,"y":125,"w":181,"h":7,"r":0,"fill":"barWeak","stroke":null,"strokeWidth":0},{"type":"text","x":1167,"y":44,"style":"sourceLabel","align":"left","baseline":"top","value":"Analysis"},{"type":"rect","x":1167,"y":107,"w":266,"h":7,"r":0,"fill":"barStrong","stroke":null,"strokeWidth":0},{"type":"rect","x":1167,"y":125,"w":159,"h":7,"r":0,"fill":"barWeak","stroke":null,"strokeWidth":0},{"type":"text","x":1532,"y":44,"style":"sourceLabel","align":"left","baseline":"top","value":"Audit history"},{"type":"rect","x":1532,"y":107,"w":277,"h":7,"r":0,"fill":"barStrong","stroke":null,"strokeWidth":0},{"type":"rect","x":1532,"y":125,"w":174,"h":7,"r":0,"fill":"barWeak","stroke":null,"strokeWidth":0}]},{"id":"02b","bg":"darkField","grid":{"step":107,"color":"gridLine","opacity":1},"nodes":[{"type":"path","d":"M229 155 C 229 244 757 281 960 323","stroke":"hairline","strokeWidth":2,"fill":"none","opacity":1},{"type":"path","d":"M595 155 C 595 244 882 292 960 323","stroke":"hairline","strokeWidth":2,"fill":"none","opacity":1},{"type":"path","d":"M960 155 L960 323","stroke":"hairline","strokeWidth":2,"fill":"none","opacity":1},{"type":"path","d":"M1325 155 C 1325 244 1038 292 960 323","stroke":"hairline","strokeWidth":2,"fill":"none","opacity":1},{"type":"path","d":"M1691 155 C 1691 244 1163 281 960 323","stroke":"hairline","strokeWidth":2,"fill":"none","opacity":1},{"type":"text","x":70,"y":44,"style":"sourceLabel","align":"left","baseline":"top","value":"Deal documents"},{"type":"rect","x":70,"y":107,"w":273,"h":7,"r":0,"fill":"barStrong","stroke":null,"strokeWidth":0},{"type":"rect","x":70,"y":125,"w":192,"h":7,"r":0,"fill":"barWeak","stroke":null,"strokeWidth":0},{"type":"text","x":436,"y":44,"style":"sourceLabel","align":"left","baseline":"top","value":"Third-party data"},{"type":"rect","x":436,"y":107,"w":259,"h":7,"r":0,"fill":"barStrong","stroke":null,"strokeWidth":0},{"type":"rect","x":436,"y":125,"w":170,"h":7,"r":0,"fill":"barWeak","stroke":null,"strokeWidth":0},{"type":"text","x":801,"y":44,"style":"sourceLabel","align":"left","baseline":"top","value":"Firm conventions"},{"type":"rect","x":801,"y":107,"w":284,"h":7,"r":0,"fill":"barStrong","stroke":null,"strokeWidth":0},{"type":"rect","x":801,"y":125,"w":181,"h":7,"r":0,"fill":"barWeak","stroke":null,"strokeWidth":0},{"type":"text","x":1167,"y":44,"style":"sourceLabel","align":"left","baseline":"top","value":"Analysis"},{"type":"rect","x":1167,"y":107,"w":266,"h":7,"r":0,"fill":"barStrong","stroke":null,"strokeWidth":0},{"type":"rect","x":1167,"y":125,"w":159,"h":7,"r":0,"fill":"barWeak","stroke":null,"strokeWidth":0},{"type":"text","x":1532,"y":44,"style":"sourceLabel","align":"left","baseline":"top","value":"Audit history"},{"type":"rect","x":1532,"y":107,"w":277,"h":7,"r":0,"fill":"barStrong","stroke":null,"strokeWidth":0},{"type":"rect","x":1532,"y":125,"w":174,"h":7,"r":0,"fill":"barWeak","stroke":null,"strokeWidth":0}]},{"id":"02c","bg":"darkField","grid":{"step":107,"color":"gridLine","opacity":1},"nodes":[{"type":"path","d":"M229 155 C 229 244 757 281 960 323","stroke":"hairline","strokeWidth":2,"fill":"none","opacity":1},{"type":"path","d":"M595 155 C 595 244 882 292 960 323","stroke":"hairline","strokeWidth":2,"fill":"none","opacity":1},{"type":"path","d":"M960 155 L960 323","stroke":"hairline","strokeWidth":2,"fill":"none","opacity":1},{"type":"path","d":"M1325 155 C 1325 244 1038 292 960 323","stroke":"hairline","strokeWidth":2,"fill":"none","opacity":1},{"type":"path","d":"M1691 155 C 1691 244 1163 281 960 323","stroke":"hairline","strokeWidth":2,"fill":"none","opacity":1},{"type":"text","x":70,"y":44,"style":"sourceLabel","align":"left","baseline":"top","value":"Deal documents"},{"type":"rect","x":70,"y":107,"w":273,"h":7,"r":0,"fill":"barStrong","stroke":null,"strokeWidth":0},{"type":"rect","x":70,"y":125,"w":192,"h":7,"r":0,"fill":"barWeak","stroke":null,"strokeWidth":0},{"type":"text","x":436,"y":44,"style":"sourceLabel","align":"left","baseline":"top","value":"Third-party data"},{"type":"rect","x":436,"y":107,"w":259,"h":7,"r":0,"fill":"barStrong","stroke":null,"strokeWidth":0},{"type":"rect","x":436,"y":125,"w":170,"h":7,"r":0,"fill":"barWeak","stroke":null,"strokeWidth":0},{"type":"text","x":801,"y":44,"style":"sourceLabel","align":"left","baseline":"top","value":"Firm conventions"},{"type":"rect","x":801,"y":107,"w":284,"h":7,"r":0,"fill":"barStrong","stroke":null,"strokeWidth":0},{"type":"rect","x":801,"y":125,"w":181,"h":7,"r":0,"fill":"barWeak","stroke":null,"strokeWidth":0},{"type":"text","x":1167,"y":44,"style":"sourceLabel","align":"left","baseline":"top","value":"Analysis"},{"type":"rect","x":1167,"y":107,"w":266,"h":7,"r":0,"fill":"barStrong","stroke":null,"strokeWidth":0},{"type":"rect","x":1167,"y":125,"w":159,"h":7,"r":0,"fill":"barWeak","stroke":null,"strokeWidth":0},{"type":"text","x":1532,"y":44,"style":"sourceLabel","align":"left","baseline":"top","value":"Audit history"},{"type":"rect","x":1532,"y":107,"w":277,"h":7,"r":0,"fill":"barStrong","stroke":null,"strokeWidth":0},{"type":"rect","x":1532,"y":125,"w":174,"h":7,"r":0,"fill":"barWeak","stroke":null,"strokeWidth":0},{"type":"rect","x":720,"y":323,"w":480,"h":480,"r":0,"fill":"plate","stroke":null,"strokeWidth":0},{"type":"image","ref":"bird","x":849,"y":456,"w":222,"h":161,"fill":"plateInk","opacity":1},{"type":"text","x":960,"y":825,"style":"squareCaption","align":"center","baseline":"top","value":"The intelligence layer"}]},{"id":"02d","bg":"darkField","grid":{"step":107,"color":"gridLine","opacity":1},"nodes":[{"type":"path","d":"M229 155 C 229 244 757 281 960 323","stroke":"hairline","strokeWidth":2,"fill":"none","opacity":1},{"type":"path","d":"M595 155 C 595 244 882 292 960 323","stroke":"hairline","strokeWidth":2,"fill":"none","opacity":1},{"type":"path","d":"M960 155 L960 323","stroke":"hairline","strokeWidth":2,"fill":"none","opacity":1},{"type":"path","d":"M1325 155 C 1325 244 1038 292 960 323","stroke":"hairline","strokeWidth":2,"fill":"none","opacity":1},{"type":"path","d":"M1691 155 C 1691 244 1163 281 960 323","stroke":"hairline","strokeWidth":2,"fill":"none","opacity":1},{"type":"line","x1":720,"y1":563,"x2":425,"y2":563,"stroke":"hairline","strokeWidth":2},{"type":"line","x1":1200,"y1":563,"x2":1495,"y2":563,"stroke":"hairline","strokeWidth":2},{"type":"line","x1":960,"y1":881,"x2":960,"y2":925,"stroke":"hairline","strokeWidth":2},{"type":"text","x":70,"y":44,"style":"sourceLabel","align":"left","baseline":"top","value":"Deal documents"},{"type":"rect","x":70,"y":107,"w":273,"h":7,"r":0,"fill":"barStrong","stroke":null,"strokeWidth":0},{"type":"rect","x":70,"y":125,"w":192,"h":7,"r":0,"fill":"barWeak","stroke":null,"strokeWidth":0},{"type":"text","x":436,"y":44,"style":"sourceLabel","align":"left","baseline":"top","value":"Third-party data"},{"type":"rect","x":436,"y":107,"w":259,"h":7,"r":0,"fill":"barStrong","stroke":null,"strokeWidth":0},{"type":"rect","x":436,"y":125,"w":170,"h":7,"r":0,"fill":"barWeak","stroke":null,"strokeWidth":0},{"type":"text","x":801,"y":44,"style":"sourceLabel","align":"left","baseline":"top","value":"Firm conventions"},{"type":"rect","x":801,"y":107,"w":284,"h":7,"r":0,"fill":"barStrong","stroke":null,"strokeWidth":0},{"type":"rect","x":801,"y":125,"w":181,"h":7,"r":0,"fill":"barWeak","stroke":null,"strokeWidth":0},{"type":"text","x":1167,"y":44,"style":"sourceLabel","align":"left","baseline":"top","value":"Analysis"},{"type":"rect","x":1167,"y":107,"w":266,"h":7,"r":0,"fill":"barStrong","stroke":null,"strokeWidth":0},{"type":"rect","x":1167,"y":125,"w":159,"h":7,"r":0,"fill":"barWeak","stroke":null,"strokeWidth":0},{"type":"text","x":1532,"y":44,"style":"sourceLabel","align":"left","baseline":"top","value":"Audit history"},{"type":"rect","x":1532,"y":107,"w":277,"h":7,"r":0,"fill":"barStrong","stroke":null,"strokeWidth":0},{"type":"rect","x":1532,"y":125,"w":174,"h":7,"r":0,"fill":"barWeak","stroke":null,"strokeWidth":0},{"type":"rect","x":720,"y":323,"w":480,"h":480,"r":0,"fill":"plate","stroke":null,"strokeWidth":0},{"type":"image","ref":"bird","x":849,"y":456,"w":222,"h":161,"fill":"plateInk","opacity":1},{"type":"text","x":960,"y":825,"style":"squareCaption","align":"center","baseline":"top","value":"The intelligence layer"},{"type":"text","x":395,"y":541,"style":"outputLabel","align":"right","baseline":"top","value":"Underwriting"},{"type":"text","x":1525,"y":541,"style":"outputLabel","align":"left","baseline":"top","value":"Monitoring"},{"type":"rect","x":386,"y":940,"w":130,"h":46,"r":23,"fill":"none","stroke":"pillBorderFaint","strokeWidth":2},{"type":"text","x":451,"y":963,"style":"pillFaint","align":"center","baseline":"middle","value":"memo"},{"type":"rect","x":541,"y":940,"w":233,"h":46,"r":23,"fill":"none","stroke":"pillBorderDim","strokeWidth":2},{"type":"text","x":658,"y":963,"style":"pillDim","align":"center","baseline":"middle","value":"financial model"},{"type":"rect","x":800,"y":940,"w":239,"h":46,"r":23,"fill":"none","stroke":"pillBorderActive","strokeWidth":2},{"type":"text","x":920,"y":963,"style":"pillActive","align":"center","baseline":"middle","value":"risk assessment"},{"type":"rect","x":1065,"y":940,"w":225,"h":46,"r":23,"fill":"none","stroke":"pillBorderDim","strokeWidth":2},{"type":"text","x":1178,"y":963,"style":"pillDim","align":"center","baseline":"middle","value":"sources & uses"},{"type":"rect","x":1316,"y":940,"w":218,"h":46,"r":23,"fill":"none","stroke":"pillBorderFaint","strokeWidth":2},{"type":"text","x":1425,"y":963,"style":"pillFaint","align":"center","baseline":"middle","value":"comp analysis"},{"type":"text","x":960,"y":963,"style":"agent","align":"center","baseline":"middle","value":"Agent"}],"pillQueue":["memo","financial model","risk assessment","sources & uses","financial projections","comp analysis","merits & risks","diligence gaps"],"pillEndState":"Agent"},{"id":"03a","bg":"lightField","grid":null,"nodes":[{"type":"rect","x":1000,"y":59,"w":773,"h":98,"r":26,"fill":"bubbleFill","stroke":null,"strokeWidth":0},{"type":"text","x":1033,"y":108,"style":"bubble","align":"left","baseline":"middle","value":"Provide the EBITDA walk for Project Alpha"},{"type":"rect","x":148,"y":187,"w":37,"h":37,"r":19,"fill":"positive","stroke":null,"strokeWidth":0},{"type":"text","x":167,"y":206,"style":"check","align":"center","baseline":"middle","value":"✓"},{"type":"text","x":203,"y":206,"style":"status","align":"left","baseline":"middle","value":"Pulling the EBITDA walk from the vault"},{"type":"rect","x":148,"y":241,"w":37,"h":37,"r":19,"fill":"positive","stroke":null,"strokeWidth":0},{"type":"text","x":167,"y":260,"style":"check","align":"center","baseline":"middle","value":"✓"},{"type":"text","x":203,"y":260,"style":"status","align":"left","baseline":"middle","value":"Reading the reconciliation already computed in the vault"},{"type":"rect","x":148,"y":295,"w":37,"h":37,"r":19,"fill":"positive","stroke":null,"strokeWidth":0},{"type":"text","x":167,"y":314,"style":"check","align":"center","baseline":"middle","value":"✓"},{"type":"text","x":203,"y":314,"style":"status","align":"left","baseline":"middle","value":"Loading Deal docs values and pre-filling Firm adj."}]},{"id":"03b","bg":"lightField","grid":null,"nodes":[{"type":"rect","x":1000,"y":59,"w":773,"h":98,"r":26,"fill":"bubbleFill","stroke":null,"strokeWidth":0},{"type":"text","x":1033,"y":108,"style":"bubble","align":"left","baseline":"middle","value":"Provide the EBITDA walk for Project Alpha"},{"type":"text","x":148,"y":254,"style":"legend","align":"left","baseline":"top","value":"Deal docs — source of record, locked · Firm adjustment — pre-filled, editable"},{"type":"rect","x":148,"y":325,"w":1625,"h":647,"r":9,"fill":"surface","stroke":null,"strokeWidth":0},{"type":"line","x1":189,"y1":673,"x2":1732,"y2":673,"stroke":"tableRule","strokeWidth":2},{"type":"line","x1":189,"y1":869,"x2":1732,"y2":869,"stroke":"tableRule","strokeWidth":2},{"type":"rect","x":189,"y":511,"w":388,"h":9,"r":0,"fill":"barFill","stroke":null,"strokeWidth":0},{"type":"rect","x":603,"y":499,"w":157,"h":34,"r":6,"fill":"tagOneTimeBg","stroke":null,"strokeWidth":0},{"type":"text","x":682,"y":516,"style":"tagOneTime","align":"center","baseline":"middle","value":"One-time"},{"type":"rect","x":189,"y":574,"w":299,"h":9,"r":0,"fill":"barFill","stroke":null,"strokeWidth":0},{"type":"rect","x":514,"y":562,"w":157,"h":34,"r":6,"fill":"tagNonCashBg","stroke":null,"strokeWidth":0},{"type":"text","x":593,"y":579,"style":"tagNonCash","align":"center","baseline":"middle","value":"Non-cash"},{"type":"rect","x":189,"y":637,"w":347,"h":9,"r":0,"fill":"barFill","stroke":null,"strokeWidth":0},{"type":"rect","x":562,"y":625,"w":189,"h":34,"r":6,"fill":"tagNormalizingBg","stroke":null,"strokeWidth":0},{"type":"text","x":657,"y":642,"style":"tagNormalizing","align":"center","baseline":"middle","value":"Normalizing"}],"table":{"card":{"x":148,"y":325,"w":1625,"h":647,"r":9,"fill":"surface"},"columns":[{"key":"label","x":189,"w":1025,"align":"left","anchorX":189},{"key":"dealDocs","x":1214,"w":259,"align":"right","anchorX":1455},{"key":"firmAdj","x":1473,"w":259,"align":"right","anchorX":1714}],"rows":[{"key":"head","y":358,"h":63,"ruleTop":false},{"key":"reported","y":421,"h":63,"ruleTop":false},{"key":"adj1","y":484,"h":63,"ruleTop":false},{"key":"adj2","y":547,"h":63,"ruleTop":false},{"key":"adj3","y":610,"h":63,"ruleTop":false},{"key":"adjusted","y":673,"h":70,"ruleTop":true},{"key":"proforma","y":743,"h":63,"ruleTop":false},{"key":"synergy","y":806,"h":63,"ruleTop":false},{"key":"pfadjusted","y":869,"h":70,"ruleTop":true}],"cells":[{"row":"head","col":"dealDocs","value":"Deal docs","style":"tableHead","align":"right","baseline":"middle"},{"row":"head","col":"firmAdj","value":"Firm adj.","style":"tableHeadAccent","align":"right","baseline":"middle"},{"row":"reported","col":"label","value":"Reported EBITDA","style":"tableLabel","align":"left","baseline":"middle"},{"row":"reported","col":"dealDocs","value":"100.0","style":"numMuted","align":"right","baseline":"middle"},{"row":"reported","col":"firmAdj","value":"100.0","style":"num","align":"right","baseline":"middle"},{"row":"adj1","col":"label","value":null,"style":null,"align":"left","baseline":"middle"},{"row":"adj1","col":"dealDocs","value":"6.0","style":"numMuted","align":"right","baseline":"middle"},{"row":"adj1","col":"firmAdj","value":"6.0","style":"num","align":"right","baseline":"middle"},{"row":"adj2","col":"label","value":null,"style":null,"align":"left","baseline":"middle"},{"row":"adj2","col":"dealDocs","value":"4.0","style":"numMuted","align":"right","baseline":"middle"},{"row":"adj2","col":"firmAdj","value":"4.0","style":"num","align":"right","baseline":"middle"},{"row":"adj3","col":"label","value":null,"style":null,"align":"left","baseline":"middle"},{"row":"adj3","col":"dealDocs","value":"2.0","style":"numMuted","align":"right","baseline":"middle"},{"row":"adj3","col":"firmAdj","value":"2.0","style":"num","align":"right","baseline":"middle"},{"row":"adjusted","col":"label","value":"Adjusted EBITDA","style":"tableLabelTotal","align":"left","baseline":"middle"},{"row":"adjusted","col":"dealDocs","value":"112.0","style":"numTotalMuted","align":"right","baseline":"middle"},{"row":"adjusted","col":"firmAdj","value":"112.0","style":"numTotal","align":"right","baseline":"middle"},{"row":"proforma","col":"label","value":"Pro forma","style":"tableLabel","align":"left","baseline":"middle"},{"row":"proforma","col":"dealDocs","value":"4.0","style":"numMuted","align":"right","baseline":"middle"},{"row":"proforma","col":"firmAdj","value":"4.0","style":"num","align":"right","baseline":"middle"},{"row":"synergy","col":"label","value":"Synergy","style":"tableLabel","align":"left","baseline":"middle"},{"row":"synergy","col":"dealDocs","value":"4.0","style":"numMuted","align":"right","baseline":"middle"},{"row":"synergy","col":"firmAdj","value":"4.0","style":"num","align":"right","baseline":"middle"},{"row":"pfadjusted","col":"label","value":"PF Adjusted EBITDA","style":"tableLabelTotal","align":"left","baseline":"middle"},{"row":"pfadjusted","col":"dealDocs","value":"120.0","style":"numTotalMuted","align":"right","baseline":"middle"},{"row":"pfadjusted","col":"firmAdj","value":"120.0","style":"numTotalStrong","align":"right","baseline":"middle"}]}},{"id":"03c","bg":"lightField","grid":null,"nodes":[{"type":"rect","x":1175,"y":59,"w":598,"h":98,"r":26,"fill":"bubbleFill","stroke":null,"strokeWidth":0},{"type":"text","x":1208,"y":108,"style":"bubble","align":"left","baseline":"middle","value":"Haircut the adjustments by 25%"},{"type":"text","x":148,"y":254,"style":"legend","align":"left","baseline":"top","value":"Deal docs — source of record, locked · Firm adjustment — pre-filled, editable"},{"type":"rect","x":148,"y":325,"w":1625,"h":647,"r":9,"fill":"surface","stroke":null,"strokeWidth":0},{"type":"rect","x":1473,"y":484,"w":259,"h":63,"r":6,"fill":"accentSoft","stroke":null,"strokeWidth":0},{"type":"rect","x":1473,"y":547,"w":259,"h":63,"r":6,"fill":"accentSoft","stroke":null,"strokeWidth":0},{"type":"rect","x":1473,"y":610,"w":259,"h":63,"r":6,"fill":"accentSoft","stroke":null,"strokeWidth":0},{"type":"rect","x":1473,"y":673,"w":259,"h":70,"r":6,"fill":"accentSoft","stroke":null,"strokeWidth":0},{"type":"rect","x":1473,"y":743,"w":259,"h":63,"r":6,"fill":"accentSoft","stroke":null,"strokeWidth":0},{"type":"rect","x":1473,"y":806,"w":259,"h":63,"r":6,"fill":"accentSoft","stroke":null,"strokeWidth":0},{"type":"rect","x":1473,"y":869,"w":259,"h":70,"r":6,"fill":"accentSoft","stroke":null,"strokeWidth":0},{"type":"line","x1":189,"y1":673,"x2":1732,"y2":673,"stroke":"tableRule","strokeWidth":2},{"type":"line","x1":189,"y1":869,"x2":1732,"y2":869,"stroke":"tableRule","strokeWidth":2},{"type":"rect","x":189,"y":511,"w":388,"h":9,"r":0,"fill":"barFill","stroke":null,"strokeWidth":0},{"type":"rect","x":603,"y":499,"w":157,"h":34,"r":6,"fill":"tagOneTimeBg","stroke":null,"strokeWidth":0},{"type":"text","x":682,"y":516,"style":"tagOneTime","align":"center","baseline":"middle","value":"One-time"},{"type":"rect","x":189,"y":574,"w":299,"h":9,"r":0,"fill":"barFill","stroke":null,"strokeWidth":0},{"type":"rect","x":514,"y":562,"w":157,"h":34,"r":6,"fill":"tagNonCashBg","stroke":null,"strokeWidth":0},{"type":"text","x":593,"y":579,"style":"tagNonCash","align":"center","baseline":"middle","value":"Non-cash"},{"type":"rect","x":189,"y":637,"w":347,"h":9,"r":0,"fill":"barFill","stroke":null,"strokeWidth":0},{"type":"rect","x":562,"y":625,"w":189,"h":34,"r":6,"fill":"tagNormalizingBg","stroke":null,"strokeWidth":0},{"type":"text","x":657,"y":642,"style":"tagNormalizing","align":"center","baseline":"middle","value":"Normalizing"}],"table":{"card":{"x":148,"y":325,"w":1625,"h":647,"r":9,"fill":"surface"},"columns":[{"key":"label","x":189,"w":1025,"align":"left","anchorX":189},{"key":"dealDocs","x":1214,"w":259,"align":"right","anchorX":1455},{"key":"firmAdj","x":1473,"w":259,"align":"right","anchorX":1714}],"rows":[{"key":"head","y":358,"h":63,"ruleTop":false},{"key":"reported","y":421,"h":63,"ruleTop":false},{"key":"adj1","y":484,"h":63,"ruleTop":false},{"key":"adj2","y":547,"h":63,"ruleTop":false},{"key":"adj3","y":610,"h":63,"ruleTop":false},{"key":"adjusted","y":673,"h":70,"ruleTop":true},{"key":"proforma","y":743,"h":63,"ruleTop":false},{"key":"synergy","y":806,"h":63,"ruleTop":false},{"key":"pfadjusted","y":869,"h":70,"ruleTop":true}],"cells":[{"row":"head","col":"dealDocs","value":"Deal docs","style":"tableHead","align":"right","baseline":"middle"},{"row":"head","col":"firmAdj","value":"Firm adj.","style":"tableHeadAccent","align":"right","baseline":"middle"},{"row":"reported","col":"label","value":"Reported EBITDA","style":"tableLabel","align":"left","baseline":"middle"},{"row":"reported","col":"dealDocs","value":"100.0","style":"numMuted","align":"right","baseline":"middle"},{"row":"reported","col":"firmAdj","value":"100.0","style":"num","align":"right","baseline":"middle"},{"row":"adj1","col":"label","value":null,"style":null,"align":"left","baseline":"middle"},{"row":"adj1","col":"dealDocs","value":"6.0","style":"numMuted","align":"right","baseline":"middle"},{"row":"adj1","col":"firmAdj","value":"4.5","style":"num","align":"right","baseline":"middle"},{"row":"adj2","col":"label","value":null,"style":null,"align":"left","baseline":"middle"},{"row":"adj2","col":"dealDocs","value":"4.0","style":"numMuted","align":"right","baseline":"middle"},{"row":"adj2","col":"firmAdj","value":"3.0","style":"num","align":"right","baseline":"middle"},{"row":"adj3","col":"label","value":null,"style":null,"align":"left","baseline":"middle"},{"row":"adj3","col":"dealDocs","value":"2.0","style":"numMuted","align":"right","baseline":"middle"},{"row":"adj3","col":"firmAdj","value":"1.5","style":"num","align":"right","baseline":"middle"},{"row":"adjusted","col":"label","value":"Adjusted EBITDA","style":"tableLabelTotal","align":"left","baseline":"middle"},{"row":"adjusted","col":"dealDocs","value":"112.0","style":"numTotalMuted","align":"right","baseline":"middle"},{"row":"adjusted","col":"firmAdj","value":"109.0","style":"numTotal","align":"right","baseline":"middle"},{"row":"proforma","col":"label","value":"Pro forma","style":"tableLabel","align":"left","baseline":"middle"},{"row":"proforma","col":"dealDocs","value":"4.0","style":"numMuted","align":"right","baseline":"middle"},{"row":"proforma","col":"firmAdj","value":"3.0","style":"num","align":"right","baseline":"middle"},{"row":"synergy","col":"label","value":"Synergy","style":"tableLabel","align":"left","baseline":"middle"},{"row":"synergy","col":"dealDocs","value":"4.0","style":"numMuted","align":"right","baseline":"middle"},{"row":"synergy","col":"firmAdj","value":"3.0","style":"num","align":"right","baseline":"middle"},{"row":"pfadjusted","col":"label","value":"PF Adjusted EBITDA","style":"tableLabelTotal","align":"left","baseline":"middle"},{"row":"pfadjusted","col":"dealDocs","value":"120.0","style":"numTotalMuted","align":"right","baseline":"middle"},{"row":"pfadjusted","col":"firmAdj","value":"115.0","style":"numTotalStrong","align":"right","baseline":"middle"}]}},{"id":"03d","bg":"lightField","grid":null,"nodes":[{"type":"rect","x":1218,"y":59,"w":555,"h":98,"r":26,"fill":"bubbleFill","stroke":null,"strokeWidth":0},{"type":"text","x":1251,"y":108,"style":"bubble","align":"left","baseline":"middle","value":"Produce an opening cap table"},{"type":"rect","x":148,"y":185,"w":1625,"h":521,"r":9,"fill":"surface","stroke":null,"strokeWidth":0},{"type":"rect","x":1473,"y":603,"w":259,"h":70,"r":6,"fill":"accentSoft","stroke":null,"strokeWidth":0},{"type":"line","x1":189,"y1":470,"x2":1732,"y2":470,"stroke":"tableRule","strokeWidth":2},{"type":"line","x1":189,"y1":603,"x2":1732,"y2":603,"stroke":"tableRule","strokeWidth":2}],"table":{"card":{"x":148,"y":185,"w":1625,"h":521,"r":9,"fill":"surface"},"columns":[{"key":"label","x":189,"w":766,"align":"left","anchorX":189},{"key":"amount","x":955,"w":259,"align":"right","anchorX":1196},{"key":"mult120","x":1214,"w":259,"align":"right","anchorX":1455},{"key":"mult115","x":1473,"w":259,"align":"right","anchorX":1714}],"rows":[{"key":"head","y":218,"h":63,"ruleTop":false},{"key":"revolver","y":281,"h":63,"ruleTop":false},{"key":"firstLien","y":344,"h":63,"ruleTop":false},{"key":"secondLien","y":407,"h":63,"ruleTop":false},{"key":"totalDebt","y":470,"h":70,"ruleTop":true},{"key":"lessCash","y":540,"h":63,"ruleTop":false},{"key":"netDebt","y":603,"h":70,"ruleTop":true}],"cells":[{"row":"head","col":"amount","value":"Amount","style":"tableHead","align":"right","baseline":"middle"},{"row":"head","col":"mult120","value":"/ 120.0","style":"tableHead","align":"right","baseline":"middle"},{"row":"head","col":"mult115","value":"/ 115.0","style":"tableHeadAccent","align":"right","baseline":"middle"},{"row":"revolver","col":"label","value":"Revolver (drawn)","style":"tableLabel","align":"left","baseline":"middle"},{"row":"revolver","col":"amount","value":"50.0","style":"num","align":"right","baseline":"middle"},{"row":"revolver","col":"mult120","value":"0.4×","style":"numMuted","align":"right","baseline":"middle"},{"row":"revolver","col":"mult115","value":"0.4×","style":"numAccent","align":"right","baseline":"middle"},{"row":"firstLien","col":"label","value":"First Lien Term Loan","style":"tableLabel","align":"left","baseline":"middle"},{"row":"firstLien","col":"amount","value":"300.0","style":"num","align":"right","baseline":"middle"},{"row":"firstLien","col":"mult120","value":"2.5×","style":"numMuted","align":"right","baseline":"middle"},{"row":"firstLien","col":"mult115","value":"2.6×","style":"numAccent","align":"right","baseline":"middle"},{"row":"secondLien","col":"label","value":"Second Lien Term Loan","style":"tableLabel","align":"left","baseline":"middle"},{"row":"secondLien","col":"amount","value":"125.0","style":"num","align":"right","baseline":"middle"},{"row":"secondLien","col":"mult120","value":"1.0×","style":"numMuted","align":"right","baseline":"middle"},{"row":"secondLien","col":"mult115","value":"1.1×","style":"numAccent","align":"right","baseline":"middle"},{"row":"totalDebt","col":"label","value":"Total Debt","style":"tableLabelTotal","align":"left","baseline":"middle"},{"row":"totalDebt","col":"amount","value":"475.0","style":"numTotal","align":"right","baseline":"middle"},{"row":"totalDebt","col":"mult120","value":"4.0×","style":"numTotalMuted","align":"right","baseline":"middle"},{"row":"totalDebt","col":"mult115","value":"4.1×","style":"numTotalAccent","align":"right","baseline":"middle"},{"row":"lessCash","col":"label","value":"Less: Cash","style":"tableLabel","align":"left","baseline":"middle"},{"row":"lessCash","col":"amount","value":"(25.0)","style":"num","align":"right","baseline":"middle"},{"row":"lessCash","col":"mult120","value":"—","style":"numFaint","align":"right","baseline":"middle"},{"row":"lessCash","col":"mult115","value":"—","style":"numFaint","align":"right","baseline":"middle"},{"row":"netDebt","col":"label","value":"Net Debt","style":"tableLabelTotal","align":"left","baseline":"middle"},{"row":"netDebt","col":"amount","value":"450.0","style":"numTotal","align":"right","baseline":"middle"},{"row":"netDebt","col":"mult120","value":"3.8×","style":"numTotalMuted","align":"right","baseline":"middle"},{"row":"netDebt","col":"mult115","value":"3.9×","style":"numTotalAccent","align":"right","baseline":"middle"}]}},{"id":"04","bg":"lightField","grid":null,"nodes":[{"type":"rect","x":166,"y":373,"w":37,"h":37,"r":19,"fill":"positive","stroke":null,"strokeWidth":0},{"type":"text","x":185,"y":391,"style":"check","align":"center","baseline":"middle","value":"✓"},{"type":"text","x":222,"y":391,"style":"trailStatus","align":"left","baseline":"middle","value":"Reading from the vault"},{"type":"rect","x":166,"y":451,"w":812,"h":168,"r":9,"fill":"surface","stroke":null,"strokeWidth":0},{"type":"path","d":"M207 487 L255 487 L291 523 L291 595 L207 595 Z","stroke":"docStroke","strokeWidth":2,"fill":"surface","opacity":1},{"type":"path","d":"M255 487 L255 523 L291 523","stroke":"docStroke","strokeWidth":2,"fill":"none","opacity":1},{"type":"path","d":"M225 553 L273 553 M225 571 L261 571","stroke":"docRule","strokeWidth":2,"fill":"none","opacity":1},{"type":"text","x":284,"y":484,"style":"sourceTitle","align":"left","baseline":"top","value":"Project Alpha — Credit Agreement"},{"type":"text","x":284,"y":541,"style":"sourcePage","align":"left","baseline":"top","value":"pp. 12–14"},{"type":"line","x1":997,"y1":536,"x2":1130,"y2":536,"stroke":"connector","strokeWidth":2},{"type":"text","x":1182,"y":355,"style":"bigNumber","align":"left","baseline":"top","value":"3.9×"},{"type":"rect","x":1182,"y":572,"w":222,"h":9,"r":0,"fill":"accent","stroke":null,"strokeWidth":0},{"type":"text","x":1182,"y":615,"style":"bigNumberCaption","align":"left","baseline":"top","value":"Net Debt / PF Adjusted EBITDA"}]},{"id":"05","bg":"darkField","grid":{"step":107,"color":"gridLine","opacity":1},"nodes":[{"type":"image","ref":"bird","x":775,"y":277,"w":369,"h":268,"fill":"plate","opacity":1},{"type":"text","x":960,"y":609,"style":"wordmark","align":"center","baseline":"top","value":"RAVEN"},{"type":"text","x":960,"y":757,"style":"tagline","align":"center","baseline":"top","value":"Your partner in credit"}]}]};
+const SPEC = {"canvas":{"w":1920,"h":1080},"safeArea":{"top":40,"bottom":825,"left":60,"right":1860,"captionZoneHeight":255},"arrowhead":{"w":14,"h":14},"tokens":{"color":{"black":"#000000","panel":"#1e1f1d","lineDark":"#323430","line":"#464942","muted":"#9ca7a1","sage":"#c7d0be","white":"#ffffff"},"font":{"sans":{"family":"IBM Plex Sans","weights":[400,500,600]},"mono":{"family":"IBM Plex Mono","weights":[400,500]},"serif":{"family":"Instrument Serif","weights":[400]}},"type":{"heroWordmark":{"size":54,"weight":500,"lineHeight":1.3,"letterSpacing":23.76,"color":"sage","face":"sans"},"sourceLabel":{"size":22,"weight":400,"lineHeight":1.32,"letterSpacing":0,"color":"white","face":"sans"},"squareWordmark":{"size":30,"weight":500,"lineHeight":1.3,"letterSpacing":7.8,"color":"sage","face":"sans"},"squareSub":{"size":18,"weight":400,"lineHeight":1.28,"letterSpacing":0,"color":"muted","face":"sans"},"exitLabel":{"size":24,"weight":400,"lineHeight":1.33,"letterSpacing":0,"color":"white","face":"sans"},"railItem":{"size":22,"weight":400,"lineHeight":1.32,"letterSpacing":0,"color":"muted","face":"sans"},"railItemActive":{"size":22,"weight":400,"lineHeight":1.32,"letterSpacing":0,"color":"white","face":"sans"},"railChevron":{"size":22,"weight":400,"lineHeight":1.32,"letterSpacing":0,"color":"line","face":"sans"},"agentLabel":{"size":22,"weight":400,"lineHeight":1.32,"letterSpacing":0,"color":"sage","face":"sans"},"panelEyebrow":{"size":15,"weight":400,"lineHeight":1.27,"letterSpacing":3.3,"color":"sage","face":"mono"},"panelEyebrowDim":{"size":15,"weight":400,"lineHeight":1.27,"letterSpacing":3.3,"color":"line","face":"mono"},"panelTitle":{"size":36,"weight":600,"lineHeight":1.31,"letterSpacing":0,"color":"white","face":"sans"},"panelTitleDim":{"size":36,"weight":600,"lineHeight":1.31,"letterSpacing":0,"color":"muted","face":"sans"},"tableCaption":{"size":19,"weight":400,"lineHeight":1.26,"letterSpacing":0,"color":"muted","face":"sans"},"tableCaptionDim":{"size":19,"weight":400,"lineHeight":1.26,"letterSpacing":0,"color":"line","face":"sans"},"colHead":{"size":16,"weight":400,"lineHeight":1.25,"letterSpacing":0,"color":"muted","face":"mono"},"colHeadDim":{"size":16,"weight":400,"lineHeight":1.25,"letterSpacing":0,"color":"line","face":"mono"},"figure":{"size":26,"weight":400,"lineHeight":1.31,"letterSpacing":0,"color":"white","face":"mono"},"figureDim":{"size":26,"weight":400,"lineHeight":1.31,"letterSpacing":0,"color":"muted","face":"mono"},"multiple":{"size":22,"weight":400,"lineHeight":1.32,"letterSpacing":0,"color":"sage","face":"mono"},"multipleDim":{"size":22,"weight":400,"lineHeight":1.32,"letterSpacing":0,"color":"muted","face":"mono"},"rowLabel":{"size":22,"weight":400,"lineHeight":1.32,"letterSpacing":0,"color":"white","face":"sans"},"rowLabelDim":{"size":22,"weight":400,"lineHeight":1.32,"letterSpacing":0,"color":"muted","face":"sans"},"rowValue":{"size":22,"weight":400,"lineHeight":1.32,"letterSpacing":0,"color":"white","face":"mono"},"rowValueDim":{"size":22,"weight":400,"lineHeight":1.32,"letterSpacing":0,"color":"muted","face":"mono"},"queryLabel":{"size":22,"weight":400,"lineHeight":1.32,"letterSpacing":0,"color":"white","face":"sans"},"checkLabel":{"size":19,"weight":400,"lineHeight":1.26,"letterSpacing":0,"color":"muted","face":"sans"},"docTitle":{"size":22,"weight":400,"lineHeight":1.35,"letterSpacing":0,"color":"white","face":"sans"},"docPages":{"size":16,"weight":400,"lineHeight":1.25,"letterSpacing":0,"color":"muted","face":"mono"},"sourcesEyebrow":{"size":15,"weight":400,"lineHeight":1.27,"letterSpacing":3.3,"color":"sage","face":"mono"},"pillActive":{"size":18,"weight":400,"lineHeight":1.3,"letterSpacing":0,"color":"sage","face":"sans"},"pillMuted":{"size":18,"weight":400,"lineHeight":1.3,"letterSpacing":0,"color":"muted","face":"sans"},"closingLine":{"size":128,"weight":400,"lineHeight":1.06,"letterSpacing":0,"color":"white","face":"serif"},"closingWordmark":{"size":22,"weight":500,"lineHeight":1.32,"letterSpacing":9.24,"color":"sage","face":"sans"}}},"bird":{"viewBox":"0 0 58 42","d":"M33.2617 6.31543H38.5947L44.4883 12.6309H32.4189L27.9287 17.4023H34.2441L57.8213 41.2607H19.2266L12.7715 37.752L11.9287 41.2607L4.91211 35.3662V19.0869H0L12.7715 6.31543H9.96387L16.2793 0H27.3672L33.2617 6.31543ZM24.7002 5.05273C23.6803 5.05279 22.8535 5.87953 22.8535 6.89941C22.8536 7.9192 23.6804 8.74604 24.7002 8.74609C25.72 8.74609 26.5468 7.91923 26.5469 6.89941C26.5469 5.8795 25.7201 5.05273 24.7002 5.05273Z"},"wordmark":{"text":"RAVEN","style":"heroWordmark"},"frames":[{"id":"01","bg":"black","grid":null,"nodes":[{"type":"path","d":"M -40 460 Q 960 -200 1960 460","stroke":"sage","strokeWidth":2,"fill":"none","opacity":1},{"type":"image","ref":"bird","x":887.5,"y":320,"w":145,"h":105,"fill":"sage","opacity":1},{"type":"text","x":826.03,"y":496,"style":"heroWordmark","align":"left","baseline":"middle","value":"RAVEN"},{"type":"rect","x":760,"y":572,"w":400,"h":1,"r":0,"fill":"sage","stroke":null,"strokeWidth":0,"opacity":1}]},{"id":"02a","bg":"black","grid":null,"nodes":[{"type":"rect","x":180,"y":133,"w":120,"h":4,"r":2,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":217,"y":133,"w":46,"h":4,"r":2,"fill":"muted","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":540,"y":133,"w":120,"h":4,"r":2,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":577,"y":133,"w":46,"h":4,"r":2,"fill":"muted","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":900,"y":133,"w":120,"h":4,"r":2,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":937,"y":133,"w":46,"h":4,"r":2,"fill":"muted","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":1260,"y":133,"w":120,"h":4,"r":2,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":1297,"y":133,"w":46,"h":4,"r":2,"fill":"muted","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":1620,"y":133,"w":120,"h":4,"r":2,"fill":"sage","stroke":null,"strokeWidth":0,"opacity":1},{"type":"text","x":240,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Deal documents"},{"type":"text","x":600,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Third-party data"},{"type":"text","x":960,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Firm credit policies"},{"type":"text","x":1320,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Firm data"},{"type":"text","x":1680,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Raven credit intelligence"}]},{"id":"02b","bg":"black","grid":null,"nodes":[{"type":"path","d":"M 240 142 C 240 230 960 210 960 298","stroke":"line","strokeWidth":1.5,"fill":"none","opacity":1},{"type":"path","d":"M 600 142 C 600 230 960 210 960 298","stroke":"line","strokeWidth":1.5,"fill":"none","opacity":1},{"type":"path","d":"M 960 142 L 960 298","stroke":"line","strokeWidth":1.5,"fill":"none","opacity":1},{"type":"path","d":"M 1320 142 C 1320 230 960 210 960 298","stroke":"line","strokeWidth":1.5,"fill":"none","opacity":1},{"type":"path","d":"M 1680 142 C 1680 230 960 210 960 298","stroke":"line","strokeWidth":1.5,"fill":"none","opacity":1},{"type":"rect","x":180,"y":133,"w":120,"h":4,"r":2,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":217,"y":133,"w":46,"h":4,"r":2,"fill":"muted","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":540,"y":133,"w":120,"h":4,"r":2,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":577,"y":133,"w":46,"h":4,"r":2,"fill":"muted","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":900,"y":133,"w":120,"h":4,"r":2,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":937,"y":133,"w":46,"h":4,"r":2,"fill":"muted","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":1260,"y":133,"w":120,"h":4,"r":2,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":1297,"y":133,"w":46,"h":4,"r":2,"fill":"muted","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":1620,"y":133,"w":120,"h":4,"r":2,"fill":"sage","stroke":null,"strokeWidth":0,"opacity":1},{"type":"text","x":240,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Deal documents"},{"type":"text","x":600,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Third-party data"},{"type":"text","x":960,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Firm credit policies"},{"type":"text","x":1320,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Firm data"},{"type":"text","x":1680,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Raven credit intelligence"},{"type":"rect","x":955,"y":294,"w":10,"h":10,"r":5,"fill":"sage","stroke":null,"strokeWidth":0,"opacity":1}]},{"id":"02c","bg":"black","grid":null,"nodes":[{"type":"path","d":"M 240 142 C 240 230 960 210 960 298","stroke":"line","strokeWidth":1.5,"fill":"none","opacity":1},{"type":"path","d":"M 600 142 C 600 230 960 210 960 298","stroke":"line","strokeWidth":1.5,"fill":"none","opacity":1},{"type":"path","d":"M 960 142 L 960 298","stroke":"line","strokeWidth":1.5,"fill":"none","opacity":1},{"type":"path","d":"M 1320 142 C 1320 230 960 210 960 298","stroke":"line","strokeWidth":1.5,"fill":"none","opacity":1},{"type":"path","d":"M 1680 142 C 1680 230 960 210 960 298","stroke":"line","strokeWidth":1.5,"fill":"none","opacity":1},{"type":"rect","x":180,"y":133,"w":120,"h":4,"r":2,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":217,"y":133,"w":46,"h":4,"r":2,"fill":"muted","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":540,"y":133,"w":120,"h":4,"r":2,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":577,"y":133,"w":46,"h":4,"r":2,"fill":"muted","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":900,"y":133,"w":120,"h":4,"r":2,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":937,"y":133,"w":46,"h":4,"r":2,"fill":"muted","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":1260,"y":133,"w":120,"h":4,"r":2,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":1297,"y":133,"w":46,"h":4,"r":2,"fill":"muted","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":1620,"y":133,"w":120,"h":4,"r":2,"fill":"sage","stroke":null,"strokeWidth":0,"opacity":1},{"type":"text","x":240,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Deal documents"},{"type":"text","x":600,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Third-party data"},{"type":"text","x":960,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Firm credit policies"},{"type":"text","x":1320,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Firm data"},{"type":"text","x":1680,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Raven credit intelligence"},{"type":"rect","x":760,"y":300,"w":400,"h":400,"r":14,"fill":"panel","stroke":"sage","strokeWidth":1,"opacity":1},{"type":"image","ref":"bird","x":910,"y":409,"w":100,"h":72,"fill":"sage","opacity":1},{"type":"text","x":896.4,"y":524.5,"style":"squareWordmark","align":"left","baseline":"middle","value":"RAVEN"},{"type":"text","x":960,"y":579.5,"style":"squareSub","align":"center","baseline":"middle","value":"The intelligence layer"}]},{"id":"02d","bg":"black","grid":null,"nodes":[{"type":"path","d":"M 240 142 C 240 230 960 210 960 298","stroke":"line","strokeWidth":1.5,"fill":"none","opacity":1},{"type":"path","d":"M 600 142 C 600 230 960 210 960 298","stroke":"line","strokeWidth":1.5,"fill":"none","opacity":1},{"type":"path","d":"M 960 142 L 960 298","stroke":"line","strokeWidth":1.5,"fill":"none","opacity":1},{"type":"path","d":"M 1320 142 C 1320 230 960 210 960 298","stroke":"line","strokeWidth":1.5,"fill":"none","opacity":1},{"type":"path","d":"M 1680 142 C 1680 230 960 210 960 298","stroke":"line","strokeWidth":1.5,"fill":"none","opacity":1},{"type":"rect","x":180,"y":133,"w":120,"h":4,"r":2,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":217,"y":133,"w":46,"h":4,"r":2,"fill":"muted","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":540,"y":133,"w":120,"h":4,"r":2,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":577,"y":133,"w":46,"h":4,"r":2,"fill":"muted","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":900,"y":133,"w":120,"h":4,"r":2,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":937,"y":133,"w":46,"h":4,"r":2,"fill":"muted","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":1260,"y":133,"w":120,"h":4,"r":2,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":1297,"y":133,"w":46,"h":4,"r":2,"fill":"muted","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":1620,"y":133,"w":120,"h":4,"r":2,"fill":"sage","stroke":null,"strokeWidth":0,"opacity":1},{"type":"text","x":240,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Deal documents"},{"type":"text","x":600,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Third-party data"},{"type":"text","x":960,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Firm credit policies"},{"type":"text","x":1320,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Firm data"},{"type":"text","x":1680,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Raven credit intelligence"},{"type":"rect","x":760,"y":300,"w":400,"h":400,"r":14,"fill":"panel","stroke":"sage","strokeWidth":1,"opacity":1},{"type":"image","ref":"bird","x":910,"y":409,"w":100,"h":72,"fill":"sage","opacity":1},{"type":"text","x":896.4,"y":524.5,"style":"squareWordmark","align":"left","baseline":"middle","value":"RAVEN"},{"type":"text","x":960,"y":579.5,"style":"squareSub","align":"center","baseline":"middle","value":"The intelligence layer"},{"type":"line","x1":760,"y1":500,"x2":440,"y2":500,"stroke":"line","strokeWidth":1.5,"arrow":"end"},{"type":"line","x1":1160,"y1":500,"x2":1480,"y2":500,"stroke":"line","strokeWidth":1.5,"arrow":"end"},{"type":"text","x":400,"y":500,"style":"exitLabel","align":"right","baseline":"middle","value":"Underwriting"},{"type":"text","x":1510,"y":500,"style":"exitLabel","align":"left","baseline":"middle","value":"Monitoring"}]},{"id":"02e","bg":"black","grid":null,"nodes":[{"type":"path","d":"M 240 142 C 240 230 960 210 960 298","stroke":"line","strokeWidth":1.5,"fill":"none","opacity":1},{"type":"path","d":"M 600 142 C 600 230 960 210 960 298","stroke":"line","strokeWidth":1.5,"fill":"none","opacity":1},{"type":"path","d":"M 960 142 L 960 298","stroke":"line","strokeWidth":1.5,"fill":"none","opacity":1},{"type":"path","d":"M 1320 142 C 1320 230 960 210 960 298","stroke":"line","strokeWidth":1.5,"fill":"none","opacity":1},{"type":"path","d":"M 1680 142 C 1680 230 960 210 960 298","stroke":"line","strokeWidth":1.5,"fill":"none","opacity":1},{"type":"rect","x":180,"y":133,"w":120,"h":4,"r":2,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":217,"y":133,"w":46,"h":4,"r":2,"fill":"muted","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":540,"y":133,"w":120,"h":4,"r":2,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":577,"y":133,"w":46,"h":4,"r":2,"fill":"muted","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":900,"y":133,"w":120,"h":4,"r":2,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":937,"y":133,"w":46,"h":4,"r":2,"fill":"muted","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":1260,"y":133,"w":120,"h":4,"r":2,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":1297,"y":133,"w":46,"h":4,"r":2,"fill":"muted","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":1620,"y":133,"w":120,"h":4,"r":2,"fill":"sage","stroke":null,"strokeWidth":0,"opacity":1},{"type":"text","x":240,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Deal documents"},{"type":"text","x":600,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Third-party data"},{"type":"text","x":960,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Firm credit policies"},{"type":"text","x":1320,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Firm data"},{"type":"text","x":1680,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Raven credit intelligence"},{"type":"rect","x":760,"y":300,"w":400,"h":400,"r":14,"fill":"panel","stroke":"sage","strokeWidth":1,"opacity":1},{"type":"image","ref":"bird","x":910,"y":409,"w":100,"h":72,"fill":"sage","opacity":1},{"type":"text","x":896.4,"y":524.5,"style":"squareWordmark","align":"left","baseline":"middle","value":"RAVEN"},{"type":"text","x":960,"y":579.5,"style":"squareSub","align":"center","baseline":"middle","value":"The intelligence layer"},{"type":"line","x1":760,"y1":500,"x2":440,"y2":500,"stroke":"line","strokeWidth":1.5,"arrow":"end"},{"type":"line","x1":1160,"y1":500,"x2":1480,"y2":500,"stroke":"line","strokeWidth":1.5,"arrow":"end"},{"type":"text","x":400,"y":500,"style":"exitLabel","align":"right","baseline":"middle","value":"Underwriting"},{"type":"text","x":1510,"y":500,"style":"exitLabel","align":"left","baseline":"middle","value":"Monitoring"},{"type":"rect","x":60,"y":718,"w":1800,"h":80,"r":40,"fill":"panel","stroke":"lineDark","strokeWidth":1,"opacity":1},{"type":"rect","x":496.7,"y":782.5,"w":186.94,"h":1,"r":0,"fill":"sage","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":177.29,"y":735.5,"w":7,"h":7,"r":3.5,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":364.28,"y":735.5,"w":7,"h":7,"r":3.5,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":586.66,"y":735.5,"w":7,"h":7,"r":3.5,"fill":"sage","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":820.93,"y":735.5,"w":7,"h":7,"r":3.5,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":1025.85,"y":735.5,"w":7,"h":7,"r":3.5,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1}],"rail":{"y":758,"height":80,"itemStyle":"railItem","itemPadX":0,"gap":22,"itemBaselineY":766,"activeIndex":2,"activeStyle":"railItemActive","activeUnderline":{"x":496.7,"y":782.5,"w":186.94,"h":1,"fill":"sage"},"dot":{"cy":739,"r":3.5,"fill":"line","activeFill":"sage","cx":[180.79,367.78,590.16,824.43,1029.35]},"chevron":{"d":"M 0 0 L 7 8 L 0 16","stroke":"line","strokeWidth":1.5},"chevronStyle":"railChevron","leadChevron":{"d":"M 7 0 L 0 8 L 7 16","x":94,"y":758,"stroke":"line","strokeWidth":1.5},"items":["Deal screen","Sensitize model","Compliance review","Portfolio snapshot","EBITDA walk"],"agent":{"label":"Raven Agent","x":1639.27,"w":186.73,"h":49,"r":24.5,"fill":"none","stroke":"sage","strokeWidth":1,"style":"agentLabel","textX":1679.27,"textY":766,"textAlign":"left","dot":{"cx":1665.77,"cy":766,"r":3.5,"fill":"sage"}}}},{"id":"03a","bg":"black","grid":null,"nodes":[{"type":"rect","x":340,"y":196,"w":1240,"h":374,"r":14,"fill":"panel","stroke":"lineDark","strokeWidth":1,"opacity":1},{"type":"text","x":376,"y":237.5,"style":"panelEyebrow","align":"left","baseline":"middle","value":"PROJECT ALPHA"},{"type":"text","x":376,"y":282.5,"style":"panelTitle","align":"left","baseline":"middle","value":"Financial Summary"},{"type":"rect","x":376,"y":328,"w":1168,"h":1,"r":0,"fill":"lineDark","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":360,"y":477,"w":1200,"h":61,"r":8,"fill":"lineDark","stroke":null,"strokeWidth":0,"opacity":1},{"type":"text","x":1192,"y":365,"style":"tableCaption","align":"center","baseline":"middle","value":"PF Adjusted EBITDA"},{"type":"text","x":919,"y":405,"style":"colHead","align":"center","baseline":"middle","value":"LTM"},{"type":"text","x":1101,"y":405,"style":"colHead","align":"center","baseline":"middle","value":"2026E"},{"type":"text","x":1283,"y":405,"style":"colHead","align":"center","baseline":"middle","value":"2027E"},{"type":"text","x":1465,"y":405,"style":"colHead","align":"center","baseline":"middle","value":"2028E"},{"type":"text","x":919,"y":440,"style":"figure","align":"center","baseline":"middle","value":"115.0"},{"type":"text","x":1101,"y":440,"style":"figure","align":"center","baseline":"middle","value":"125.0"},{"type":"text","x":1283,"y":440,"style":"figure","align":"center","baseline":"middle","value":"135.0"},{"type":"text","x":1465,"y":440,"style":"figure","align":"center","baseline":"middle","value":"145.0"},{"type":"text","x":376,"y":507.5,"style":"rowLabel","align":"left","baseline":"middle","value":"Net Debt"},{"type":"text","x":496.94,"y":507.5,"style":"rowValue","align":"left","baseline":"middle","value":"450.0"},{"type":"text","x":919,"y":507.5,"style":"multiple","align":"center","baseline":"middle","value":"3.9x"},{"type":"text","x":1101,"y":507.5,"style":"multiple","align":"center","baseline":"middle","value":"3.6x"},{"type":"text","x":1283,"y":507.5,"style":"multiple","align":"center","baseline":"middle","value":"3.3x"},{"type":"text","x":1465,"y":507.5,"style":"multiple","align":"center","baseline":"middle","value":"3.1x"}],"table":{"card":{"x":340,"y":196,"w":1240,"h":374,"r":14,"fill":"panel","stroke":"lineDark","strokeWidth":1},"columns":[{"key":"label","x":376,"w":440,"align":"left","anchorX":376},{"key":"ebitdaSpan","x":840,"w":704,"align":"center","anchorX":1192},{"key":"value","x":496.94,"w":66.02,"align":"left","anchorX":496.94},{"key":"ltm","x":840,"w":158,"align":"center","anchorX":919},{"key":"y2026","x":1022,"w":158,"align":"center","anchorX":1101},{"key":"y2027","x":1204,"w":158,"align":"center","anchorX":1283},{"key":"y2028","x":1386,"w":158,"align":"center","anchorX":1465}],"rows":[{"key":"caption","y":353,"h":24,"ruleTop":true},{"key":"head","y":395,"h":20,"ruleTop":false},{"key":"pfadj","y":423,"h":34,"ruleTop":false},{"key":"netdebt","y":477,"h":61,"ruleTop":false}],"cells":[{"row":"caption","col":"label","value":null,"style":null,"align":"left","baseline":"middle"},{"row":"caption","col":"ebitdaSpan","value":"PF Adjusted EBITDA","style":"tableCaption","align":"center","baseline":"middle"},{"row":"head","col":"label","value":null,"style":null,"align":"left","baseline":"middle"},{"row":"head","col":"ltm","value":"LTM","style":"colHead","align":"center","baseline":"middle"},{"row":"head","col":"y2026","value":"2026E","style":"colHead","align":"center","baseline":"middle"},{"row":"head","col":"y2027","value":"2027E","style":"colHead","align":"center","baseline":"middle"},{"row":"head","col":"y2028","value":"2028E","style":"colHead","align":"center","baseline":"middle"},{"row":"pfadj","col":"label","value":null,"style":null,"align":"left","baseline":"middle"},{"row":"pfadj","col":"ltm","value":"115.0","style":"figure","align":"center","baseline":"middle"},{"row":"pfadj","col":"y2026","value":"125.0","style":"figure","align":"center","baseline":"middle"},{"row":"pfadj","col":"y2027","value":"135.0","style":"figure","align":"center","baseline":"middle"},{"row":"pfadj","col":"y2028","value":"145.0","style":"figure","align":"center","baseline":"middle"},{"row":"netdebt","col":"label","value":"Net Debt","style":"rowLabel","align":"left","baseline":"middle"},{"row":"netdebt","col":"value","value":"450.0","style":"rowValue","align":"left","baseline":"middle"},{"row":"netdebt","col":"ltm","value":"3.9x","style":"multiple","align":"center","baseline":"middle"},{"row":"netdebt","col":"y2026","value":"3.6x","style":"multiple","align":"center","baseline":"middle"},{"row":"netdebt","col":"y2027","value":"3.3x","style":"multiple","align":"center","baseline":"middle"},{"row":"netdebt","col":"y2028","value":"3.1x","style":"multiple","align":"center","baseline":"middle"}],"highlight":[{"row":"netdebt","col":null,"x":360,"y":477,"w":1200,"h":61,"r":8,"fill":"lineDark"}]}},{"id":"03b","bg":"black","grid":null,"nodes":[{"type":"rect","x":340,"y":56,"w":330.5,"h":59,"r":29.5,"fill":"none","stroke":"line","strokeWidth":1,"opacity":1},{"type":"path","d":"M 377 75.5 L 378.6 81.9 L 385 83.5 L 378.6 85.1 L 377 91.5 L 375.4 85.1 L 369 83.5 L 375.4 81.9 Z","stroke":"sage","strokeWidth":1.6,"fill":"none","opacity":1},{"type":"text","x":401,"y":85.5,"style":"queryLabel","align":"left","baseline":"middle","value":"Compare to client model"},{"type":"path","d":"M 343 152 L 347.1 156.1 L 355 147.1","stroke":"sage","strokeWidth":2,"fill":"none","opacity":1},{"type":"text","x":370,"y":152,"style":"checkLabel","align":"left","baseline":"middle","value":"Call the vault and check sources"},{"type":"rect","x":340,"y":196,"w":1240,"h":374,"r":14,"fill":"panel","stroke":"lineDark","strokeWidth":1,"opacity":1},{"type":"text","x":376,"y":237.5,"style":"panelEyebrowDim","align":"left","baseline":"middle","value":"PROJECT ALPHA"},{"type":"text","x":376,"y":282.5,"style":"panelTitleDim","align":"left","baseline":"middle","value":"Financial Summary"},{"type":"rect","x":376,"y":328,"w":1168,"h":1,"r":0,"fill":"lineDark","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":360,"y":477,"w":1200,"h":61,"r":8,"fill":"lineDark","stroke":null,"strokeWidth":0,"opacity":1},{"type":"text","x":1192,"y":365,"style":"tableCaptionDim","align":"center","baseline":"middle","value":"PF Adjusted EBITDA"},{"type":"text","x":919,"y":405,"style":"colHeadDim","align":"center","baseline":"middle","value":"LTM"},{"type":"text","x":1101,"y":405,"style":"colHeadDim","align":"center","baseline":"middle","value":"2026E"},{"type":"text","x":1283,"y":405,"style":"colHeadDim","align":"center","baseline":"middle","value":"2027E"},{"type":"text","x":1465,"y":405,"style":"colHeadDim","align":"center","baseline":"middle","value":"2028E"},{"type":"text","x":919,"y":440,"style":"figureDim","align":"center","baseline":"middle","value":"115.0"},{"type":"text","x":1101,"y":440,"style":"figureDim","align":"center","baseline":"middle","value":"125.0"},{"type":"text","x":1283,"y":440,"style":"figureDim","align":"center","baseline":"middle","value":"135.0"},{"type":"text","x":1465,"y":440,"style":"figureDim","align":"center","baseline":"middle","value":"145.0"},{"type":"text","x":376,"y":507.5,"style":"rowLabelDim","align":"left","baseline":"middle","value":"Net Debt"},{"type":"text","x":496.94,"y":507.5,"style":"rowValueDim","align":"left","baseline":"middle","value":"450.0"},{"type":"text","x":919,"y":507.5,"style":"multipleDim","align":"center","baseline":"middle","value":"3.9x"},{"type":"text","x":1101,"y":507.5,"style":"multipleDim","align":"center","baseline":"middle","value":"3.6x"},{"type":"text","x":1283,"y":507.5,"style":"multipleDim","align":"center","baseline":"middle","value":"3.3x"},{"type":"text","x":1465,"y":507.5,"style":"multipleDim","align":"center","baseline":"middle","value":"3.1x"}],"table":{"card":{"x":340,"y":196,"w":1240,"h":374,"r":14,"fill":"panel","stroke":"lineDark","strokeWidth":1},"columns":[{"key":"label","x":376,"w":440,"align":"left","anchorX":376},{"key":"ebitdaSpan","x":840,"w":704,"align":"center","anchorX":1192},{"key":"value","x":496.94,"w":66.02,"align":"left","anchorX":496.94},{"key":"ltm","x":840,"w":158,"align":"center","anchorX":919},{"key":"y2026","x":1022,"w":158,"align":"center","anchorX":1101},{"key":"y2027","x":1204,"w":158,"align":"center","anchorX":1283},{"key":"y2028","x":1386,"w":158,"align":"center","anchorX":1465}],"rows":[{"key":"caption","y":353,"h":24,"ruleTop":true},{"key":"head","y":395,"h":20,"ruleTop":false},{"key":"pfadj","y":423,"h":34,"ruleTop":false},{"key":"netdebt","y":477,"h":61,"ruleTop":false}],"cells":[{"row":"caption","col":"label","value":null,"style":null,"align":"left","baseline":"middle"},{"row":"caption","col":"ebitdaSpan","value":"PF Adjusted EBITDA","style":"tableCaptionDim","align":"center","baseline":"middle"},{"row":"head","col":"label","value":null,"style":null,"align":"left","baseline":"middle"},{"row":"head","col":"ltm","value":"LTM","style":"colHeadDim","align":"center","baseline":"middle"},{"row":"head","col":"y2026","value":"2026E","style":"colHeadDim","align":"center","baseline":"middle"},{"row":"head","col":"y2027","value":"2027E","style":"colHeadDim","align":"center","baseline":"middle"},{"row":"head","col":"y2028","value":"2028E","style":"colHeadDim","align":"center","baseline":"middle"},{"row":"pfadj","col":"label","value":null,"style":null,"align":"left","baseline":"middle"},{"row":"pfadj","col":"ltm","value":"115.0","style":"figureDim","align":"center","baseline":"middle"},{"row":"pfadj","col":"y2026","value":"125.0","style":"figureDim","align":"center","baseline":"middle"},{"row":"pfadj","col":"y2027","value":"135.0","style":"figureDim","align":"center","baseline":"middle"},{"row":"pfadj","col":"y2028","value":"145.0","style":"figureDim","align":"center","baseline":"middle"},{"row":"netdebt","col":"label","value":"Net Debt","style":"rowLabelDim","align":"left","baseline":"middle"},{"row":"netdebt","col":"value","value":"450.0","style":"rowValueDim","align":"left","baseline":"middle"},{"row":"netdebt","col":"ltm","value":"3.9x","style":"multipleDim","align":"center","baseline":"middle"},{"row":"netdebt","col":"y2026","value":"3.6x","style":"multipleDim","align":"center","baseline":"middle"},{"row":"netdebt","col":"y2027","value":"3.3x","style":"multipleDim","align":"center","baseline":"middle"},{"row":"netdebt","col":"y2028","value":"3.1x","style":"multipleDim","align":"center","baseline":"middle"}],"highlight":[{"row":"netdebt","col":null,"x":360,"y":477,"w":1200,"h":61,"r":8,"fill":"lineDark"}]}},{"id":"03c","bg":"black","grid":null,"nodes":[{"type":"rect","x":580,"y":56,"w":330.5,"h":59,"r":29.5,"fill":"none","stroke":"line","strokeWidth":1,"opacity":1},{"type":"path","d":"M 617 75.5 L 618.6 81.9 L 625 83.5 L 618.6 85.1 L 617 91.5 L 615.4 85.1 L 609 83.5 L 615.4 81.9 Z","stroke":"sage","strokeWidth":1.6,"fill":"none","opacity":1},{"type":"text","x":641,"y":85.5,"style":"queryLabel","align":"left","baseline":"middle","value":"Compare to client model"},{"type":"path","d":"M 583 152 L 587.1 156.1 L 595 147.1","stroke":"sage","strokeWidth":2,"fill":"none","opacity":1},{"type":"text","x":610,"y":152,"style":"checkLabel","align":"left","baseline":"middle","value":"Call the vault and check sources"},{"type":"rect","x":100,"y":196,"w":420,"h":420,"r":14,"fill":"panel","stroke":"lineDark","strokeWidth":1,"opacity":1},{"type":"path","d":"M133.67 225.43 H149.25 L156.33 232.57 V262.57 H133.67 Z M149.25 225.43 V232.57 H156.33","stroke":"sage","strokeWidth":2,"fill":"none","opacity":1},{"type":"text","x":128,"y":300.85,"style":"docTitle","align":"left","baseline":"middle","value":"Project Alpha — Lender Model"},{"type":"text","x":128,"y":333.69,"style":"docPages","align":"left","baseline":"middle","value":"pp. 1–2"},{"type":"rect","x":128,"y":369.69,"w":364.0,"h":3,"r":0,"fill":"lineDark","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":128,"y":386.69,"w":313.04,"h":3,"r":0,"fill":"lineDark","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":128,"y":403.69,"w":342.16,"h":3,"r":0,"fill":"lineDark","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":128,"y":420.69,"w":225.68,"h":3,"r":0,"fill":"lineDark","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":128,"y":437.69,"w":364.0,"h":3,"r":0,"fill":"lineDark","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":128,"y":454.69,"w":283.92,"h":3,"r":0,"fill":"lineDark","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":128,"y":471.69,"w":327.6,"h":3,"r":0,"fill":"lineDark","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":128,"y":488.69,"w":174.72,"h":3,"r":0,"fill":"lineDark","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":580,"y":196,"w":1240,"h":374,"r":14,"fill":"panel","stroke":"lineDark","strokeWidth":1,"opacity":1},{"type":"text","x":616,"y":237.5,"style":"panelEyebrow","align":"left","baseline":"middle","value":"PROJECT ALPHA"},{"type":"text","x":616,"y":282.5,"style":"panelTitle","align":"left","baseline":"middle","value":"Financial Summary"},{"type":"rect","x":616,"y":328,"w":1168,"h":1,"r":0,"fill":"lineDark","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":600,"y":477,"w":1200,"h":61,"r":8,"fill":"lineDark","stroke":null,"strokeWidth":0,"opacity":1},{"type":"text","x":1432,"y":365,"style":"tableCaption","align":"center","baseline":"middle","value":"PF Adjusted EBITDA"},{"type":"text","x":1159,"y":405,"style":"colHead","align":"center","baseline":"middle","value":"LTM"},{"type":"text","x":1341,"y":405,"style":"colHead","align":"center","baseline":"middle","value":"2026E"},{"type":"text","x":1523,"y":405,"style":"colHead","align":"center","baseline":"middle","value":"2027E"},{"type":"text","x":1705,"y":405,"style":"colHead","align":"center","baseline":"middle","value":"2028E"},{"type":"text","x":1159,"y":440,"style":"figure","align":"center","baseline":"middle","value":"115.0"},{"type":"text","x":1341,"y":440,"style":"figure","align":"center","baseline":"middle","value":"125.0"},{"type":"text","x":1523,"y":440,"style":"figure","align":"center","baseline":"middle","value":"135.0"},{"type":"text","x":1705,"y":440,"style":"figure","align":"center","baseline":"middle","value":"145.0"},{"type":"text","x":616,"y":507.5,"style":"rowLabel","align":"left","baseline":"middle","value":"Net Debt"},{"type":"text","x":736.94,"y":507.5,"style":"rowValue","align":"left","baseline":"middle","value":"450.0"},{"type":"text","x":1159,"y":507.5,"style":"multiple","align":"center","baseline":"middle","value":"3.9x"},{"type":"text","x":1341,"y":507.5,"style":"multiple","align":"center","baseline":"middle","value":"3.6x"},{"type":"text","x":1523,"y":507.5,"style":"multiple","align":"center","baseline":"middle","value":"3.3x"},{"type":"text","x":1705,"y":507.5,"style":"multiple","align":"center","baseline":"middle","value":"3.1x"},{"type":"text","x":580,"y":630.5,"style":"sourcesEyebrow","align":"left","baseline":"middle","value":"SOURCES"},{"type":"rect","x":684.11,"y":610,"w":178.06,"h":41,"r":20.5,"fill":"none","stroke":"sage","strokeWidth":1,"opacity":1},{"type":"text","x":703.11,"y":630.5,"style":"pillActive","align":"left","baseline":"middle","value":"Lender Model p.1"},{"type":"rect","x":880.17,"y":610,"w":139.17,"h":41,"r":20.5,"fill":"none","stroke":"line","strokeWidth":1,"opacity":1},{"type":"text","x":899.17,"y":630.5,"style":"pillMuted","align":"left","baseline":"middle","value":"Client Model"}],"table":{"card":{"x":580,"y":196,"w":1240,"h":374,"r":14,"fill":"panel","stroke":"lineDark","strokeWidth":1},"columns":[{"key":"label","x":616,"w":440,"align":"left","anchorX":616},{"key":"ebitdaSpan","x":1080,"w":704,"align":"center","anchorX":1432},{"key":"value","x":736.94,"w":66.02,"align":"left","anchorX":736.94},{"key":"ltm","x":1080,"w":158,"align":"center","anchorX":1159},{"key":"y2026","x":1262,"w":158,"align":"center","anchorX":1341},{"key":"y2027","x":1444,"w":158,"align":"center","anchorX":1523},{"key":"y2028","x":1626,"w":158,"align":"center","anchorX":1705}],"rows":[{"key":"caption","y":353,"h":24,"ruleTop":true},{"key":"head","y":395,"h":20,"ruleTop":false},{"key":"pfadj","y":423,"h":34,"ruleTop":false},{"key":"netdebt","y":477,"h":61,"ruleTop":false}],"cells":[{"row":"caption","col":"label","value":null,"style":null,"align":"left","baseline":"middle"},{"row":"caption","col":"ebitdaSpan","value":"PF Adjusted EBITDA","style":"tableCaption","align":"center","baseline":"middle"},{"row":"head","col":"label","value":null,"style":null,"align":"left","baseline":"middle"},{"row":"head","col":"ltm","value":"LTM","style":"colHead","align":"center","baseline":"middle"},{"row":"head","col":"y2026","value":"2026E","style":"colHead","align":"center","baseline":"middle"},{"row":"head","col":"y2027","value":"2027E","style":"colHead","align":"center","baseline":"middle"},{"row":"head","col":"y2028","value":"2028E","style":"colHead","align":"center","baseline":"middle"},{"row":"pfadj","col":"label","value":null,"style":null,"align":"left","baseline":"middle"},{"row":"pfadj","col":"ltm","value":"115.0","style":"figure","align":"center","baseline":"middle"},{"row":"pfadj","col":"y2026","value":"125.0","style":"figure","align":"center","baseline":"middle"},{"row":"pfadj","col":"y2027","value":"135.0","style":"figure","align":"center","baseline":"middle"},{"row":"pfadj","col":"y2028","value":"145.0","style":"figure","align":"center","baseline":"middle"},{"row":"netdebt","col":"label","value":"Net Debt","style":"rowLabel","align":"left","baseline":"middle"},{"row":"netdebt","col":"value","value":"450.0","style":"rowValue","align":"left","baseline":"middle"},{"row":"netdebt","col":"ltm","value":"3.9x","style":"multiple","align":"center","baseline":"middle"},{"row":"netdebt","col":"y2026","value":"3.6x","style":"multiple","align":"center","baseline":"middle"},{"row":"netdebt","col":"y2027","value":"3.3x","style":"multiple","align":"center","baseline":"middle"},{"row":"netdebt","col":"y2028","value":"3.1x","style":"multiple","align":"center","baseline":"middle"}],"highlight":[{"row":"netdebt","col":null,"x":600,"y":477,"w":1200,"h":61,"r":8,"fill":"lineDark"}]},"sourcePills":[{"label":"Lender Model p.1","state":"active","x":684.11,"y":610,"w":178.06,"h":41,"r":20.5,"fill":"none","stroke":"sage","strokeWidth":1,"textX":703.11,"textY":630.5,"style":"pillActive","icon":null},{"label":"Client Model","state":"muted","x":880.17,"y":610,"w":139.17,"h":41,"r":20.5,"fill":"none","stroke":"line","strokeWidth":1,"textX":899.17,"textY":630.5,"style":"pillMuted","icon":null}],"docCard":{"card":{"x":100,"y":196,"w":420,"h":420,"r":14,"fill":"panel","stroke":"lineDark","strokeWidth":1},"icon":{"d":"M133.67 225.43 H149.25 L156.33 232.57 V262.57 H133.67 Z M149.25 225.43 V232.57 H156.33","stroke":"sage","strokeWidth":2,"fill":"none"},"title":{"x":128,"y":300.85,"style":"docTitle","align":"left","baseline":"middle","value":"Project Alpha — Lender Model"},"pages":{"x":128,"y":333.69,"style":"docPages","align":"left","baseline":"middle","value":"pp. 1–2"},"lines":[{"x":128,"y":369.69,"w":364.0,"h":3,"r":0,"fill":"lineDark"},{"x":128,"y":386.69,"w":313.04,"h":3,"r":0,"fill":"lineDark"},{"x":128,"y":403.69,"w":342.16,"h":3,"r":0,"fill":"lineDark"},{"x":128,"y":420.69,"w":225.68,"h":3,"r":0,"fill":"lineDark"},{"x":128,"y":437.69,"w":364.0,"h":3,"r":0,"fill":"lineDark"},{"x":128,"y":454.69,"w":283.92,"h":3,"r":0,"fill":"lineDark"},{"x":128,"y":471.69,"w":327.6,"h":3,"r":0,"fill":"lineDark"},{"x":128,"y":488.69,"w":174.72,"h":3,"r":0,"fill":"lineDark"}]}},{"id":"04","bg":"black","grid":null,"nodes":[{"type":"path","d":"M 1520 300 C 1200 300 900 180 60 110","stroke":"sage","strokeWidth":1,"fill":"none","opacity":1},{"type":"path","d":"M 1520 300 C 1250 292 1000 210 200 152","stroke":"sage","strokeWidth":1,"fill":"none","opacity":1},{"type":"path","d":"M 1520 300 C 1300 288 1100 240 500 196","stroke":"sage","strokeWidth":1,"fill":"none","opacity":1},{"type":"path","d":"M 1520 300 C 1390 294 1300 262 900 234","stroke":"sage","strokeWidth":1,"fill":"none","opacity":1},{"type":"path","d":"M 1520 300 C 1540 212 1600 112 1650 40","stroke":"sage","strokeWidth":1,"fill":"none","opacity":1},{"type":"path","d":"M 1520 300 C 1580 214 1680 122 1790 40","stroke":"sage","strokeWidth":1,"fill":"none","opacity":1},{"type":"path","d":"M 1520 300 C 1620 262 1740 202 1860 148","stroke":"sage","strokeWidth":1,"fill":"none","opacity":1},{"type":"path","d":"M 1520 300 C 1640 288 1760 278 1860 264","stroke":"sage","strokeWidth":1,"fill":"none","opacity":1},{"type":"path","d":"M 1520 300 C 1630 330 1750 372 1860 404","stroke":"sage","strokeWidth":1,"fill":"none","opacity":1},{"type":"text","x":120,"y":419.84,"style":"closingLine","align":"left","baseline":"middle","value":"Credit work, connected."},{"type":"text","x":120,"y":776.5,"style":"closingWordmark","align":"left","baseline":"middle","value":"RAVEN"}]}]};
 
 /* ============================================================
    TIMELINE — edit seconds here, nothing else.
-   Scene 02 and 03 are single continuous scenes; their internal
-   phases are listed under `beats` in seconds from the scene start.
+   Four scenes. Scenes 02 and 03 are continuous, not cuts; their
+   internal beats are in B02 / B03 below, in seconds from the
+   scene's own start.
    ============================================================ */
 const TL = {
-  total: 42.0,
+  total: 34.5,
   xfade: 0.45,
   scenes: [
-    { id:'01', name:'A bird out of the dark',        t0: 0.0,  t1: 3.5  },
-    { id:'02', name:'Five streams into one layer',   t0: 3.5,  t1:24.3  },
-    { id:'03', name:'Asking in words',               t0:24.3,  t1:34.9  },
-    { id:'04', name:'Numbers with a trail',          t0:34.9,  t1:38.8  },
-    { id:'05', name:'Your partner in credit',        t0:38.8,  t1:42.0  }
+    { id:'01', name:'Name on black',        t0: 0.0,  t1: 5.0  },
+    { id:'02', name:'Layer and workflows',  t0: 5.0,  t1:24.5  },
+    { id:'03', name:'Where the number comes from', t0:24.5, t1:31.0 },
+    { id:'04', name:'Credit work, connected',      t0:31.0, t1:34.5 }
   ]
 };
 
-/* ============================================================
-   SAFE AREA — the band at the bottom of the frame that belongs to
-   the player, not to us.
-
-   YouTube publishes no pixel spec for this: its help page lists only
-   which caption properties a viewer can change, and the player sizes
-   captions from the player height at playback time. So this is built
-   from what is measurable instead:
-     · the player control bar covers roughly the bottom 10% of the frame
-       and captions ride above it;
-     · caption text runs about 4–5% of frame height at the default size,
-       and a viewer can push it to 200% or 300%;
-     · captions are bottom-centred, so the bottom strip is the contested one.
-   255 px of 1080 (24%) holds a two-line caption at default size plus the
-   control bar. Everything we care about is fitted above it.
-
-   Change these four numbers to retune; every scene refits automatically.
-   ============================================================ */
-const SAFE = { top: 40, bottom: 255, side: 60 };
-
-/* YouTube-style stand-in captions, drawn in the reserved band at the size
-   YouTube renders them: ~4.5% of frame height, Roboto, white on a 75% black
-   box, bottom-centred above the control bar. Turn them off with S. */
-const YTCAP = {
-  fontSize: 48,          // 4.4% of 1080 — the default-size caption
-  lineGap:  1.30,
-  maxWidth: 1560,        // captions wrap well inside the frame
-  blockBottom: 970,      // bottom of the lowest line; below this is the control bar
-  maxLines: 2,           // a longer cue is split into several timed captions
-  bg: 'rgba(8,8,8,0.75)',
-  pad: { x: 14, y: 6 }
+/* Scene 02 beats. The rail does not scroll: it is a stationary
+   breadcrumb whose active step walks along it. "Raven Agent" lights
+   first, on the words, then the workflows step through under them. */
+const B02 = {
+  source:   { start: 0.20, step: 0.95, dur: 0.70 },   // five labels, one after another
+  arc:      { start: 5.40, step: 0.30, dur: 1.45 },   // five curves draw
+  node:     7.90,                                     // the point they meet
+  square:   8.10, bird: 8.70, wordmark: 9.15, sub: 9.55,
+  exit:     { line: 10.60, dur: 0.70, label: 11.10 }, // Underwriting / Monitoring
+  rail:     { bar: 12.50, agent: 13.20, dots: 13.70,
+              items: { start: 14.60, step: 0.90, dur: 0.50 } }
 };
 
-/* Content boxes per scene, in frame coordinates, taken from the geometry in
-   SPEC. Each scene is scaled and centred into the safe area from its box, so
-   nothing it draws lands under a caption. Re-derive these if SPEC changes. */
-const BOXES = {
-  '01': { x1: 683, y1: 340, x2: 1235, y2:  734 },
-  '02': { x1:  70, y1:  44, x2: 1809, y2:  998 },   // x excludes the ticker, which bleeds by design
-  '03': { x1: 148, y1:  59, x2: 1773, y2:  972 },
-  '04': { x1: 166, y1: 355, x2: 1704, y2:  661 },
-  '05': { x1: 775, y1: 277, x2: 1145, y2:  803 }
+/* Scene 03 beats. 3a states the figure, 3b asks the agent and dims
+   the panel, 3c slides the panel aside and brings the source in. */
+const B03 = {
+  card: 0.00, eyebrow: 0.35, title: 0.55, rule: 0.80,
+  caption: 1.00, heads: 1.15, figures: 1.30,
+  band: 1.60, netdebt: 1.75,
+  query: 2.30, sparkle: 2.50, typing: 2.60, check: 3.40,
+  dim: 2.45,                                          // the panel steps back
+  shift: 4.10,                                        // panel slides right, brightens
+  doc: 4.35, docLines: { start: 4.75, step: 0.07, dur: 0.30 },
+  sources: 5.10, pills: 5.25
 };
 
-/* ============================================================
-   SCENE 02 — layout and ticker. The SPEC geometry is the approved
-   still; these few numbers retune it for motion: a smaller square so
-   the lower half breathes, and larger function tags that step rather
-   than slide.
-   ============================================================ */
-const S2 = {
-  squareTop:  323,        // unchanged — the five arcs land on this edge
-  squareSize: 400,        // SPEC draws 480; smaller leaves room under it
-  captionGap: 22,         // caption sits this far below the square
-  stem: { top: 805, bottom: 915 },
-  pill: { fontSize: 34, padX: 36, gap: 30, height: 58, centerY: 963, radius: 29 },
-  ticker: {
-    t0: 4.3, t1: 18.9,    // the window the ticker fills
-    moveFrac: 0.26,       // share of each step spent travelling; the rest is the hold
-    bump: 0.13            // how much the held tag grows
-  }
-};
+/* Scene 04 beats. */
+const B04 = { lines: { start: 0.00, step: 0.09, dur: 1.10 }, line: 1.00, wordmark: 1.90, out: 2.95 };
 
-/* VO cues — stand-in captions, review aid only */
+/* Scene 01 beats. */
+const B01 = { arc: 0.00, bird: 0.60, wordmark: 1.10, rule: 1.60 };
+
+/* VO cues — stand-in captions, review aid only. */
 const CUES = [
-  [ 0.0,  3.5, 'Raven was created with the credit professional in mind.'],
-  [ 3.5, 12.7, 'With decades of experience in the credit space, we deeply understand the workflows that are important to your team, and above all, that accuracy is key.'],
-  [12.7, 16.2, 'Raven is the data and intelligence layer for corporate credit.'],
-  [16.2, 24.3, 'Bringing together deal documents, third-party data, firm conventions, analysis, and audit history to build intelligence that is available wherever your credit team works.'],
-  [24.3, 31.4, 'Our agentic framework propels any credit team further with deep analysis that you can speak with in natural language.'],
-  [31.4, 34.9, 'Our workflows build repeatable sequences for accuracy across your team,'],
-  [34.9, 38.8, 'and our audit capability ensures confidence in the numbers being pulled.'],
-  [38.8, 42.0, 'Raven — your partner in credit.']
+  [ 0.0,  5.0, 'Raven is built for corporate credit — around the way credit professionals actually work.'],
+  [ 5.0, 18.1, 'Raven brings together deal documents, third-party data, firm data and firm credit policies along with the analysis Raven has already completed — so the team can build on what’s known instead of starting over each time.'],
+  [18.1, 24.5, 'Through Raven Agent, credit teams can engage in natural language, apply repeatable workflows, and carry the analysis forward.'],
+  [24.5, 31.0, 'Every figure is sourced, traceable, and auditable — adding confidence to the analysis as the work moves forward.'],
+  [31.0, 34.5, 'Raven. The AI platform for corporate credit.']
 ];
+
+/* Stand-in captions at the size YouTube renders them: ~4.4% of frame
+   height, Roboto, white on a 75% black box, bottom-centred above the
+   player's control bar. The spec already keeps content clear of this
+   band (safeArea.bottom), so nothing is covered. Press S to hide. */
+const YTCAP = {
+  fontSize: 48, lineGap: 1.30, maxWidth: 1560,
+  blockBottom: 970, maxLines: 2,
+  bg: 'rgba(8,8,8,0.75)', pad: { x: 14, y: 6 }
+};
 
 /* ===================== easing & helpers ===================== */
 const cl  = (v,a,b)=> v<a?a : v>b?b : v;
 const seg = (t,s,d)=> d<=0 ? (t>=s?1:0) : cl((t-s)/d,0,1);
-const eo  = p => p<=0?0 : p>=1?1 : 1-Math.pow(2,-9*p);          // expo out
+const eo  = p => p<=0?0 : p>=1?1 : 1-Math.pow(2,-9*p);
 const eio = p => p<=0?0 : p>=1?1 : (p<.5 ? 4*p*p*p : 1-Math.pow(-2*p+2,3)/2);
 const E   = (t,s,d)=> eo(seg(t,s,d));
 const EI  = (t,s,d)=> eio(seg(t,s,d));
@@ -176,27 +147,45 @@ const NS='http://www.w3.org/2000/svg';
 const svg = document.getElementById('svg');
 const C   = SPEC.tokens.color;
 const TY  = SPEC.tokens.type;
+const FF  = SPEC.tokens.font;
 const col = k => (k && C[k]) ? C[k] : (k||'none');
 
 function mk(tag, attrs){
   const n = document.createElementNS(NS, tag);
-  if(attrs) for(const k in attrs){ if(attrs[k]!==null && attrs[k]!==undefined) n.setAttribute(k, attrs[k]); }
+  if(attrs) for(const k in attrs){ if(attrs[k]!=null) n.setAttribute(k, attrs[k]); }
   return n;
 }
 const ANCHOR   = { left:'start', center:'middle', right:'end' };
 const BASELINE = { top:'text-before-edge', middle:'central', bottom:'text-after-edge' };
-
-/* the export omits `trailStatus`; it measures as 37px / 400 / inkMuted in the reference PNG */
-if(!TY.trailStatus) TY.trailStatus = { size:37, weight:400, lineHeight:1.4, letterSpacing:0, color:'inkMuted', mono:false };
-
+const FACE = {
+  sans:  `"${FF.sans.family}",system-ui,sans-serif`,
+  mono:  `"${FF.mono.family}",ui-monospace,monospace`,
+  serif: `"${FF.serif.family}",Georgia,serif`
+};
 function applyType(el, styleKey){
   const s = TY[styleKey]; if(!s) return;
   el.setAttribute('font-size', s.size);
   el.setAttribute('font-weight', s.weight);
   el.setAttribute('fill', col(s.color));
-  el.setAttribute('font-family', s.mono ? '"IBM Plex Mono",monospace' : 'Commissioner,sans-serif');
+  el.setAttribute('font-family', FACE[s.face] || FACE.sans);
   if(s.letterSpacing) el.setAttribute('letter-spacing', s.letterSpacing);
 }
+
+/* arrowheads are declared on the line, not drawn as paths */
+(function defs(){
+  const d = mk('defs');
+  const AH = SPEC.arrowhead || {w:14,h:14};
+  for(const key of ['line','sage','muted','white']){
+    const m = mk('marker',{ id:'ah-'+key, viewBox:`0 0 ${AH.w} ${AH.h}`,
+      refX: AH.w, refY: AH.h/2, markerWidth: AH.w, markerHeight: AH.h,
+      orient:'auto-start-reverse', markerUnits:'userSpaceOnUse' });
+    m.appendChild(mk('path',{ d:`M 0 0 L ${AH.w} ${AH.h/2} L 0 ${AH.h}`,
+      fill:'none', stroke:col(key), 'stroke-width':1.5,
+      'stroke-linecap':'round','stroke-linejoin':'round' }));
+    d.appendChild(m);
+  }
+  svg.appendChild(d);
+})();
 
 function node(n){
   if(n.type==='rect'){
@@ -209,12 +198,14 @@ function node(n){
   if(n.type==='line'){
     const e = mk('line',{ x1:n.x1, y1:n.y1, x2:n.x2, y2:n.y2,
       stroke: col(n.stroke), 'stroke-width': n.strokeWidth||1 });
+    if(n.arrow==='end')   e.setAttribute('marker-end',   `url(#ah-${n.stroke})`);
+    if(n.arrow==='start') e.setAttribute('marker-start', `url(#ah-${n.stroke})`);
     return e;
   }
   if(n.type==='path'){
-    const e = mk('path',{ d:n.d, fill: n.fill==='none'||!n.fill ? 'none' : col(n.fill),
+    const e = mk('path',{ d:n.d, fill: (!n.fill||n.fill==='none') ? 'none' : col(n.fill),
       stroke: n.stroke?col(n.stroke):null, 'stroke-width': n.strokeWidth||0,
-      'stroke-linecap':'round', 'stroke-linejoin':'round' });
+      'stroke-linecap':'round','stroke-linejoin':'round' });
     if(n.opacity!=null) e.setAttribute('opacity', n.opacity);
     return e;
   }
@@ -229,345 +220,298 @@ function node(n){
   if(n.type==='image' && n.ref==='bird'){
     const g  = mk('g');
     const vb = SPEC.bird.viewBox.split(/\s+/).map(Number);
-    const sx = n.w/vb[2], sy = n.h/vb[3];
-    g.setAttribute('transform', `translate(${n.x} ${n.y}) scale(${sx} ${sy}) translate(${-vb[0]} ${-vb[1]})`);
-    const p = mk('path',{ d: SPEC.bird.d, fill: col(n.fill) });
-    g.appendChild(p);
+    g.setAttribute('transform',
+      `translate(${n.x} ${n.y}) scale(${n.w/vb[2]} ${n.h/vb[3]}) translate(${-vb[0]} ${-vb[1]})`);
+    g.appendChild(mk('path',{ d: SPEC.bird.d, fill: col(n.fill) }));
     if(n.opacity!=null) g.setAttribute('opacity', n.opacity);
     return g;
   }
   return mk('g');
 }
 
-function gridFor(frame){
-  const g = mk('g');
-  if(!frame.grid) return g;
-  const {step, color, opacity} = frame.grid;
-  for(let x=step; x<1920; x+=step) g.appendChild(mk('line',{x1:x,y1:0,x2:x,y2:1080,stroke:col(color),'stroke-width':1,opacity:opacity??1}));
-  for(let y=step; y<1080; y+=step) g.appendChild(mk('line',{x1:0,y1:y,x2:1920,y2:y,stroke:col(color),'stroke-width':1,opacity:opacity??1}));
-  return g;
-}
-
 const F = id => SPEC.frames.find(f=>f.id===id);
-
-/* table → elements, grouped by row key */
-function buildTable(tbl, parent){
-  const colOf = {}; tbl.columns.forEach(c=>colOf[c.key]=c);
-  const rowOf = {}; tbl.rows.forEach(r=>rowOf[r.key]=r);
-  const byRow = {};
-  tbl.cells.forEach(c=>{
-    if(c.value==null || !c.style) return;
-    const cc = colOf[c.col], rr = rowOf[c.row]; if(!cc||!rr) return;
-    const x = c.align==='left' ? cc.x : (c.align==='center' ? cc.x+cc.w/2 : cc.anchorX);
-    const e = mk('text',{ x, y: rr.y + rr.h/2,
-      'text-anchor': ANCHOR[c.align]||'start', 'dominant-baseline':'central' });
-    applyType(e, c.style);
-    e.textContent = c.value;
-    parent.appendChild(e);
-    (byRow[c.row] = byRow[c.row]||[]).push(e);
-    e.__cell = c;
-  });
-  return byRow;
-}
-
-/* ===================== scene builders ===================== */
-const SC = {};   // id -> { g, ...refs }
+const SC = {};
 
 function sceneG(frame){
   const g = mk('g',{class:'scene'});
   g.appendChild(mk('rect',{x:0,y:0,width:1920,height:1080,fill:col(frame.bg)}));
-  g.appendChild(gridFor(frame));
   svg.appendChild(g);
   return g;
 }
+function op(el,v){ el.style.opacity = v; }
+function tr(el,s){ el.setAttribute('transform', s); }
+function dash(el, p){
+  if(el.__len==null){ try{ el.__len = el.getTotalLength(); }catch(e){ el.__len = 0; } }
+  const L = el.__len || 0;
+  el.setAttribute('stroke-dasharray', L);
+  el.setAttribute('stroke-dashoffset', L*(1-p));
+}
+function typeInto(el, full, p){ el.textContent = full.slice(0, Math.round(full.length*p)); }
 
-/* ---------- 01 ---------- */
-(function(){
-  const f = F('01');
-  const g = sceneG(f);
-  const inner = mk('g',{class:'inner'}); g.appendChild(inner);
-  const bird = node(f.nodes[0]); inner.appendChild(bird);
-  SC['01'] = { g, inner, bird };
-})();
-
-/* ---------- 02 : one continuous dark scene ---------- */
-(function(){
-  const f2a=F('02a'), f2b=F('02b'), f2c=F('02c'), f2d=F('02d');
-  const g = sceneG(f2d);
-  const inner = mk('g',{class:'inner'}); g.appendChild(inner);
-
-  // five source groups (label + two bars) — from 02a, nodes 0..14 in triples
-  const sources = [];
-  for(let i=0;i<5;i++){
-    const sg = mk('g');
-    for(let k=0;k<3;k++) sg.appendChild(node(f2a.nodes[i*3+k]));
-    inner.appendChild(sg); sources.push(sg);
-  }
-  // five arcs — 02b nodes 0..4
-  const arcs = [];
-  for(let i=0;i<5;i++){
-    const p = node(f2b.nodes[i]);
-    inner.appendChild(p); arcs.push(p);
-  }
-  // square + bird + caption, resized from S2 about the square's top edge so the
-  // arcs still land where SPEC puts them
-  const spec0 = f2c.nodes.find(n=>n.type==='rect' && n.w===480);
-  const SZ = S2.squareSize, kSq = SZ/spec0.w, TOP = S2.squareTop;
-  const sqSpec = Object.assign({}, spec0, { x: 960 - SZ/2, y: TOP, w: SZ, h: SZ });
-  const square = node(sqSpec);
-  const squareG = mk('g'); squareG.appendChild(square); inner.appendChild(squareG);
-
-  const b0 = f2c.nodes.find(n=>n.type==='image');
-  const bird = node(Object.assign({}, b0, {
-    x: 960 + (b0.x - 960)*kSq, y: TOP + (b0.y - spec0.y)*kSq,
-    w: b0.w*kSq, h: b0.h*kSq }));
-  inner.appendChild(bird);
-
-  const capY = TOP + SZ + S2.captionGap;
-  const caption = node(Object.assign({}, f2c.nodes.find(n=>n.style==='squareCaption'), { y: capY }));
-  inner.appendChild(caption);
-
-  // outputs — the side axis follows the square's new centre
-  const axisY = TOP + SZ/2, edgeL = 960 - SZ/2, edgeR = 960 + SZ/2;
-  const l0 = f2d.nodes.find(n=>n.type==='line' && n.x2===425);
-  const r0 = f2d.nodes.find(n=>n.type==='line' && n.x2===1495);
-  const d0 = f2d.nodes.find(n=>n.type==='line' && n.x1===960 && n.y1===881);
-  const lineL = node(Object.assign({}, l0, { x1: edgeL, y1: axisY, y2: axisY }));
-  const lineR = node(Object.assign({}, r0, { x1: edgeR, y1: axisY, y2: axisY }));
-  const lineD = node(Object.assign({}, d0, { y1: S2.stem.top, y2: S2.stem.bottom }));
-  [lineL,lineR,lineD].forEach(e=>inner.appendChild(e));
-
-  const ul = f2d.nodes.find(n=>n.value==='Underwriting');
-  const ur = f2d.nodes.find(n=>n.value==='Monitoring');
-  const labDY = axisY - 563;                       // SPEC put the labels against y=563
-  const labL = node(Object.assign({}, ul, { y: ul.y + labDY }));
-  const labR = node(Object.assign({}, ur, { y: ur.y + labDY }));
-  inner.appendChild(labL); inner.appendChild(labR);
-
-  // pill ticker — the functions, at S2.pill size
-  const P = S2.pill, PY = P.centerY - P.height/2;
-  const pillRow = mk('g'); inner.appendChild(pillRow);
-  const pills = f2d.pillQueue.map(label=>{
-    const pg = mk('g');
-    const r  = mk('rect',{ x:0, y:PY, width:10, height:P.height, rx:P.radius, fill:'none',
-      stroke:col('pillBorderDim'), 'stroke-width':2 });
-    const t  = mk('text',{ x:0, y:P.centerY, 'text-anchor':'middle','dominant-baseline':'central',
-      'font-family':'Commissioner,sans-serif', 'font-size':P.fontSize, 'font-weight':400,
-      fill: col('pillTextDim') });
-    t.textContent = label;
-    pg.appendChild(r); pg.appendChild(t); pillRow.appendChild(pg);
-    return { g:pg, rect:r, text:t, label };
-  });
-  let pillLaid = false;
-  function layoutPills(){
-    let x = 0;
-    pills.forEach(p=>{
-      const tw = p.text.getComputedTextLength() || 160;
-      const w  = Math.round(tw + P.padX*2);
-      p.rect.setAttribute('x', x); p.rect.setAttribute('width', w);
-      p.text.setAttribute('x', x + w/2);
-      p.w = w; p.cx = x + w/2;
-      x += w + P.gap;
-    });
-    pillLaid = true;
-  }
-  const agentSpec = f2d.nodes.find(n=>n.style==='agent');
-  const agent = node(agentSpec);
-  const agentG = mk('g'); agentG.appendChild(agent); inner.appendChild(agentG);
-
-  // "Agent" grows and whitens the frame — the handover into the light scene 03
-  const white = mk('rect',{x:0,y:0,width:1920,height:1080,fill:'#ffffff',opacity:0});
-  g.appendChild(white);
-
-  SC['02'] = { g, inner, sources, arcs, squareG, square, sqSpec, bird, caption,
-               lineL, lineR, lineD, labL, labR, pillRow, pills, agent, agentG, agentSpec, white,
-               layout:()=>{ if(!pillLaid) layoutPills(); } };
-})();
-
-/* ---------- 03 : one continuous light scene ---------- */
-(function(){
-  const f3a=F('03a'), f3b=F('03b'), f3c=F('03c'), f3d=F('03d');
-  const g = sceneG(f3b);
-  const inner = mk('g',{class:'inner'}); g.appendChild(inner);
-
-  // --- three request bubbles (only one visible at a time) ---
-  function bubble(frame){
-    const bg = mk('g');
-    const r  = node(frame.nodes[0]);
-    const tSpec = frame.nodes[1];
-    const t  = node(Object.assign({}, tSpec, {value:''}));
-    bg.appendChild(r); bg.appendChild(t);
-    inner.appendChild(bg);
-    return { g:bg, rect:r, text:t, full:tSpec.value };
-  }
-  const b1 = bubble(f3a), b2 = bubble(f3c), b3 = bubble(f3d);
-
-  // --- agent status lines (03a) ---
-  const statuses = [];
-  for(let i=0;i<3;i++){
-    const sg = mk('g');
-    for(let k=0;k<3;k++) sg.appendChild(node(f3a.nodes[2+i*3+k]));
-    inner.appendChild(sg); statuses.push(sg);
-  }
-  const STATUS_Y = [187,241,295];          // original tops
-  const STATUS_KEEP_Y = 184;               // where the surviving line settles (matches the PNG)
-
-  // --- walk table block (03b) ---
-  const gWalk = mk('g'); inner.appendChild(gWalk);
-  gWalk.appendChild(node(f3b.nodes[2]));                       // legend
-  const walkLegend = gWalk.lastChild;
-  gWalk.appendChild(node(f3b.nodes[3]));                       // card
-  const highlights = [];                                       // 03c accent rows
-  const HL_H = 45;                                           // as measured off the reference PNG
-  f3c.nodes.filter(n=>n.type==='rect' && n.fill==='accentSoft').forEach(n=>{
-    const e = node(Object.assign({}, n, { y: n.y + (n.h - HL_H)/2, h: HL_H }));
-    e.setAttribute('opacity',0); gWalk.appendChild(e); highlights.push(e);
-  });
-  f3b.nodes.filter(n=>n.type==='line').forEach(n=>gWalk.appendChild(node(n)));
-  // label bars + type tags, grouped per adjustment row
-  const adjRows = [];
-  [[6,7,8],[9,10,11],[12,13,14]].forEach(ix=>{
-    const rg = mk('g'); ix.forEach(i=>rg.appendChild(node(f3b.nodes[i]))); gWalk.appendChild(rg); adjRows.push(rg);
-  });
-  const walkCells = buildTable(f3b.table, gWalk);
-  // the haircut values, keyed row|col
-  const HAIR = {};
-  f3c.table.cells.forEach(c=>{ if(c.value!=null) HAIR[c.row+'|'+c.col]=c.value; });
-
-  // --- cap table block (03d) ---
-  const gCap = mk('g'); inner.appendChild(gCap);
-  gCap.appendChild(node(f3d.nodes[2]));                        // card
-  const capAccent = node(f3d.nodes[3]); capAccent.setAttribute('opacity',0); gCap.appendChild(capAccent);
-  f3d.nodes.filter(n=>n.type==='line').forEach(n=>gCap.appendChild(node(n)));
-  const capCells = buildTable(f3d.table, gCap);
-
-  SC['03'] = { g, inner, b1,b2,b3, statuses, STATUS_Y, STATUS_KEEP_Y,
-               gWalk, walkLegend, adjRows, walkCells, highlights, HAIR,
-               gCap, capCells, capAccent };
-})();
-
-/* ---------- 04 ---------- */
-(function(){
-  const f = F('04');
-  const g = sceneG(f);
-  const inner = mk('g',{class:'inner'}); g.appendChild(inner);
-
-  const bigNum   = node(f.nodes.find(n=>n.style==='bigNumber'));
-  const numG     = mk('g'); numG.appendChild(bigNum); inner.appendChild(numG);
-  const accentBar= node(f.nodes.find(n=>n.type==='rect' && n.fill==='accent'));
-  inner.appendChild(accentBar);
-  const numCap   = node(f.nodes.find(n=>n.style==='bigNumberCaption'));
-  inner.appendChild(numCap);
-
-  const conn = node(f.nodes.find(n=>n.type==='line'));
-  inner.appendChild(conn);
-
-  const statusG = mk('g');
-  f.nodes.slice(0,3).forEach(n=>statusG.appendChild(node(n)));
-  inner.appendChild(statusG);
-
-  const cardG = mk('g');
-  cardG.appendChild(node(f.nodes.find(n=>n.type==='rect' && n.fill==='surface')));
-  /* the exported doc-icon paths are drawn at ~2x the size they appear at in the
-     reference PNG (44x56 at 209,491) — scale them back so they clear the title */
-  const icon = mk('g',{ transform:'translate(209 491) scale(0.52) translate(-207 -487)',
-                        'vector-effect':'non-scaling-stroke' });
-  f.nodes.filter(n=>n.type==='path').forEach(n=>{ const e=node(n); e.setAttribute('vector-effect','non-scaling-stroke'); icon.appendChild(e); });
-  cardG.appendChild(icon);
-  cardG.appendChild(node(f.nodes.find(n=>n.style==='sourceTitle')));
-  cardG.appendChild(node(f.nodes.find(n=>n.style==='sourcePage')));
-  inner.appendChild(cardG);
-
-  SC['04'] = { g, inner, numG, bigNum, accentBar, numCap, conn, statusG, cardG };
-})();
-
-/* ---------- 05 ---------- */
-(function(){
-  const f = F('05');
-  const g = sceneG(f);
-  const inner = mk('g',{class:'inner'}); g.appendChild(inner);
-  const bird = node(f.nodes[0]);           inner.appendChild(bird);
-  const mark = node(f.nodes[1]);           inner.appendChild(mark);
-  const tag  = node(f.nodes[2]);           inner.appendChild(tag);
-  const black= mk('rect',{x:0,y:0,width:1920,height:1080,fill:'#000',opacity:0});
-  g.appendChild(black);
-  SC['05'] = { g, inner, bird, mark, tag, black };
-})();
-
-/* ===================== safe-area fit ===================== */
-/* One constant transform per scene: scale its content box into the safe area
-   and centre it there. Constant, so nothing drifts while the scene animates. */
-(function fitScenesIntoSafeArea(){
-  const availW = 1920 - SAFE.side*2;
-  const availH = 1080 - SAFE.top - SAFE.bottom;
-  const cx = 960, cy = SAFE.top + availH/2;
-  for(const id in BOXES){
-    const b = BOXES[id]; const sc = SC[id]; if(!sc) continue;
-    const w = b.x2-b.x1, h = b.y2-b.y1;
-    const k = Math.min(1, availW/w, availH/h);
-    const bx = (b.x1+b.x2)/2, by = (b.y1+b.y2)/2;
-    sc.safe = `translate(${cx - bx*k} ${cy - by*k}) scale(${k})`;
-    sc.inner.setAttribute('transform', sc.safe);
-    sc.inner.__safe = sc.safe;
-  }
-})();
-/* scene animations set transforms on `inner`; keep the safe fit in front of them */
-function trInner(sc, extra){
-  sc.inner.setAttribute('transform', sc.safe + (extra ? ' ' + extra : ''));
+/* colour interpolation, for the panel stepping back and forward again */
+function hex2rgb(h){ return [parseInt(h.slice(1,3),16), parseInt(h.slice(3,5),16), parseInt(h.slice(5,7),16)]; }
+function mixCol(a, b, p){
+  const A=hex2rgb(col(a)), B=hex2rgb(col(b));
+  return `rgb(${Math.round(lerp(A[0],B[0],p))},${Math.round(lerp(A[1],B[1],p))},${Math.round(lerp(A[2],B[2],p))})`;
 }
 
-/* ===================== YouTube-style caption layer ===================== */
+/* ---------------- scene 01 ---------------- */
+(function(){
+  const f = F('01'), g = sceneG(f);
+  const inner = mk('g',{class:'inner'}); g.appendChild(inner);
+  const arc  = node(f.nodes[0]);  inner.appendChild(arc);
+  const bird = node(f.nodes[1]);  inner.appendChild(bird);
+  const mark = node(f.nodes[2]);  inner.appendChild(mark);
+  const r0   = f.nodes[3];
+  const ruleG = mk('g'); ruleG.appendChild(node(r0)); inner.appendChild(ruleG);
+  SC['01'] = { g, inner, arc, bird, mark, ruleG, r0 };
+})();
+
+/* ---------------- scene 02 : one continuous scene ---------------- */
+(function(){
+  const f = F('02e'), g = sceneG(f);
+  const inner = mk('g',{class:'inner'}); g.appendChild(inner);
+  const N = f.nodes;
+
+  const arcs = N.slice(0,5).map(n=>{ const e=node(n); inner.appendChild(e); return e; });
+
+  // five sources: each is its two rules plus a label
+  const srcRects = N.filter(n=>n.type==='rect' && n.h===4);
+  const srcTexts = N.filter(n=>n.style==='sourceLabel');
+  const sources = srcTexts.map((t,i)=>{
+    const sg = mk('g');
+    // the fifth source has one sage rule, the others have two
+    const mine = srcRects.filter(r => Math.abs(r.x - (t.x - 60)) < 60);
+    mine.forEach(r=>sg.appendChild(node(r)));
+    sg.appendChild(node(t));
+    inner.appendChild(sg);
+    return sg;
+  });
+
+  const nodeDot = node(F('02b').nodes.find(n=>n.type==='rect' && n.w===10));
+  inner.appendChild(nodeDot);
+
+  const sqSpec = N.find(n=>n.type==='rect' && n.w===400 && n.h===400);
+  const squareG = mk('g'); squareG.appendChild(node(sqSpec)); inner.appendChild(squareG);
+  const bird = node(N.find(n=>n.type==='image')); inner.appendChild(bird);
+  const wordmark = node(N.find(n=>n.style==='squareWordmark')); inner.appendChild(wordmark);
+  const sub = node(N.find(n=>n.style==='squareSub')); inner.appendChild(sub);
+
+  const lines = N.filter(n=>n.type==='line');
+  const lineL = node(lines[0]), lineR = node(lines[1]);
+  inner.appendChild(lineL); inner.appendChild(lineR);
+  const labL = node(N.find(n=>n.value==='Underwriting'));
+  const labR = node(N.find(n=>n.value==='Monitoring'));
+  inner.appendChild(labL); inner.appendChild(labR);
+
+  /* ---- the workflow rail ---- */
+  const R = f.rail;
+  const railG = mk('g'); inner.appendChild(railG);
+  const barSpec = N.find(n=>n.type==='rect' && n.w===1800);
+  const bar = node(barSpec); railG.appendChild(bar);
+
+  const leadChev = mk('path',{ d:R.leadChevron.d, fill:'none',
+    stroke:col(R.leadChevron.stroke), 'stroke-width':R.leadChevron.strokeWidth,
+    'stroke-linecap':'round','stroke-linejoin':'round',
+    transform:`translate(${R.leadChevron.x} ${R.leadChevron.y - 8})` });
+  railG.appendChild(leadChev);
+
+  const dots = R.dot.cx.map(cx=>{
+    const e = mk('circle',{ cx, cy:R.dot.cy, r:R.dot.r, fill:col(R.dot.fill) });
+    railG.appendChild(e); return e;
+  });
+
+  const items = R.items.map((label,i)=>{
+    const t = mk('text',{ x:R.dot.cx[i], y:R.itemBaselineY,
+      'text-anchor':'middle','dominant-baseline':'central' });
+    applyType(t, R.itemStyle);
+    t.textContent = label;
+    railG.appendChild(t);
+    return t;
+  });
+
+  // chevrons sit midway between neighbouring items
+  const chevs = [];
+  for(let i=0;i<R.dot.cx.length-1;i++){
+    const e = mk('path',{ d:R.chevron.d, fill:'none', stroke:col(R.chevron.stroke),
+      'stroke-width':R.chevron.strokeWidth, 'stroke-linecap':'round','stroke-linejoin':'round' });
+    railG.appendChild(e); chevs.push(e);
+  }
+
+  const underline = mk('rect',{ x:R.activeUnderline.x, y:R.activeUnderline.y,
+    width:R.activeUnderline.w, height:R.activeUnderline.h, fill:col(R.activeUnderline.fill) });
+  railG.appendChild(underline);
+
+  const A = R.agent;
+  const agentG = mk('g');
+  agentG.appendChild(mk('rect',{ x:A.x, y:R.y - A.h/2, width:A.w, height:A.h, rx:A.r,
+    fill: A.fill==='none'?'none':col(A.fill), stroke:col(A.stroke), 'stroke-width':A.strokeWidth }));
+  agentG.appendChild(mk('circle',{ cx:A.dot.cx, cy:A.dot.cy, r:A.dot.r, fill:col(A.dot.fill) }));
+  const agentT = mk('text',{ x:A.textX, y:A.textY, 'text-anchor':ANCHOR[A.textAlign]||'start',
+    'dominant-baseline':'central' });
+  applyType(agentT, A.style); agentT.textContent = A.label;
+  agentG.appendChild(agentT); railG.appendChild(agentG);
+
+  let laid = false;
+  function layoutRail(){
+    // place the chevrons once the item widths are real
+    for(let i=0;i<chevs.length;i++){
+      const w0 = items[i].getComputedTextLength(), w1 = items[i+1].getComputedTextLength();
+      const right = R.dot.cx[i] + w0/2, left = R.dot.cx[i+1] - w1/2;
+      chevs[i].setAttribute('transform', `translate(${(right+left)/2 - 3.5} ${R.y - 8})`);
+    }
+    laid = true;
+  }
+  function itemWidth(i){ return items[i].getComputedTextLength() || 160; }
+
+  SC['02'] = { g, inner, arcs, sources, nodeDot, squareG, sqSpec, bird, wordmark, sub,
+               lineL, lineR, labL, labR, railG, bar, leadChev, dots, items, chevs,
+               underline, agentG, R, itemWidth, layout:()=>{ if(!laid) layoutRail(); } };
+})();
+
+/* ---------------- scene 03 : one continuous scene ---------------- */
+(function(){
+  const f3a=F('03a'), f3b=F('03b'), f3c=F('03c');
+  const g = sceneG(f3a);
+  const inner = mk('g',{class:'inner'}); g.appendChild(inner);
+
+  /* Everything except the document card lives in one group that slides
+     +240 on the last beat, exactly as 03b → 03c does. */
+  const SHIFT = f3c.table.card.x - f3a.table.card.x;      // 240
+  const moving = mk('g'); inner.appendChild(moving);
+
+  // query capsule, sparkle, label, check — authored at the 03b position
+  const q = f3b.nodes;
+  const queryG = mk('g'); moving.appendChild(queryG);
+  queryG.appendChild(node(q[0]));
+  queryG.appendChild(node(q[1]));
+  const queryT = node(Object.assign({}, q[2], {value:''}));
+  queryG.appendChild(queryT);
+  const checkG = mk('g'); moving.appendChild(checkG);
+  checkG.appendChild(node(q[3])); checkG.appendChild(node(q[4]));
+
+  // panel
+  const T = f3a.table;
+  const cardG = mk('g'); moving.appendChild(cardG);
+  cardG.appendChild(node(f3a.nodes[0]));
+  const eyebrow = node(f3a.nodes[1]); moving.appendChild(eyebrow);
+  const title   = node(f3a.nodes[2]); moving.appendChild(title);
+  const rule    = node(f3a.nodes[3]); moving.appendChild(rule);
+  const band    = node(f3a.nodes[4]); moving.appendChild(band);
+
+  // table cells, grouped by row, built from the table block
+  const colOf={}; T.columns.forEach(c=>colOf[c.key]=c);
+  const rowOf={}; T.rows.forEach(r=>rowOf[r.key]=r);
+  const byRow={};
+  const DIM = { tableCaption:'tableCaptionDim', colHead:'colHeadDim', figure:'figureDim',
+                rowLabel:'rowLabelDim', rowValue:'rowValueDim', multiple:'multipleDim',
+                panelEyebrow:'panelEyebrowDim', panelTitle:'panelTitleDim' };
+  function tinted(el, styleKey){
+    el.__bright = TY[styleKey].color;
+    el.__dim    = TY[DIM[styleKey]] ? TY[DIM[styleKey]].color : TY[styleKey].color;
+  }
+  tinted(eyebrow,'panelEyebrow'); tinted(title,'panelTitle');
+  T.cells.forEach(c=>{
+    if(c.value==null || !c.style) return;
+    const cc=colOf[c.col], rr=rowOf[c.row]; if(!cc||!rr) return;
+    const x = c.align==='left' ? cc.x : (c.align==='center' ? cc.anchorX : cc.anchorX);
+    const e = mk('text',{ x, y: rr.y + rr.h/2,
+      'text-anchor':ANCHOR[c.align]||'start', 'dominant-baseline':'central' });
+    applyType(e, c.style); e.textContent = c.value;
+    tinted(e, c.style);
+    moving.appendChild(e);
+    (byRow[c.row] = byRow[c.row]||[]).push(e);
+  });
+
+  // SOURCES row — authored at the 03c position, so pull it back by SHIFT
+  const srcEyebrow = node(Object.assign({}, f3c.nodes.find(n=>n.style==='sourcesEyebrow'), {}));
+  srcEyebrow.setAttribute('x', Number(f3c.nodes.find(n=>n.style==='sourcesEyebrow').x) - SHIFT);
+  moving.appendChild(srcEyebrow);
+  const pills = f3c.sourcePills.map(p=>{
+    const pg = mk('g');
+    pg.appendChild(mk('rect',{ x:p.x - SHIFT, y:p.y, width:p.w, height:p.h, rx:p.r,
+      fill: p.fill==='none'?'none':col(p.fill), stroke:col(p.stroke), 'stroke-width':p.strokeWidth }));
+    const t = mk('text',{ x:p.textX - SHIFT, y:p.textY, 'text-anchor':'start','dominant-baseline':'central' });
+    applyType(t, p.style); t.textContent = p.label;
+    pg.appendChild(t); moving.appendChild(pg);
+    return pg;
+  });
+
+  /* document card — enters from the left, outside the moving group */
+  const D = f3c.docCard;
+  const docG = mk('g'); inner.appendChild(docG);
+  docG.appendChild(mk('rect',{ x:D.card.x, y:D.card.y, width:D.card.w, height:D.card.h, rx:D.card.r,
+    fill:col(D.card.fill), stroke:col(D.card.stroke), 'stroke-width':D.card.strokeWidth }));
+  const docIcon = mk('path',{ d:D.icon.d, fill:'none', stroke:col(D.icon.stroke),
+    'stroke-width':D.icon.strokeWidth, 'stroke-linecap':'round','stroke-linejoin':'round' });
+  docG.appendChild(docIcon);
+  const docTitle = node(Object.assign({type:'text'}, D.title)); docG.appendChild(docTitle);
+  const docPages = node(Object.assign({type:'text'}, D.pages)); docG.appendChild(docPages);
+  const docLines = D.lines.map(l=>{
+    const e = mk('rect',{ x:l.x, y:l.y, width:l.w, height:l.h, fill:col(l.fill) });
+    docG.appendChild(e); return e;
+  });
+
+  SC['03'] = { g, inner, moving, SHIFT, queryG, queryT, queryFull:q[2].value, checkG,
+               cardG, eyebrow, title, rule, band, byRow,
+               srcEyebrow, pills, docG, docIcon, docTitle, docPages, docLines };
+})();
+
+/* ---------------- scene 04 ---------------- */
+(function(){
+  const f = F('04'), g = sceneG(f);
+  const inner = mk('g',{class:'inner'}); g.appendChild(inner);
+  const rays = f.nodes.filter(n=>n.type==='path').map(n=>{ const e=node(n); inner.appendChild(e); return e; });
+  const lineSpec = f.nodes.find(n=>n.style==='closingLine');
+  const lineG = mk('g'); const lineT = node(lineSpec); lineG.appendChild(lineT); inner.appendChild(lineG);
+  const mark = node(f.nodes.find(n=>n.style==='closingWordmark')); inner.appendChild(mark);
+  const black = mk('rect',{x:0,y:0,width:1920,height:1080,fill:'#000',opacity:0}); g.appendChild(black);
+  SC['04'] = { g, inner, rays, lineG, lineT, mark, black };
+})();
+
+/* ===================== caption layer ===================== */
 const CAPL = (function(){
-  const g = mk('g',{ id:'ytcap' });
-  svg.appendChild(g);
+  const g = mk('g',{ id:'ytcap' }); svg.appendChild(g);
   const lines = [];
   for(let i=0;i<YTCAP.maxLines;i++){
     const box = mk('rect',{ rx:3, fill:YTCAP.bg });
     const t   = mk('text',{ 'text-anchor':'middle','dominant-baseline':'central',
       'font-family':'Roboto,Arial,Helvetica,sans-serif','font-size':YTCAP.fontSize,
       'font-weight':400, fill:'#ffffff' });
-    g.appendChild(box); g.appendChild(t);
-    lines.push({box,t});
+    g.appendChild(box); g.appendChild(t); lines.push({box,t});
   }
   const probe = mk('text',{ 'font-family':'Roboto,Arial,Helvetica,sans-serif',
     'font-size':YTCAP.fontSize, visibility:'hidden' });
   svg.appendChild(probe);
   const wcache = {};
-  function width(str){
-    if(wcache[str]!=null) return wcache[str];
-    probe.textContent = str;
-    return (wcache[str] = probe.getComputedTextLength());
+  function width(s){
+    if(wcache[s]!=null) return wcache[s];
+    probe.textContent = s;
+    return (wcache[s] = probe.getComputedTextLength());
   }
   function wrapAt(text, maxW){
     const words = text.split(/\s+/), out = []; let cur = '';
     for(const w of words){
       const next = cur ? cur+' '+w : w;
-      if(cur && width(next) > maxW){ out.push(cur); cur = w; }
-      else cur = next;
+      if(cur && width(next) > maxW){ out.push(cur); cur = w; } else cur = next;
     }
     if(cur) out.push(cur);
     return out;
   }
-  /* A cue that wraps to an odd number of lines would leave a one-word caption
-     dangling at the end. Narrow the measure until the lines divide evenly. */
   function wrap(text){
-    const tries = [1, 0.90, 0.82, 0.74, 0.66];
     let first = null;
-    for(const f of tries){
+    for(const f of [1,0.90,0.82,0.74,0.66]){
       const ls = wrapAt(text, YTCAP.maxWidth*f);
       if(!first) first = ls;
       if(ls.length % YTCAP.maxLines === 0) return ls;
     }
     return first;
   }
-  /* A long VO line is not one caption on YouTube — it is several in sequence.
-     Split each cue into <=maxLines chunks and share its time between them. */
   let CAPS = null;
   function build(){
     CAPS = [];
     CUES.forEach(([t0,t1,text])=>{
-      const ls = wrap(text);
-      const groups = [];
+      const ls = wrap(text), groups = [];
       for(let i=0;i<ls.length;i+=YTCAP.maxLines) groups.push(ls.slice(i,i+YTCAP.maxLines));
       const d = (t1-t0)/groups.length;
       groups.forEach((grp,i)=> CAPS.push([t0+i*d, t0+(i+1)*d, grp]));
@@ -583,12 +527,11 @@ const CAPL = (function(){
       const str = grp[i];
       if(str==null){ ln.box.setAttribute('opacity',0); ln.t.setAttribute('opacity',0); return; }
       ln.box.setAttribute('opacity',1); ln.t.setAttribute('opacity',1);
-      // the block's bottom line sits on blockBottom; extra lines stack upward
-      const cyL = YTCAP.blockBottom - (grp.length-1-i)*lh - lh/2;
+      const cy = YTCAP.blockBottom - (grp.length-1-i)*lh - lh/2;
       const w = width(str);
-      ln.t.setAttribute('x',960); ln.t.setAttribute('y',cyL); ln.t.textContent = str;
+      ln.t.setAttribute('x',960); ln.t.setAttribute('y',cy); ln.t.textContent = str;
       ln.box.setAttribute('x', 960 - w/2 - YTCAP.pad.x);
-      ln.box.setAttribute('y', cyL - lh/2 + 1);
+      ln.box.setAttribute('y', cy - lh/2 + 1);
       ln.box.setAttribute('width',  w + YTCAP.pad.x*2);
       ln.box.setAttribute('height', lh - 2);
     });
@@ -597,258 +540,182 @@ const CAPL = (function(){
 })();
 
 /* ===================== per-scene animation ===================== */
-function op(el,v){ el.style.opacity = v; }
-function tr(el,s){ el.setAttribute('transform', s); }
-
-function dash(el, p){                      // draw a path / line 0..1
-  if(el.__len==null){
-    try{ el.__len = el.getTotalLength(); }catch(e){ el.__len = 0; }
-  }
-  const L = el.__len || 0;
-  el.setAttribute('stroke-dasharray', L);
-  el.setAttribute('stroke-dashoffset', L*(1-p));
-}
-
-function typeInto(el, full, p){
-  const n = Math.round(full.length * p);
-  el.textContent = full.slice(0, n);
-}
-
 const ANIM = {
 
   '01'(lt, dur){
     const s = SC['01'];
-    const p = E(lt, 0, 1.6);
-    op(s.bird, 0.88 * p);
-    const k = lerp(1.07, 1.0, EI(lt,0,2.6));
-    trInner(s, `translate(960 540) scale(${k}) translate(-960 -540)`);
+    const a = EI(lt, B01.arc, 1.6);
+    dash(s.arc, a); op(s.arc, a>0?1:0);
+    op(s.bird, E(lt, B01.bird, 1.0));
+    op(s.mark, E(lt, B01.wordmark, 0.8));
+    const r = EI(lt, B01.rule, 0.6);
+    const cx = s.r0.x + s.r0.w/2;
+    tr(s.ruleG, `translate(${cx} 0) scale(${r} 1) translate(${-cx} 0)`);
+    op(s.ruleG, r>0?1:0);
+    const k = lerp(1.05, 1.0, EI(lt, 0, 3.0));
+    tr(s.inner, `translate(960 540) scale(${k}) translate(-960 -540)`);
   },
 
   '02'(lt, dur){
-    const s = SC['02'];
-    s.layout();
+    const s = SC['02']; s.layout();
+    const R = s.R;
 
-    // 2a — sources appear one by one (0 → 1.8)
     s.sources.forEach((g,i)=>{
-      const st = 0.15 + i*0.28;
-      const p  = E(lt, st, 0.5);
-      op(g, p);
-      tr(g, `translate(0 ${lerp(-14,0,p)})`);
+      const p = E(lt, B02.source.start + i*B02.source.step, B02.source.dur);
+      op(g, p); tr(g, `translate(0 ${lerp(-12,0,p)})`);
     });
 
-    // 2b — arcs draw (1.9 → 2.8)
-    s.arcs.forEach((p,i)=>{
-      const st = 1.9 + i*0.09;
-      const k  = EI(lt, st, 0.55);
-      dash(p, k); op(p, k>0?1:0);
+    s.arcs.forEach((e,i)=>{
+      const k = EI(lt, B02.arc.start + i*B02.arc.step, B02.arc.dur);
+      dash(e, k); op(e, k>0?1:0);
     });
+    op(s.nodeDot, E(lt, B02.node, 0.4));
 
-    // 2c — square, bird, caption (2.85 → 3.7)
-    const sq = EI(lt, 2.85, 0.45);
+    const sq = EI(lt, B02.square, 0.75);
     const cx = s.sqSpec.x + s.sqSpec.w/2, cy = s.sqSpec.y + s.sqSpec.h/2;
-    tr(s.squareG, `translate(${cx} ${cy}) scale(${lerp(0.04,1,sq)} ${lerp(0.9,1,sq)}) translate(${-cx} ${-cy})`);
-    op(s.squareG, sq>0?1:0);
-    op(s.bird,    E(lt,3.1,0.4));
-    op(s.caption, E(lt,3.35,0.35));
+    tr(s.squareG, `translate(${cx} ${cy}) scale(${lerp(0.9,1,sq)}) translate(${-cx} ${-cy})`);
+    op(s.squareG, sq);
+    op(s.bird,     E(lt, B02.bird, 0.6));
+    op(s.wordmark, E(lt, B02.wordmark, 0.55));
+    op(s.sub,      E(lt, B02.sub, 0.5));
 
-    // 2d — outputs (3.6 → 4.25)
-    const dl = EI(lt,3.6,0.4), dr = EI(lt,3.6,0.4), dd = EI(lt,3.95,0.3);
+    const dl = EI(lt, B02.exit.line, B02.exit.dur);
     dash(s.lineL, dl); op(s.lineL, dl>0?1:0);
-    dash(s.lineR, dr); op(s.lineR, dr>0?1:0);
-    dash(s.lineD, dd); op(s.lineD, dd>0?1:0);
-    op(s.labL, E(lt,3.8,0.35));
-    op(s.labR, E(lt,3.8,0.35));
+    dash(s.lineR, dl); op(s.lineR, dl>0?1:0);
+    op(s.labL, E(lt, B02.exit.label, 0.5));
+    op(s.labR, E(lt, B02.exit.label, 0.5));
 
-    /* The build is over by ~4.3s; the ticker carries the rest of the scene. It
-       steps rather than slides: a quick glide onto each function, then a hold
-       where that tag grows slightly — the pause is what marks it as one of ours. */
-    const TK = S2.ticker, n = s.pills.length;
-    const cycle = (TK.t1 - TK.t0) / n;
-    const raw   = cl((lt - TK.t0) / cycle, 0, n - 0.0001);
-    const k     = Math.floor(raw), u = raw - k;              // u: 0..1 within this step
-    const glide = u > 1 - TK.moveFrac
-                ? eio((u - (1 - TK.moveFrac)) / TK.moveFrac)
-                : 0;
-    const i0 = Math.min(k, n-1), i1 = Math.min(k+1, n-1);
-    const cxNow = lerp(s.pills[i0].cx, s.pills[i1].cx, glide);
-    tr(s.pillRow, `translate(${960 - cxNow} 0)`);
+    /* ---- the rail: stationary breadcrumb, the active step walks it ---- */
+    const barIn = E(lt, B02.rail.bar, 0.6);
+    op(s.railG, barIn);
+    tr(s.railG, `translate(0 ${lerp(16,0,barIn)})`);
 
-    // the held tag swells in, sits, and relaxes just before the next glide
-    const grow = eo(seg(u, 0.02, 0.16)) * (1 - eio(seg(u, 1 - TK.moveFrac - 0.04, 0.16)));
+    op(s.agentG, E(lt, B02.rail.agent, 0.7));
+    const dotsIn = E(lt, B02.rail.dots, 0.5);
+    op(s.leadChev, dotsIn);
+    s.dots.forEach(d=>{ d.style.opacity = dotsIn; });
+    s.chevs.forEach(c=>{ c.style.opacity = dotsIn; });
+    s.items.forEach(t=>{ t.style.opacity = dotsIn; });
 
-    const rowFade = 1 - seg(lt, TK.t1, 0.35);
-    const shown   = E(lt, TK.t0-0.3, 0.4);
-    op(s.pillRow, shown * rowFade);
-    s.pills.forEach((p,i)=>{
-      const dx = Math.abs(p.cx - cxNow);
-      const near = cl(1 - dx/560, 0, 1);
-      const held = (i === i0) && glide < 0.5;
-      const sc = held ? 1 + TK.bump*grow : 1;
-      p.g.setAttribute('transform',
-        `translate(${p.cx} ${S2.pill.centerY}) scale(${sc}) translate(${-p.cx} ${-S2.pill.centerY})`);
-      p.rect.setAttribute('stroke', col(held ? 'pillBorderActive' : (near>0.5 ? 'pillBorderDim' : 'pillBorderFaint')));
-      p.text.setAttribute('fill',  col(held ? 'pillTextActive'   : (near>0.5 ? 'pillTextDim'   : 'pillTextFaint')));
-      p.g.style.opacity = 0.16 + 0.84*near;
+    /* Three states per step. The exported still is the dormant rail — every
+       step in lineDark with only the Agent capsule lit — while the spec's
+       tokens describe the active one. Both are used: steps sit dormant, the
+       active step is white over a sage underline, and steps it has passed
+       stay in muted, so the rail reads as a workflow running left to right. */
+    const I = B02.rail.items;
+    let active = -1;
+    for(let i=0;i<s.items.length;i++) if(lt >= I.start + i*I.step) active = i;
+
+    s.items.forEach((t,i)=>{
+      t.style.opacity = 1;
+      const state = i === active ? 'active' : (i < active ? 'done' : 'idle');
+      const to = state==='active' ? TY[R.activeStyle].color
+               : state==='done'   ? TY[R.itemStyle].color
+               : 'lineDark';
+      // ease the colour so a step does not snap on
+      const k = state==='idle' ? 0 : EI(lt, I.start + Math.min(i,Math.max(active,0))*I.step, I.dur);
+      t.setAttribute('fill', state==='idle' ? col('lineDark') : mixCol('lineDark', to, k));
     });
-    op(s.agent, E(lt, S2.ticker.t1 + 0.2, 0.6));
+    s.dots.forEach((d,i)=>
+      d.setAttribute('fill', col(i === active ? R.dot.activeFill : R.dot.fill)));
 
-    // whiteout handover
-    const wh = EI(lt, 19.85, 0.6);
-    s.white.setAttribute('opacity', wh);
-    const ax = s.agentSpec.x, ay = s.agentSpec.y;
-    tr(s.agentG, `translate(${ax} ${ay}) scale(${lerp(1, 2.6, wh)}) translate(${-ax} ${-ay})`);
+    if(active >= 0){
+      const at = p => ({ x: R.dot.cx[p] - s.itemWidth(p)/2, w: s.itemWidth(p) });
+      const a0 = at(Math.max(0, active-1)), a1 = at(active);
+      const k  = EI(lt, I.start + active*I.step, I.dur);
+      s.underline.setAttribute('x', lerp(a0.x, a1.x, k));
+      s.underline.setAttribute('width', lerp(a0.w, a1.w, k));
+      s.underline.style.opacity = E(lt, I.start, 0.4);
+    } else {
+      s.underline.style.opacity = 0;
+    }
   },
 
   '03'(lt, dur){
     const s = SC['03'];
 
-    /* ---- 3a : first request + agent steps (0 → 2.7) ---- */
-    const b1in = E(lt, 0.0, 0.45);
-    op(s.b1.g, b1in * (1 - seg(lt, 5.25, 0.3)));
-    tr(s.b1.g, `translate(0 ${lerp(-12,0,b1in)})`);
-    typeInto(s.b1.text, s.b1.full, seg(lt, 0.35, 1.0));
+    /* 3a — the figure */
+    op(s.cardG, E(lt, B03.card, 0.5));
+    op(s.rule,  E(lt, B03.rule, 0.4));
+    op(s.band,  E(lt, B03.band, 0.4));
+    const show = (keys, at) => keys.forEach(k => (s.byRow[k]||[]).forEach(e=>{ e.style.opacity = E(lt, at, 0.4); }));
+    op(s.eyebrow, E(lt, B03.eyebrow, 0.4));
+    op(s.title,   E(lt, B03.title, 0.45));
+    show(['caption'], B03.caption);
+    show(['head'],    B03.heads);
+    show(['pfadj'],   B03.figures);
+    show(['netdebt'], B03.netdebt);
 
-    s.statuses.forEach((g,i)=>{
-      const p = E(lt, 1.25 + i*0.45, 0.4);
-      op(g, p);
-      let y = 0;
-      if(i < 2){                                   // the first two fold away
-        const f = EI(lt, 2.75, 0.45);
-        op(g, p * (1-f));
-        y = -f * 24;
-      }else{                                        // the third rises and stays as the receipt
-        const f = EI(lt, 2.75, 0.5);
-        y = f * (s.STATUS_KEEP_Y - SC['03'].STATUS_Y[2]);
-      }
-      tr(g, `translate(0 ${y})`);
+    /* 3b — the query, and the panel steps back */
+    const qin = E(lt, B03.query, 0.55);
+    op(s.queryG, qin); tr(s.queryG, `translate(0 ${lerp(-14,0,qin)})`);
+    typeInto(s.queryT, s.queryFull, seg(lt, B03.typing, 0.9));
+    op(s.checkG, E(lt, B03.check, 0.45));
+
+    // dim on the question, brighten again when the source lands
+    const dimP = EI(lt, B03.dim, 0.55) * (1 - EI(lt, B03.shift, 0.6));
+    const paint = el => { if(el.__bright) el.setAttribute('fill', mixCol(el.__bright, el.__dim, dimP)); };
+    paint(s.eyebrow); paint(s.title);
+    for(const k in s.byRow) s.byRow[k].forEach(paint);
+
+    /* 3c — the panel slides aside, the source comes in */
+    const sh = EI(lt, B03.shift, 0.75);
+    tr(s.moving, `translate(${s.SHIFT*sh} 0)`);
+
+    const dc = EI(lt, B03.doc, 0.7);
+    op(s.docG, dc);
+    tr(s.docG, `translate(${lerp(-90,0,dc)} 0)`);
+    op(s.docIcon,  E(lt, B03.doc+0.2, 0.4));
+    op(s.docTitle, E(lt, B03.doc+0.3, 0.4));
+    op(s.docPages, E(lt, B03.doc+0.4, 0.4));
+    s.docLines.forEach((e,i)=>{
+      e.style.opacity = E(lt, B03.docLines.start + i*B03.docLines.step, B03.docLines.dur);
     });
 
-    /* ---- 3b : the walk table builds (2.7 → 5.3) ---- */
-    const walkIn = E(lt, 2.75, 0.5);
-    op(s.gWalk, walkIn * (1 - seg(lt, 7.95, 0.45)));
-    tr(s.gWalk, `translate(0 ${lerp(16,0,walkIn)})`);
-    op(s.walkLegend, E(lt, 2.9, 0.45));
-
-    const ROW_ORDER = ['head','reported','adj1','adj2','adj3','adjusted','proforma','synergy','pfadjusted'];
-    ROW_ORDER.forEach((key,i)=>{
-      const st = 3.05 + i*0.17;
-      const p  = E(lt, st, 0.42);
-      (s.walkCells[key]||[]).forEach(e=>{ e.style.opacity = p; });
-      const ai = ['adj1','adj2','adj3'].indexOf(key);
-      if(ai>=0) op(s.adjRows[ai], p);
-    });
-
-    /* ---- 3c : haircut (5.3 → 7.6) ---- */
-    const b2in = E(lt, 5.35, 0.45);
-    op(s.b2.g, b2in * (1 - seg(lt, 7.6, 0.3)));
-    tr(s.b2.g, `translate(0 ${lerp(-12,0,b2in)})`);
-    typeInto(s.b2.text, s.b2.full, seg(lt, 5.6, 0.75));
-
-    s.highlights.forEach((e,i)=>{
-      const p = EI(lt, 5.95 + i*0.09, 0.4);
-      e.setAttribute('opacity', p);
-    });
-    // repaint the Firm adj. column, row by row, with a quick dip
-    ROW_ORDER.forEach((key,i)=>{
-      (s.walkCells[key]||[]).forEach(e=>{
-        const c = e.__cell; if(!c || c.col!=='firmAdj') return;
-        const hv = s.HAIR[c.row+'|'+c.col];
-        const st = 6.05 + i*0.09, d = 0.34;
-        const p  = seg(lt, st, d);
-        if(hv!=null && hv!==c.value){
-          e.textContent = p<0.5 ? c.value : hv;
-          const dip = p<=0 ? 1 : (p<0.5 ? 1-p*1.3 : 0.35 + (p-0.5)*1.3);
-          e.style.opacity = Math.min(Number(e.style.opacity||1), 1) * (p<=0?1:dip);
-        }
-      });
-    });
-
-    /* ---- 3d : cap table (7.6 → end) ---- */
-    const b3in = E(lt, 7.65, 0.45);
-    op(s.b3.g, b3in);
-    tr(s.b3.g, `translate(0 ${lerp(-12,0,b3in)})`);
-    typeInto(s.b3.text, s.b3.full, seg(lt, 7.9, 0.7));
-
-    const walkOut = EI(lt, 7.95, 0.45);
-    tr(s.gWalk, `translate(0 ${lerp(0,-90,walkOut)})`);
-
-    const capIn = EI(lt, 8.2, 0.6);
-    op(s.gCap, capIn);
-    tr(s.gCap, `translate(0 ${lerp(90,0,capIn)})`);
-
-    const CAP_ROWS = ['head','revolver','firstLien','secondLien','totalDebt','lessCash','netDebt'];
-    CAP_ROWS.forEach((key,i)=>{
-      const p = E(lt, 8.45 + i*0.13, 0.4);
-      (s.capCells[key]||[]).forEach(e=>{ e.style.opacity = p; });
-    });
-    s.capAccent.setAttribute('opacity', EI(lt, 9.4, 0.5));
+    op(s.srcEyebrow, E(lt, B03.sources, 0.45));
+    s.pills.forEach((p,i)=> op(p, E(lt, B03.pills + i*0.14, 0.45)));
   },
 
   '04'(lt, dur){
     const s = SC['04'];
-    const inP = EI(lt, 0, 0.6);
-    op(s.numG, inP);
-    const pulse = 1 + 0.035 * Math.sin(Math.PI * seg(lt, 0.65, 0.55));
-    tr(s.numG, `translate(1182 450) scale(${lerp(0.94,1,inP)*pulse}) translate(-1182 -450)`);
-
-    const bar = EI(lt, 0.9, 0.5);
-    s.accentBar.setAttribute('transform', `translate(1182 0) scale(${bar} 1) translate(-1182 0)`);
-    op(s.accentBar, bar>0?1:0);
-    op(s.numCap, E(lt, 1.15, 0.5));
-
-    const cp = EI(lt, 1.45, 0.5);                   // the trail runs right → left
-    s.conn.setAttribute('x1', 1130); s.conn.setAttribute('x2', lerp(1130, 997, cp));
-    op(s.conn, cp>0?1:0);
-
-    op(s.statusG, E(lt, 1.9, 0.45));
-    const cg = E(lt, 2.2, 0.55);
-    op(s.cardG, cg);
-    tr(s.cardG, `translate(${lerp(-26,0,cg)} 0)`);
-  },
-
-  '05'(lt, dur){
-    const s = SC['05'];
-    const p = EI(lt, 0, 1.0);
-    op(s.bird, p); op(s.mark, E(lt,0.55,0.7)); op(s.tag, E(lt,0.95,0.7));
-    const k = lerp(0.97, 1.0, EI(lt,0,2.6));
-    trInner(s, `translate(960 540) scale(${k}) translate(-960 -540)`);
-    s.black.setAttribute('opacity', seg(lt, dur-0.75, 0.75));
+    s.rays.forEach((e,i)=>{
+      const k = EI(lt, B04.lines.start + i*B04.lines.step, B04.lines.dur);
+      dash(e, k); op(e, k>0?1:0);
+    });
+    const li = E(lt, B04.line, 0.9);
+    op(s.lineG, li); tr(s.lineG, `translate(${lerp(-26,0,li)} 0)`);
+    op(s.mark, E(lt, B04.wordmark, 0.6));
+    s.black.setAttribute('opacity', seg(lt, B04.out, dur - B04.out));
   }
 };
 
 /* ===================== playback ===================== */
 let T = 0, playing = false, last = 0;
 const scrub = document.getElementById('scrub');
-const tc    = document.getElementById('tc');
+const tc = document.getElementById('tc');
 const namesEl = document.getElementById('names');
 
-/* Scenes are opaque, full-bleed and stacked in order, so a cross-dissolve is
-   just the incoming scene fading in ON TOP of the outgoing one. Fading both at
-   once would dip to black through the gap. */
+/* Scenes are opaque and stacked in order, so a cross-dissolve is the
+   incoming scene fading in ON TOP — fading both would dip to black. */
 function sceneAlpha(sc, t){
-  const x = TL.xfade;
-  const last = sc.t1 >= TL.total;
+  const x = TL.xfade, last = sc.t1 >= TL.total;
   if(t < sc.t0 - x) return 0;
-  if(!last && t >= sc.t1) return 0;          // fully covered by the next scene
+  if(!last && t >= sc.t1) return 0;
   return sc.t0 === 0 ? 1 : cl((t - (sc.t0 - x)) / x, 0, 1);
 }
 
 function render(t){
   let active = null;
   TL.scenes.forEach(sc=>{
-    const a = sceneAlpha(sc, t);
-    const g = SC[sc.id].g;
+    const a = sceneAlpha(sc, t), g = SC[sc.id].g;
     if(a<=0){ g.classList.remove('on'); g.style.opacity = 0; return; }
     g.classList.add('on'); g.style.opacity = a;
-    const lt = cl(t - sc.t0, 0, sc.t1 - sc.t0);
-    ANIM[sc.id](lt, sc.t1 - sc.t0);
+    ANIM[sc.id](cl(t - sc.t0, 0, sc.t1 - sc.t0), sc.t1 - sc.t0);
     if(t>=sc.t0 && t<sc.t1) active = sc;
   });
   if(!active) active = TL.scenes[TL.scenes.length-1];
   namesEl.textContent = active.id + ' · ' + active.name;
-
   CAPL.show(t);
-
   tc.textContent = t.toFixed(2) + ' / ' + TL.total.toFixed(2);
   scrub.value = Math.round(t / TL.total * 1000);
 }
@@ -856,15 +723,13 @@ function render(t){
 function loop(ts){
   if(playing){
     if(!last) last = ts;
-    const dt = (ts - last) / 1000 * parseFloat(document.getElementById('spd').value);
+    T += (ts - last)/1000 * parseFloat(document.getElementById('spd').value);
     last = ts;
-    T += dt;
     if(T >= TL.total){ T = TL.total; playing = false; document.getElementById('play').textContent = 'Replay'; }
     render(T);
-  }else last = 0;
+  } else last = 0;
   requestAnimationFrame(loop);
 }
-
 function setPlay(v){
   if(v && T >= TL.total) T = 0;
   playing = v; last = 0;
@@ -873,7 +738,7 @@ function setPlay(v){
 document.getElementById('play').onclick = ()=> setPlay(!playing);
 scrub.oninput = e => { T = e.target.value/1000*TL.total; render(T); setPlay(false); };
 document.getElementById('cleanb').onclick = ()=>{ document.body.classList.toggle('clean'); fit(); };
-document.getElementById('subsb').onclick  = ()=>{ document.body.classList.toggle('nosubs'); fit(); };
+document.getElementById('subsb').onclick  = ()=>{ document.body.classList.toggle('nosubs'); };
 
 addEventListener('keydown', e=>{
   const step = e.shiftKey ? 1 : 0.1;
@@ -881,13 +746,13 @@ addEventListener('keydown', e=>{
   else if(e.key==='ArrowRight'){ T = cl(T+step,0,TL.total); render(T); setPlay(false); }
   else if(e.key==='ArrowLeft'){  T = cl(T-step,0,TL.total); render(T); setPlay(false); }
   else if(e.key==='Home'){ T = 0; render(T); setPlay(false); }
-  else if(e.key==='s'||e.key==='S'){ document.body.classList.toggle('nosubs'); fit(); }
+  else if(e.key==='s'||e.key==='S'){ document.body.classList.toggle('nosubs'); }
   else if(e.key==='c'||e.key==='C'){ document.body.classList.toggle('clean'); fit(); }
   else if(e.key==='Escape'){ document.body.classList.remove('clean'); fit(); }
 });
 
-/* Fit the 1920×1080 stage into the viewport, reserving a strip underneath for
-   the control bar and the subtitle band so neither ever sits over the frame. */
+/* Fit the frame into the viewport, reserving a strip for the control
+   bar. The captions are inside the frame, so nothing else is needed. */
 const stage = document.getElementById('stage');
 function fit(){
   const clean = document.body.classList.contains('clean');
@@ -898,9 +763,7 @@ function fit(){
   stage.style.transform = `translate(-50%,-50%) scale(${k})`;
 }
 addEventListener('resize', fit);
-fit();
 
-/* fonts settle before the pill row is measured */
 function start(){ SC['02'].layout(); CAPL.build(); fit(); render(0); requestAnimationFrame(loop); }
 if(document.fonts && document.fonts.ready) document.fonts.ready.then(start); else addEventListener('load', start);
 </script>

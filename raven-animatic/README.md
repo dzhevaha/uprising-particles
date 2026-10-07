@@ -1,39 +1,41 @@
-# Raven — Shorts №1 · Raven Agent
+# Raven — Shorts №1
 
-Animated storyboard (animatic) for a 42-second product film. Five scenes, built as
-one self-contained HTML page: inline SVG, CSS and plain JS, no libraries, no build step.
+Animated storyboard (animatic) for a 34.5-second product film. Four scenes, built
+as one self-contained HTML page: inline SVG, CSS and plain JS, no libraries, no
+build step.
 
 Preview: https://dzhevaha.github.io/uprising-particles/raven-animatic/
 
 ## What this version is
 
-Second edit, cut from ten frames to five on the client's 5 October notes: less
-"skills", more workflow, and the analysis shown in action — a query typed, the
-response rendered.
+Third edit. The client rewrote the voiceover and sent mockups of four key frames,
+so this is not a revision of the previous cut — the script, the palette and three
+of the four scenes are new.
 
 | # | Scene | In | Out |
 |---|---|---|---|
-| 01 | A bird out of the dark | 0:00 | 0:03.5 |
-| 02 | Five streams into one layer | 0:03.5 | 0:24.3 |
-| 03 | Asking in words | 0:24.3 | 0:34.9 |
-| 04 | Numbers with a trail | 0:34.9 | 0:38.8 |
-| 05 | Your partner in credit | 0:38.8 | 0:42.0 |
+| 01 | Name on black | 0:00 | 0:05.0 |
+| 02 | Layer and workflows | 0:05.0 | 0:24.5 |
+| 03 | Where the number comes from | 0:24.5 | 0:31.0 |
+| 04 | Credit work, connected | 0:31.0 | 0:34.5 |
 
-Scenes 02 and 03 are single continuous scenes, not cuts: 02 builds through
-sources → arcs → layer → outputs → function ticker → "Agent", and 03 runs the
-three Project Alpha requests — EBITDA walk, 25% haircut, opening cap table —
-rebuilding the same table in place.
+Changed from the previous cut: the five inputs are now Deal documents,
+Third-party data, Firm credit policies, Firm data and Raven credit intelligence —
+the last is not an external source but what Raven has already computed, so its
+rule is sage where the others are grey. The bottom of scene 02 is a named
+workflow rail, not an abstract ticker, and it anchors on "Raven Agent". The audit
+frame is no longer a single figure: it states the number, asks the agent to
+compare against the client model, then opens the document behind it. The EBITDA
+walk, the 25% haircut and the cap table are gone from the film entirely.
 
-In 02 the schema assembles in the first ~4.3 s; the function ticker then carries
-the remaining ~14 s and settles on "Agent" at the end. The ticker steps rather
-than slides: it glides quickly onto each function, then holds while that tag
-grows slightly — the pause is what marks it as one of theirs. `S2` holds the
-whole scene's tuning: square size, the caption and stem below it, tag size and
-spacing, and the ticker's window, glide/hold split and growth. Lengthen the
-scene by moving `S2.ticker.t1`, not by slowing the build.
-
-`S2.squareSize` resizes the layer square about its top edge, so the five arcs
-keep landing where SPEC puts them; the side axis, caption and stem follow.
+Scenes 02 and 03 are continuous, not cuts. In 02 the rail does not scroll: it is
+a stationary breadcrumb whose active step walks along it. The exported still
+shows that rail dormant — every step in `lineDark`, only the Agent capsule lit —
+while the spec's tokens describe the active state, so both are used: steps sit
+dormant, the active step is white over a sage underline, and steps it has passed
+stay in `muted`. In 03 the panel dims when the question is asked and brightens
+again as the source lands, and the whole group slides 240px right to make room
+for the document card.
 
 ## Controls
 
@@ -49,50 +51,38 @@ keep landing where SPEC puts them; the side axis, caption and stem follow.
 ## Editing
 
 `SPEC` near the top of the script is the geometry export from Claude Design,
-inlined verbatim: tokens, per-frame nodes in 1920×1080 coordinates, table rows
-and cells, and the logo path. Nothing in it is hand-edited — to change a layout,
-re-export and replace it.
+inlined verbatim: tokens, per-frame nodes in 1920×1080 coordinates, the workflow
+rail, the Financial Summary table, the document card and the logo path. Nothing
+in it is hand-edited — to change a layout, re-export and replace it.
 
-`TL` holds every scene's in and out point plus `xfade`. `CUES` holds the
-voiceover lines as `[in, out, text]`. Each scene's internal beats live in its
-entry in the `ANIM` object, in seconds from that scene's start.
-
-Three deliberate departures from the export, each marked in the source:
-`trailStatus` is missing from the token table and is reconstructed from the
-reference PNG; the doc-icon paths in frame 04 are drawn at about twice the size
-they appear at in the PNG and are scaled back; the haircut highlights are inset
-so they read as separate rows rather than one block.
+`TL` holds every scene's in and out point plus `xfade`. `B01`…`B04` hold each
+scene's internal beats, in seconds from that scene's own start. `CUES` holds the
+voiceover lines as `[in, out, text]`.
 
 ## Safe area
 
 The film ships to YouTube, where the player draws its own captions over the
 bottom of the picture. YouTube publishes no pixel spec for this — its help page
 lists only which caption properties a viewer can change, and the player sizes
-captions from the player height at playback time. So `SAFE` is built from what
-is measurable instead: the control bar covers roughly the bottom 10% of the
-frame and captions ride above it, caption text runs about 4–5% of frame height
-at the default size (a viewer can push it to 200% or 300%), and captions are
-bottom-centred. 255 px of 1080 holds a two-line caption at default size plus the
-control bar.
-
-Every scene is scaled and centred into what is left, from its content box in
-`BOXES`. The background and grid still bleed to the frame edge — only content
-is inset. Re-derive a box if `SPEC` changes; scene 02's x range deliberately
-excludes the function ticker, which bleeds off both sides.
+captions from the player height at playback time. The export already keeps
+content above `safeArea.bottom` (825 of 1080), which leaves room for the control
+bar plus a two-line caption at default size, so no refit is applied here.
 
 `YTCAP` draws stand-in captions inside the frame at the size YouTube renders
-them — Roboto, white on a 75% black box, bottom-centred above the control bar.
-A long voiceover line is split into several timed captions of at most two lines,
-the way a real caption track behaves, so what you see is what will cover the
-picture there. They are a placeholder: the shipped film carries no burnt-in
-text. Press S to hide them.
+them — Roboto, white on a 75% black box, bottom-centred above the control bar. A
+long voiceover line is split into several timed captions of at most two lines,
+the way a real caption track behaves, and the measure narrows until a cue's lines
+divide evenly so none ends on an orphan word. They are a placeholder: the shipped
+film carries no burnt-in text. Press S to hide them.
 
-Typefaces are Commissioner and IBM Plex Mono; the stand-in captions use Roboto.
-All three load from Google Fonts.
+Typefaces are IBM Plex Sans, IBM Plex Mono and Instrument Serif; the stand-in
+captions use Roboto. All load from Google Fonts.
 
 ## Status
 
 A timing and motion test, not the final film. Voiceover, music, burnt-in
 subtitles and the 4K render are done in After Effects. Timecodes are estimates
-until Lori's recorded voiceover arrives. Figures on screen are illustrative and
-need legal clearance before the final render.
+until the re-recorded voiceover arrives. The closing card reads "Credit work,
+connected" while the voiceover says "Raven. The AI platform for corporate
+credit" — that pairing is still to be confirmed. Figures on screen are
+illustrative and need legal clearance before the final render.
