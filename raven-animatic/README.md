@@ -28,8 +28,12 @@ frame is no longer a single figure: it states the number, asks the agent to
 compare against the client model, then opens the document behind it. The EBITDA
 walk, the 25% haircut and the cap table are gone from the film entirely.
 
-Scenes 02 and 03 are continuous, not cuts. In 02 the rail does not scroll: it is
-a stationary breadcrumb whose active step walks along it. The exported still
+Scenes 02 and 03 are continuous, not cuts. In 02 the schema assembles in the
+first ~3 s; the scene still runs its full 19.5 s against the voiceover, so the
+rail carries the rest — it appears early and dormant, then walks its steps
+slowly through the back half. Shortening that hold means re-cutting the scene
+against the voiceover, not speeding the rail. The rail does not scroll: it is a
+stationary breadcrumb whose active step walks along it. The exported still
 shows that rail dormant — every step in `lineDark`, only the Agent capsule lit —
 while the spec's tokens describe the active state, so both are used: steps sit
 dormant, the active step is white over a sage underline, and steps it has passed
