@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Raven Shorts 1 — animatic</title>
+<title>Raven Shorts 1 — animatic · rev 4</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif&family=Roboto:wght@400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;700&family=Open+Sans:wght@400;600;700&family=Roboto:wght@400&display=swap" rel="stylesheet">
 <style>
   :root{ --ui:#d8dadd; --uibg:rgba(14,16,15,.88); --uiline:rgba(255,255,255,.16); }
   *{box-sizing:border-box}
@@ -32,9 +32,9 @@
   #bar button,#bar select{font:inherit;font-family:inherit;color:var(--ui);background:transparent;
     border:1px solid var(--uiline);border-radius:8px;padding:5px 11px;cursor:pointer}
   #bar button:hover,#bar select:hover{border-color:rgba(255,255,255,.4)}
-  #bar input[type=range]{width:min(44vw,420px);accent-color:#c7d0be}
-  #tc{font-family:"IBM Plex Mono",monospace;font-size:12px;min-width:94px;text-align:center;opacity:.85}
-  #names{font-size:12px;opacity:.6;min-width:180px;text-align:center}
+  #bar input[type=range]{width:min(44vw,420px);accent-color:#7fd39a}
+  #tc{font-family:"IBM Plex Mono",monospace;font-size:12px;min-width:98px;text-align:center;opacity:.85}
+  #names{font-size:12px;opacity:.6;min-width:200px;text-align:center}
   .hint{font-size:11px;opacity:.5;width:100%;text-align:center}
   @media (max-width:760px){ #names{display:none} .hint{display:none} #bar{gap:7px;padding:7px 9px} }
 </style>
@@ -49,7 +49,7 @@
 <div id="bar">
   <button id="play">Play</button>
   <input id="scrub" type="range" min="0" max="1000" value="0" step="1">
-  <span id="tc">0.00 / 34.50</span>
+  <span id="tc">0.00 / 43.00</span>
   <select id="spd"><option value="0.25">0.25x</option><option value="0.5">0.5x</option><option value="1" selected>1x</option></select>
   <button id="subsb">Subs</button>
   <button id="cleanb">Clean</button>
@@ -59,83 +59,89 @@
 
 <script>
 /* ============================================================
-   SPEC — the geometry export from Claude Design, inlined verbatim.
-   1920x1080 coordinates, tokens, per-frame nodes, the workflow rail,
-   the Financial Summary table and the logo path. Nothing hand-edited:
-   to change a layout, re-export and replace it.
+   SPEC — the rev-4 geometry export from Claude Design, verbatim.
+   1920x1080, two dark palettes and one light one, the schema, the
+   workflow carousel, the dialogue shell and every figure in the film.
+   Nothing here is hand-edited: to change a layout, re-export.
    ============================================================ */
-const SPEC = {"canvas":{"w":1920,"h":1080},"safeArea":{"top":40,"bottom":825,"left":60,"right":1860,"captionZoneHeight":255},"arrowhead":{"w":14,"h":14},"tokens":{"color":{"black":"#000000","panel":"#1e1f1d","lineDark":"#323430","line":"#464942","muted":"#9ca7a1","sage":"#c7d0be","white":"#ffffff"},"font":{"sans":{"family":"IBM Plex Sans","weights":[400,500,600]},"mono":{"family":"IBM Plex Mono","weights":[400,500]},"serif":{"family":"Instrument Serif","weights":[400]}},"type":{"heroWordmark":{"size":54,"weight":500,"lineHeight":1.3,"letterSpacing":23.76,"color":"sage","face":"sans"},"sourceLabel":{"size":22,"weight":400,"lineHeight":1.32,"letterSpacing":0,"color":"white","face":"sans"},"squareWordmark":{"size":30,"weight":500,"lineHeight":1.3,"letterSpacing":7.8,"color":"sage","face":"sans"},"squareSub":{"size":18,"weight":400,"lineHeight":1.28,"letterSpacing":0,"color":"muted","face":"sans"},"exitLabel":{"size":24,"weight":400,"lineHeight":1.33,"letterSpacing":0,"color":"white","face":"sans"},"railItem":{"size":22,"weight":400,"lineHeight":1.32,"letterSpacing":0,"color":"muted","face":"sans"},"railItemActive":{"size":22,"weight":400,"lineHeight":1.32,"letterSpacing":0,"color":"white","face":"sans"},"railChevron":{"size":22,"weight":400,"lineHeight":1.32,"letterSpacing":0,"color":"line","face":"sans"},"agentLabel":{"size":22,"weight":400,"lineHeight":1.32,"letterSpacing":0,"color":"sage","face":"sans"},"panelEyebrow":{"size":15,"weight":400,"lineHeight":1.27,"letterSpacing":3.3,"color":"sage","face":"mono"},"panelEyebrowDim":{"size":15,"weight":400,"lineHeight":1.27,"letterSpacing":3.3,"color":"line","face":"mono"},"panelTitle":{"size":36,"weight":600,"lineHeight":1.31,"letterSpacing":0,"color":"white","face":"sans"},"panelTitleDim":{"size":36,"weight":600,"lineHeight":1.31,"letterSpacing":0,"color":"muted","face":"sans"},"tableCaption":{"size":19,"weight":400,"lineHeight":1.26,"letterSpacing":0,"color":"muted","face":"sans"},"tableCaptionDim":{"size":19,"weight":400,"lineHeight":1.26,"letterSpacing":0,"color":"line","face":"sans"},"colHead":{"size":16,"weight":400,"lineHeight":1.25,"letterSpacing":0,"color":"muted","face":"mono"},"colHeadDim":{"size":16,"weight":400,"lineHeight":1.25,"letterSpacing":0,"color":"line","face":"mono"},"figure":{"size":26,"weight":400,"lineHeight":1.31,"letterSpacing":0,"color":"white","face":"mono"},"figureDim":{"size":26,"weight":400,"lineHeight":1.31,"letterSpacing":0,"color":"muted","face":"mono"},"multiple":{"size":22,"weight":400,"lineHeight":1.32,"letterSpacing":0,"color":"sage","face":"mono"},"multipleDim":{"size":22,"weight":400,"lineHeight":1.32,"letterSpacing":0,"color":"muted","face":"mono"},"rowLabel":{"size":22,"weight":400,"lineHeight":1.32,"letterSpacing":0,"color":"white","face":"sans"},"rowLabelDim":{"size":22,"weight":400,"lineHeight":1.32,"letterSpacing":0,"color":"muted","face":"sans"},"rowValue":{"size":22,"weight":400,"lineHeight":1.32,"letterSpacing":0,"color":"white","face":"mono"},"rowValueDim":{"size":22,"weight":400,"lineHeight":1.32,"letterSpacing":0,"color":"muted","face":"mono"},"queryLabel":{"size":22,"weight":400,"lineHeight":1.32,"letterSpacing":0,"color":"white","face":"sans"},"checkLabel":{"size":19,"weight":400,"lineHeight":1.26,"letterSpacing":0,"color":"muted","face":"sans"},"docTitle":{"size":22,"weight":400,"lineHeight":1.35,"letterSpacing":0,"color":"white","face":"sans"},"docPages":{"size":16,"weight":400,"lineHeight":1.25,"letterSpacing":0,"color":"muted","face":"mono"},"sourcesEyebrow":{"size":15,"weight":400,"lineHeight":1.27,"letterSpacing":3.3,"color":"sage","face":"mono"},"pillActive":{"size":18,"weight":400,"lineHeight":1.3,"letterSpacing":0,"color":"sage","face":"sans"},"pillMuted":{"size":18,"weight":400,"lineHeight":1.3,"letterSpacing":0,"color":"muted","face":"sans"},"closingLine":{"size":128,"weight":400,"lineHeight":1.06,"letterSpacing":0,"color":"white","face":"serif"},"closingWordmark":{"size":22,"weight":500,"lineHeight":1.32,"letterSpacing":9.24,"color":"sage","face":"sans"}}},"bird":{"viewBox":"0 0 58 42","d":"M33.2617 6.31543H38.5947L44.4883 12.6309H32.4189L27.9287 17.4023H34.2441L57.8213 41.2607H19.2266L12.7715 37.752L11.9287 41.2607L4.91211 35.3662V19.0869H0L12.7715 6.31543H9.96387L16.2793 0H27.3672L33.2617 6.31543ZM24.7002 5.05273C23.6803 5.05279 22.8535 5.87953 22.8535 6.89941C22.8536 7.9192 23.6804 8.74604 24.7002 8.74609C25.72 8.74609 26.5468 7.91923 26.5469 6.89941C26.5469 5.8795 25.7201 5.05273 24.7002 5.05273Z"},"wordmark":{"text":"RAVEN","style":"heroWordmark"},"frames":[{"id":"01","bg":"black","grid":null,"nodes":[{"type":"path","d":"M -40 460 Q 960 -200 1960 460","stroke":"sage","strokeWidth":2,"fill":"none","opacity":1},{"type":"image","ref":"bird","x":887.5,"y":320,"w":145,"h":105,"fill":"sage","opacity":1},{"type":"text","x":826.03,"y":496,"style":"heroWordmark","align":"left","baseline":"middle","value":"RAVEN"},{"type":"rect","x":760,"y":572,"w":400,"h":1,"r":0,"fill":"sage","stroke":null,"strokeWidth":0,"opacity":1}]},{"id":"02a","bg":"black","grid":null,"nodes":[{"type":"rect","x":180,"y":133,"w":120,"h":4,"r":2,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":217,"y":133,"w":46,"h":4,"r":2,"fill":"muted","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":540,"y":133,"w":120,"h":4,"r":2,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":577,"y":133,"w":46,"h":4,"r":2,"fill":"muted","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":900,"y":133,"w":120,"h":4,"r":2,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":937,"y":133,"w":46,"h":4,"r":2,"fill":"muted","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":1260,"y":133,"w":120,"h":4,"r":2,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":1297,"y":133,"w":46,"h":4,"r":2,"fill":"muted","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":1620,"y":133,"w":120,"h":4,"r":2,"fill":"sage","stroke":null,"strokeWidth":0,"opacity":1},{"type":"text","x":240,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Deal documents"},{"type":"text","x":600,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Third-party data"},{"type":"text","x":960,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Firm credit policies"},{"type":"text","x":1320,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Firm data"},{"type":"text","x":1680,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Raven credit intelligence"}]},{"id":"02b","bg":"black","grid":null,"nodes":[{"type":"path","d":"M 240 142 C 240 230 960 210 960 298","stroke":"line","strokeWidth":1.5,"fill":"none","opacity":1},{"type":"path","d":"M 600 142 C 600 230 960 210 960 298","stroke":"line","strokeWidth":1.5,"fill":"none","opacity":1},{"type":"path","d":"M 960 142 L 960 298","stroke":"line","strokeWidth":1.5,"fill":"none","opacity":1},{"type":"path","d":"M 1320 142 C 1320 230 960 210 960 298","stroke":"line","strokeWidth":1.5,"fill":"none","opacity":1},{"type":"path","d":"M 1680 142 C 1680 230 960 210 960 298","stroke":"line","strokeWidth":1.5,"fill":"none","opacity":1},{"type":"rect","x":180,"y":133,"w":120,"h":4,"r":2,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":217,"y":133,"w":46,"h":4,"r":2,"fill":"muted","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":540,"y":133,"w":120,"h":4,"r":2,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":577,"y":133,"w":46,"h":4,"r":2,"fill":"muted","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":900,"y":133,"w":120,"h":4,"r":2,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":937,"y":133,"w":46,"h":4,"r":2,"fill":"muted","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":1260,"y":133,"w":120,"h":4,"r":2,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":1297,"y":133,"w":46,"h":4,"r":2,"fill":"muted","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":1620,"y":133,"w":120,"h":4,"r":2,"fill":"sage","stroke":null,"strokeWidth":0,"opacity":1},{"type":"text","x":240,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Deal documents"},{"type":"text","x":600,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Third-party data"},{"type":"text","x":960,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Firm credit policies"},{"type":"text","x":1320,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Firm data"},{"type":"text","x":1680,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Raven credit intelligence"},{"type":"rect","x":955,"y":294,"w":10,"h":10,"r":5,"fill":"sage","stroke":null,"strokeWidth":0,"opacity":1}]},{"id":"02c","bg":"black","grid":null,"nodes":[{"type":"path","d":"M 240 142 C 240 230 960 210 960 298","stroke":"line","strokeWidth":1.5,"fill":"none","opacity":1},{"type":"path","d":"M 600 142 C 600 230 960 210 960 298","stroke":"line","strokeWidth":1.5,"fill":"none","opacity":1},{"type":"path","d":"M 960 142 L 960 298","stroke":"line","strokeWidth":1.5,"fill":"none","opacity":1},{"type":"path","d":"M 1320 142 C 1320 230 960 210 960 298","stroke":"line","strokeWidth":1.5,"fill":"none","opacity":1},{"type":"path","d":"M 1680 142 C 1680 230 960 210 960 298","stroke":"line","strokeWidth":1.5,"fill":"none","opacity":1},{"type":"rect","x":180,"y":133,"w":120,"h":4,"r":2,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":217,"y":133,"w":46,"h":4,"r":2,"fill":"muted","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":540,"y":133,"w":120,"h":4,"r":2,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":577,"y":133,"w":46,"h":4,"r":2,"fill":"muted","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":900,"y":133,"w":120,"h":4,"r":2,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":937,"y":133,"w":46,"h":4,"r":2,"fill":"muted","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":1260,"y":133,"w":120,"h":4,"r":2,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":1297,"y":133,"w":46,"h":4,"r":2,"fill":"muted","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":1620,"y":133,"w":120,"h":4,"r":2,"fill":"sage","stroke":null,"strokeWidth":0,"opacity":1},{"type":"text","x":240,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Deal documents"},{"type":"text","x":600,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Third-party data"},{"type":"text","x":960,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Firm credit policies"},{"type":"text","x":1320,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Firm data"},{"type":"text","x":1680,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Raven credit intelligence"},{"type":"rect","x":760,"y":300,"w":400,"h":400,"r":14,"fill":"panel","stroke":"sage","strokeWidth":1,"opacity":1},{"type":"image","ref":"bird","x":910,"y":409,"w":100,"h":72,"fill":"sage","opacity":1},{"type":"text","x":896.4,"y":524.5,"style":"squareWordmark","align":"left","baseline":"middle","value":"RAVEN"},{"type":"text","x":960,"y":579.5,"style":"squareSub","align":"center","baseline":"middle","value":"The intelligence layer"}]},{"id":"02d","bg":"black","grid":null,"nodes":[{"type":"path","d":"M 240 142 C 240 230 960 210 960 298","stroke":"line","strokeWidth":1.5,"fill":"none","opacity":1},{"type":"path","d":"M 600 142 C 600 230 960 210 960 298","stroke":"line","strokeWidth":1.5,"fill":"none","opacity":1},{"type":"path","d":"M 960 142 L 960 298","stroke":"line","strokeWidth":1.5,"fill":"none","opacity":1},{"type":"path","d":"M 1320 142 C 1320 230 960 210 960 298","stroke":"line","strokeWidth":1.5,"fill":"none","opacity":1},{"type":"path","d":"M 1680 142 C 1680 230 960 210 960 298","stroke":"line","strokeWidth":1.5,"fill":"none","opacity":1},{"type":"rect","x":180,"y":133,"w":120,"h":4,"r":2,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":217,"y":133,"w":46,"h":4,"r":2,"fill":"muted","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":540,"y":133,"w":120,"h":4,"r":2,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":577,"y":133,"w":46,"h":4,"r":2,"fill":"muted","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":900,"y":133,"w":120,"h":4,"r":2,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":937,"y":133,"w":46,"h":4,"r":2,"fill":"muted","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":1260,"y":133,"w":120,"h":4,"r":2,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":1297,"y":133,"w":46,"h":4,"r":2,"fill":"muted","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":1620,"y":133,"w":120,"h":4,"r":2,"fill":"sage","stroke":null,"strokeWidth":0,"opacity":1},{"type":"text","x":240,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Deal documents"},{"type":"text","x":600,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Third-party data"},{"type":"text","x":960,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Firm credit policies"},{"type":"text","x":1320,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Firm data"},{"type":"text","x":1680,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Raven credit intelligence"},{"type":"rect","x":760,"y":300,"w":400,"h":400,"r":14,"fill":"panel","stroke":"sage","strokeWidth":1,"opacity":1},{"type":"image","ref":"bird","x":910,"y":409,"w":100,"h":72,"fill":"sage","opacity":1},{"type":"text","x":896.4,"y":524.5,"style":"squareWordmark","align":"left","baseline":"middle","value":"RAVEN"},{"type":"text","x":960,"y":579.5,"style":"squareSub","align":"center","baseline":"middle","value":"The intelligence layer"},{"type":"line","x1":760,"y1":500,"x2":440,"y2":500,"stroke":"line","strokeWidth":1.5,"arrow":"end"},{"type":"line","x1":1160,"y1":500,"x2":1480,"y2":500,"stroke":"line","strokeWidth":1.5,"arrow":"end"},{"type":"text","x":400,"y":500,"style":"exitLabel","align":"right","baseline":"middle","value":"Underwriting"},{"type":"text","x":1510,"y":500,"style":"exitLabel","align":"left","baseline":"middle","value":"Monitoring"}]},{"id":"02e","bg":"black","grid":null,"nodes":[{"type":"path","d":"M 240 142 C 240 230 960 210 960 298","stroke":"line","strokeWidth":1.5,"fill":"none","opacity":1},{"type":"path","d":"M 600 142 C 600 230 960 210 960 298","stroke":"line","strokeWidth":1.5,"fill":"none","opacity":1},{"type":"path","d":"M 960 142 L 960 298","stroke":"line","strokeWidth":1.5,"fill":"none","opacity":1},{"type":"path","d":"M 1320 142 C 1320 230 960 210 960 298","stroke":"line","strokeWidth":1.5,"fill":"none","opacity":1},{"type":"path","d":"M 1680 142 C 1680 230 960 210 960 298","stroke":"line","strokeWidth":1.5,"fill":"none","opacity":1},{"type":"rect","x":180,"y":133,"w":120,"h":4,"r":2,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":217,"y":133,"w":46,"h":4,"r":2,"fill":"muted","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":540,"y":133,"w":120,"h":4,"r":2,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":577,"y":133,"w":46,"h":4,"r":2,"fill":"muted","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":900,"y":133,"w":120,"h":4,"r":2,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":937,"y":133,"w":46,"h":4,"r":2,"fill":"muted","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":1260,"y":133,"w":120,"h":4,"r":2,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":1297,"y":133,"w":46,"h":4,"r":2,"fill":"muted","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":1620,"y":133,"w":120,"h":4,"r":2,"fill":"sage","stroke":null,"strokeWidth":0,"opacity":1},{"type":"text","x":240,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Deal documents"},{"type":"text","x":600,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Third-party data"},{"type":"text","x":960,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Firm credit policies"},{"type":"text","x":1320,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Firm data"},{"type":"text","x":1680,"y":104.5,"style":"sourceLabel","align":"center","baseline":"middle","value":"Raven credit intelligence"},{"type":"rect","x":760,"y":300,"w":400,"h":400,"r":14,"fill":"panel","stroke":"sage","strokeWidth":1,"opacity":1},{"type":"image","ref":"bird","x":910,"y":409,"w":100,"h":72,"fill":"sage","opacity":1},{"type":"text","x":896.4,"y":524.5,"style":"squareWordmark","align":"left","baseline":"middle","value":"RAVEN"},{"type":"text","x":960,"y":579.5,"style":"squareSub","align":"center","baseline":"middle","value":"The intelligence layer"},{"type":"line","x1":760,"y1":500,"x2":440,"y2":500,"stroke":"line","strokeWidth":1.5,"arrow":"end"},{"type":"line","x1":1160,"y1":500,"x2":1480,"y2":500,"stroke":"line","strokeWidth":1.5,"arrow":"end"},{"type":"text","x":400,"y":500,"style":"exitLabel","align":"right","baseline":"middle","value":"Underwriting"},{"type":"text","x":1510,"y":500,"style":"exitLabel","align":"left","baseline":"middle","value":"Monitoring"},{"type":"rect","x":60,"y":718,"w":1800,"h":80,"r":40,"fill":"panel","stroke":"lineDark","strokeWidth":1,"opacity":1},{"type":"rect","x":496.7,"y":782.5,"w":186.94,"h":1,"r":0,"fill":"sage","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":177.29,"y":735.5,"w":7,"h":7,"r":3.5,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":364.28,"y":735.5,"w":7,"h":7,"r":3.5,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":586.66,"y":735.5,"w":7,"h":7,"r":3.5,"fill":"sage","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":820.93,"y":735.5,"w":7,"h":7,"r":3.5,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":1025.85,"y":735.5,"w":7,"h":7,"r":3.5,"fill":"line","stroke":null,"strokeWidth":0,"opacity":1}],"rail":{"y":758,"height":80,"itemStyle":"railItem","itemPadX":0,"gap":22,"itemBaselineY":766,"activeIndex":2,"activeStyle":"railItemActive","activeUnderline":{"x":496.7,"y":782.5,"w":186.94,"h":1,"fill":"sage"},"dot":{"cy":739,"r":3.5,"fill":"line","activeFill":"sage","cx":[180.79,367.78,590.16,824.43,1029.35]},"chevron":{"d":"M 0 0 L 7 8 L 0 16","stroke":"line","strokeWidth":1.5},"chevronStyle":"railChevron","leadChevron":{"d":"M 7 0 L 0 8 L 7 16","x":94,"y":758,"stroke":"line","strokeWidth":1.5},"items":["Deal screen","Sensitize model","Compliance review","Portfolio snapshot","EBITDA walk"],"agent":{"label":"Raven Agent","x":1639.27,"w":186.73,"h":49,"r":24.5,"fill":"none","stroke":"sage","strokeWidth":1,"style":"agentLabel","textX":1679.27,"textY":766,"textAlign":"left","dot":{"cx":1665.77,"cy":766,"r":3.5,"fill":"sage"}}}},{"id":"03a","bg":"black","grid":null,"nodes":[{"type":"rect","x":340,"y":196,"w":1240,"h":374,"r":14,"fill":"panel","stroke":"lineDark","strokeWidth":1,"opacity":1},{"type":"text","x":376,"y":237.5,"style":"panelEyebrow","align":"left","baseline":"middle","value":"PROJECT ALPHA"},{"type":"text","x":376,"y":282.5,"style":"panelTitle","align":"left","baseline":"middle","value":"Financial Summary"},{"type":"rect","x":376,"y":328,"w":1168,"h":1,"r":0,"fill":"lineDark","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":360,"y":477,"w":1200,"h":61,"r":8,"fill":"lineDark","stroke":null,"strokeWidth":0,"opacity":1},{"type":"text","x":1192,"y":365,"style":"tableCaption","align":"center","baseline":"middle","value":"PF Adjusted EBITDA"},{"type":"text","x":919,"y":405,"style":"colHead","align":"center","baseline":"middle","value":"LTM"},{"type":"text","x":1101,"y":405,"style":"colHead","align":"center","baseline":"middle","value":"2026E"},{"type":"text","x":1283,"y":405,"style":"colHead","align":"center","baseline":"middle","value":"2027E"},{"type":"text","x":1465,"y":405,"style":"colHead","align":"center","baseline":"middle","value":"2028E"},{"type":"text","x":919,"y":440,"style":"figure","align":"center","baseline":"middle","value":"115.0"},{"type":"text","x":1101,"y":440,"style":"figure","align":"center","baseline":"middle","value":"125.0"},{"type":"text","x":1283,"y":440,"style":"figure","align":"center","baseline":"middle","value":"135.0"},{"type":"text","x":1465,"y":440,"style":"figure","align":"center","baseline":"middle","value":"145.0"},{"type":"text","x":376,"y":507.5,"style":"rowLabel","align":"left","baseline":"middle","value":"Net Debt"},{"type":"text","x":496.94,"y":507.5,"style":"rowValue","align":"left","baseline":"middle","value":"450.0"},{"type":"text","x":919,"y":507.5,"style":"multiple","align":"center","baseline":"middle","value":"3.9x"},{"type":"text","x":1101,"y":507.5,"style":"multiple","align":"center","baseline":"middle","value":"3.6x"},{"type":"text","x":1283,"y":507.5,"style":"multiple","align":"center","baseline":"middle","value":"3.3x"},{"type":"text","x":1465,"y":507.5,"style":"multiple","align":"center","baseline":"middle","value":"3.1x"}],"table":{"card":{"x":340,"y":196,"w":1240,"h":374,"r":14,"fill":"panel","stroke":"lineDark","strokeWidth":1},"columns":[{"key":"label","x":376,"w":440,"align":"left","anchorX":376},{"key":"ebitdaSpan","x":840,"w":704,"align":"center","anchorX":1192},{"key":"value","x":496.94,"w":66.02,"align":"left","anchorX":496.94},{"key":"ltm","x":840,"w":158,"align":"center","anchorX":919},{"key":"y2026","x":1022,"w":158,"align":"center","anchorX":1101},{"key":"y2027","x":1204,"w":158,"align":"center","anchorX":1283},{"key":"y2028","x":1386,"w":158,"align":"center","anchorX":1465}],"rows":[{"key":"caption","y":353,"h":24,"ruleTop":true},{"key":"head","y":395,"h":20,"ruleTop":false},{"key":"pfadj","y":423,"h":34,"ruleTop":false},{"key":"netdebt","y":477,"h":61,"ruleTop":false}],"cells":[{"row":"caption","col":"label","value":null,"style":null,"align":"left","baseline":"middle"},{"row":"caption","col":"ebitdaSpan","value":"PF Adjusted EBITDA","style":"tableCaption","align":"center","baseline":"middle"},{"row":"head","col":"label","value":null,"style":null,"align":"left","baseline":"middle"},{"row":"head","col":"ltm","value":"LTM","style":"colHead","align":"center","baseline":"middle"},{"row":"head","col":"y2026","value":"2026E","style":"colHead","align":"center","baseline":"middle"},{"row":"head","col":"y2027","value":"2027E","style":"colHead","align":"center","baseline":"middle"},{"row":"head","col":"y2028","value":"2028E","style":"colHead","align":"center","baseline":"middle"},{"row":"pfadj","col":"label","value":null,"style":null,"align":"left","baseline":"middle"},{"row":"pfadj","col":"ltm","value":"115.0","style":"figure","align":"center","baseline":"middle"},{"row":"pfadj","col":"y2026","value":"125.0","style":"figure","align":"center","baseline":"middle"},{"row":"pfadj","col":"y2027","value":"135.0","style":"figure","align":"center","baseline":"middle"},{"row":"pfadj","col":"y2028","value":"145.0","style":"figure","align":"center","baseline":"middle"},{"row":"netdebt","col":"label","value":"Net Debt","style":"rowLabel","align":"left","baseline":"middle"},{"row":"netdebt","col":"value","value":"450.0","style":"rowValue","align":"left","baseline":"middle"},{"row":"netdebt","col":"ltm","value":"3.9x","style":"multiple","align":"center","baseline":"middle"},{"row":"netdebt","col":"y2026","value":"3.6x","style":"multiple","align":"center","baseline":"middle"},{"row":"netdebt","col":"y2027","value":"3.3x","style":"multiple","align":"center","baseline":"middle"},{"row":"netdebt","col":"y2028","value":"3.1x","style":"multiple","align":"center","baseline":"middle"}],"highlight":[{"row":"netdebt","col":null,"x":360,"y":477,"w":1200,"h":61,"r":8,"fill":"lineDark"}]}},{"id":"03b","bg":"black","grid":null,"nodes":[{"type":"rect","x":340,"y":56,"w":330.5,"h":59,"r":29.5,"fill":"none","stroke":"line","strokeWidth":1,"opacity":1},{"type":"path","d":"M 377 75.5 L 378.6 81.9 L 385 83.5 L 378.6 85.1 L 377 91.5 L 375.4 85.1 L 369 83.5 L 375.4 81.9 Z","stroke":"sage","strokeWidth":1.6,"fill":"none","opacity":1},{"type":"text","x":401,"y":85.5,"style":"queryLabel","align":"left","baseline":"middle","value":"Compare to client model"},{"type":"path","d":"M 343 152 L 347.1 156.1 L 355 147.1","stroke":"sage","strokeWidth":2,"fill":"none","opacity":1},{"type":"text","x":370,"y":152,"style":"checkLabel","align":"left","baseline":"middle","value":"Call the vault and check sources"},{"type":"rect","x":340,"y":196,"w":1240,"h":374,"r":14,"fill":"panel","stroke":"lineDark","strokeWidth":1,"opacity":1},{"type":"text","x":376,"y":237.5,"style":"panelEyebrowDim","align":"left","baseline":"middle","value":"PROJECT ALPHA"},{"type":"text","x":376,"y":282.5,"style":"panelTitleDim","align":"left","baseline":"middle","value":"Financial Summary"},{"type":"rect","x":376,"y":328,"w":1168,"h":1,"r":0,"fill":"lineDark","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":360,"y":477,"w":1200,"h":61,"r":8,"fill":"lineDark","stroke":null,"strokeWidth":0,"opacity":1},{"type":"text","x":1192,"y":365,"style":"tableCaptionDim","align":"center","baseline":"middle","value":"PF Adjusted EBITDA"},{"type":"text","x":919,"y":405,"style":"colHeadDim","align":"center","baseline":"middle","value":"LTM"},{"type":"text","x":1101,"y":405,"style":"colHeadDim","align":"center","baseline":"middle","value":"2026E"},{"type":"text","x":1283,"y":405,"style":"colHeadDim","align":"center","baseline":"middle","value":"2027E"},{"type":"text","x":1465,"y":405,"style":"colHeadDim","align":"center","baseline":"middle","value":"2028E"},{"type":"text","x":919,"y":440,"style":"figureDim","align":"center","baseline":"middle","value":"115.0"},{"type":"text","x":1101,"y":440,"style":"figureDim","align":"center","baseline":"middle","value":"125.0"},{"type":"text","x":1283,"y":440,"style":"figureDim","align":"center","baseline":"middle","value":"135.0"},{"type":"text","x":1465,"y":440,"style":"figureDim","align":"center","baseline":"middle","value":"145.0"},{"type":"text","x":376,"y":507.5,"style":"rowLabelDim","align":"left","baseline":"middle","value":"Net Debt"},{"type":"text","x":496.94,"y":507.5,"style":"rowValueDim","align":"left","baseline":"middle","value":"450.0"},{"type":"text","x":919,"y":507.5,"style":"multipleDim","align":"center","baseline":"middle","value":"3.9x"},{"type":"text","x":1101,"y":507.5,"style":"multipleDim","align":"center","baseline":"middle","value":"3.6x"},{"type":"text","x":1283,"y":507.5,"style":"multipleDim","align":"center","baseline":"middle","value":"3.3x"},{"type":"text","x":1465,"y":507.5,"style":"multipleDim","align":"center","baseline":"middle","value":"3.1x"}],"table":{"card":{"x":340,"y":196,"w":1240,"h":374,"r":14,"fill":"panel","stroke":"lineDark","strokeWidth":1},"columns":[{"key":"label","x":376,"w":440,"align":"left","anchorX":376},{"key":"ebitdaSpan","x":840,"w":704,"align":"center","anchorX":1192},{"key":"value","x":496.94,"w":66.02,"align":"left","anchorX":496.94},{"key":"ltm","x":840,"w":158,"align":"center","anchorX":919},{"key":"y2026","x":1022,"w":158,"align":"center","anchorX":1101},{"key":"y2027","x":1204,"w":158,"align":"center","anchorX":1283},{"key":"y2028","x":1386,"w":158,"align":"center","anchorX":1465}],"rows":[{"key":"caption","y":353,"h":24,"ruleTop":true},{"key":"head","y":395,"h":20,"ruleTop":false},{"key":"pfadj","y":423,"h":34,"ruleTop":false},{"key":"netdebt","y":477,"h":61,"ruleTop":false}],"cells":[{"row":"caption","col":"label","value":null,"style":null,"align":"left","baseline":"middle"},{"row":"caption","col":"ebitdaSpan","value":"PF Adjusted EBITDA","style":"tableCaptionDim","align":"center","baseline":"middle"},{"row":"head","col":"label","value":null,"style":null,"align":"left","baseline":"middle"},{"row":"head","col":"ltm","value":"LTM","style":"colHeadDim","align":"center","baseline":"middle"},{"row":"head","col":"y2026","value":"2026E","style":"colHeadDim","align":"center","baseline":"middle"},{"row":"head","col":"y2027","value":"2027E","style":"colHeadDim","align":"center","baseline":"middle"},{"row":"head","col":"y2028","value":"2028E","style":"colHeadDim","align":"center","baseline":"middle"},{"row":"pfadj","col":"label","value":null,"style":null,"align":"left","baseline":"middle"},{"row":"pfadj","col":"ltm","value":"115.0","style":"figureDim","align":"center","baseline":"middle"},{"row":"pfadj","col":"y2026","value":"125.0","style":"figureDim","align":"center","baseline":"middle"},{"row":"pfadj","col":"y2027","value":"135.0","style":"figureDim","align":"center","baseline":"middle"},{"row":"pfadj","col":"y2028","value":"145.0","style":"figureDim","align":"center","baseline":"middle"},{"row":"netdebt","col":"label","value":"Net Debt","style":"rowLabelDim","align":"left","baseline":"middle"},{"row":"netdebt","col":"value","value":"450.0","style":"rowValueDim","align":"left","baseline":"middle"},{"row":"netdebt","col":"ltm","value":"3.9x","style":"multipleDim","align":"center","baseline":"middle"},{"row":"netdebt","col":"y2026","value":"3.6x","style":"multipleDim","align":"center","baseline":"middle"},{"row":"netdebt","col":"y2027","value":"3.3x","style":"multipleDim","align":"center","baseline":"middle"},{"row":"netdebt","col":"y2028","value":"3.1x","style":"multipleDim","align":"center","baseline":"middle"}],"highlight":[{"row":"netdebt","col":null,"x":360,"y":477,"w":1200,"h":61,"r":8,"fill":"lineDark"}]}},{"id":"03c","bg":"black","grid":null,"nodes":[{"type":"rect","x":580,"y":56,"w":330.5,"h":59,"r":29.5,"fill":"none","stroke":"line","strokeWidth":1,"opacity":1},{"type":"path","d":"M 617 75.5 L 618.6 81.9 L 625 83.5 L 618.6 85.1 L 617 91.5 L 615.4 85.1 L 609 83.5 L 615.4 81.9 Z","stroke":"sage","strokeWidth":1.6,"fill":"none","opacity":1},{"type":"text","x":641,"y":85.5,"style":"queryLabel","align":"left","baseline":"middle","value":"Compare to client model"},{"type":"path","d":"M 583 152 L 587.1 156.1 L 595 147.1","stroke":"sage","strokeWidth":2,"fill":"none","opacity":1},{"type":"text","x":610,"y":152,"style":"checkLabel","align":"left","baseline":"middle","value":"Call the vault and check sources"},{"type":"rect","x":100,"y":196,"w":420,"h":420,"r":14,"fill":"panel","stroke":"lineDark","strokeWidth":1,"opacity":1},{"type":"path","d":"M133.67 225.43 H149.25 L156.33 232.57 V262.57 H133.67 Z M149.25 225.43 V232.57 H156.33","stroke":"sage","strokeWidth":2,"fill":"none","opacity":1},{"type":"text","x":128,"y":300.85,"style":"docTitle","align":"left","baseline":"middle","value":"Project Alpha — Lender Model"},{"type":"text","x":128,"y":333.69,"style":"docPages","align":"left","baseline":"middle","value":"pp. 1–2"},{"type":"rect","x":128,"y":369.69,"w":364.0,"h":3,"r":0,"fill":"lineDark","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":128,"y":386.69,"w":313.04,"h":3,"r":0,"fill":"lineDark","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":128,"y":403.69,"w":342.16,"h":3,"r":0,"fill":"lineDark","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":128,"y":420.69,"w":225.68,"h":3,"r":0,"fill":"lineDark","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":128,"y":437.69,"w":364.0,"h":3,"r":0,"fill":"lineDark","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":128,"y":454.69,"w":283.92,"h":3,"r":0,"fill":"lineDark","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":128,"y":471.69,"w":327.6,"h":3,"r":0,"fill":"lineDark","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":128,"y":488.69,"w":174.72,"h":3,"r":0,"fill":"lineDark","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":580,"y":196,"w":1240,"h":374,"r":14,"fill":"panel","stroke":"lineDark","strokeWidth":1,"opacity":1},{"type":"text","x":616,"y":237.5,"style":"panelEyebrow","align":"left","baseline":"middle","value":"PROJECT ALPHA"},{"type":"text","x":616,"y":282.5,"style":"panelTitle","align":"left","baseline":"middle","value":"Financial Summary"},{"type":"rect","x":616,"y":328,"w":1168,"h":1,"r":0,"fill":"lineDark","stroke":null,"strokeWidth":0,"opacity":1},{"type":"rect","x":600,"y":477,"w":1200,"h":61,"r":8,"fill":"lineDark","stroke":null,"strokeWidth":0,"opacity":1},{"type":"text","x":1432,"y":365,"style":"tableCaption","align":"center","baseline":"middle","value":"PF Adjusted EBITDA"},{"type":"text","x":1159,"y":405,"style":"colHead","align":"center","baseline":"middle","value":"LTM"},{"type":"text","x":1341,"y":405,"style":"colHead","align":"center","baseline":"middle","value":"2026E"},{"type":"text","x":1523,"y":405,"style":"colHead","align":"center","baseline":"middle","value":"2027E"},{"type":"text","x":1705,"y":405,"style":"colHead","align":"center","baseline":"middle","value":"2028E"},{"type":"text","x":1159,"y":440,"style":"figure","align":"center","baseline":"middle","value":"115.0"},{"type":"text","x":1341,"y":440,"style":"figure","align":"center","baseline":"middle","value":"125.0"},{"type":"text","x":1523,"y":440,"style":"figure","align":"center","baseline":"middle","value":"135.0"},{"type":"text","x":1705,"y":440,"style":"figure","align":"center","baseline":"middle","value":"145.0"},{"type":"text","x":616,"y":507.5,"style":"rowLabel","align":"left","baseline":"middle","value":"Net Debt"},{"type":"text","x":736.94,"y":507.5,"style":"rowValue","align":"left","baseline":"middle","value":"450.0"},{"type":"text","x":1159,"y":507.5,"style":"multiple","align":"center","baseline":"middle","value":"3.9x"},{"type":"text","x":1341,"y":507.5,"style":"multiple","align":"center","baseline":"middle","value":"3.6x"},{"type":"text","x":1523,"y":507.5,"style":"multiple","align":"center","baseline":"middle","value":"3.3x"},{"type":"text","x":1705,"y":507.5,"style":"multiple","align":"center","baseline":"middle","value":"3.1x"},{"type":"text","x":580,"y":630.5,"style":"sourcesEyebrow","align":"left","baseline":"middle","value":"SOURCES"},{"type":"rect","x":684.11,"y":610,"w":178.06,"h":41,"r":20.5,"fill":"none","stroke":"sage","strokeWidth":1,"opacity":1},{"type":"text","x":703.11,"y":630.5,"style":"pillActive","align":"left","baseline":"middle","value":"Lender Model p.1"},{"type":"rect","x":880.17,"y":610,"w":139.17,"h":41,"r":20.5,"fill":"none","stroke":"line","strokeWidth":1,"opacity":1},{"type":"text","x":899.17,"y":630.5,"style":"pillMuted","align":"left","baseline":"middle","value":"Client Model"}],"table":{"card":{"x":580,"y":196,"w":1240,"h":374,"r":14,"fill":"panel","stroke":"lineDark","strokeWidth":1},"columns":[{"key":"label","x":616,"w":440,"align":"left","anchorX":616},{"key":"ebitdaSpan","x":1080,"w":704,"align":"center","anchorX":1432},{"key":"value","x":736.94,"w":66.02,"align":"left","anchorX":736.94},{"key":"ltm","x":1080,"w":158,"align":"center","anchorX":1159},{"key":"y2026","x":1262,"w":158,"align":"center","anchorX":1341},{"key":"y2027","x":1444,"w":158,"align":"center","anchorX":1523},{"key":"y2028","x":1626,"w":158,"align":"center","anchorX":1705}],"rows":[{"key":"caption","y":353,"h":24,"ruleTop":true},{"key":"head","y":395,"h":20,"ruleTop":false},{"key":"pfadj","y":423,"h":34,"ruleTop":false},{"key":"netdebt","y":477,"h":61,"ruleTop":false}],"cells":[{"row":"caption","col":"label","value":null,"style":null,"align":"left","baseline":"middle"},{"row":"caption","col":"ebitdaSpan","value":"PF Adjusted EBITDA","style":"tableCaption","align":"center","baseline":"middle"},{"row":"head","col":"label","value":null,"style":null,"align":"left","baseline":"middle"},{"row":"head","col":"ltm","value":"LTM","style":"colHead","align":"center","baseline":"middle"},{"row":"head","col":"y2026","value":"2026E","style":"colHead","align":"center","baseline":"middle"},{"row":"head","col":"y2027","value":"2027E","style":"colHead","align":"center","baseline":"middle"},{"row":"head","col":"y2028","value":"2028E","style":"colHead","align":"center","baseline":"middle"},{"row":"pfadj","col":"label","value":null,"style":null,"align":"left","baseline":"middle"},{"row":"pfadj","col":"ltm","value":"115.0","style":"figure","align":"center","baseline":"middle"},{"row":"pfadj","col":"y2026","value":"125.0","style":"figure","align":"center","baseline":"middle"},{"row":"pfadj","col":"y2027","value":"135.0","style":"figure","align":"center","baseline":"middle"},{"row":"pfadj","col":"y2028","value":"145.0","style":"figure","align":"center","baseline":"middle"},{"row":"netdebt","col":"label","value":"Net Debt","style":"rowLabel","align":"left","baseline":"middle"},{"row":"netdebt","col":"value","value":"450.0","style":"rowValue","align":"left","baseline":"middle"},{"row":"netdebt","col":"ltm","value":"3.9x","style":"multiple","align":"center","baseline":"middle"},{"row":"netdebt","col":"y2026","value":"3.6x","style":"multiple","align":"center","baseline":"middle"},{"row":"netdebt","col":"y2027","value":"3.3x","style":"multiple","align":"center","baseline":"middle"},{"row":"netdebt","col":"y2028","value":"3.1x","style":"multiple","align":"center","baseline":"middle"}],"highlight":[{"row":"netdebt","col":null,"x":600,"y":477,"w":1200,"h":61,"r":8,"fill":"lineDark"}]},"sourcePills":[{"label":"Lender Model p.1","state":"active","x":684.11,"y":610,"w":178.06,"h":41,"r":20.5,"fill":"none","stroke":"sage","strokeWidth":1,"textX":703.11,"textY":630.5,"style":"pillActive","icon":null},{"label":"Client Model","state":"muted","x":880.17,"y":610,"w":139.17,"h":41,"r":20.5,"fill":"none","stroke":"line","strokeWidth":1,"textX":899.17,"textY":630.5,"style":"pillMuted","icon":null}],"docCard":{"card":{"x":100,"y":196,"w":420,"h":420,"r":14,"fill":"panel","stroke":"lineDark","strokeWidth":1},"icon":{"d":"M133.67 225.43 H149.25 L156.33 232.57 V262.57 H133.67 Z M149.25 225.43 V232.57 H156.33","stroke":"sage","strokeWidth":2,"fill":"none"},"title":{"x":128,"y":300.85,"style":"docTitle","align":"left","baseline":"middle","value":"Project Alpha — Lender Model"},"pages":{"x":128,"y":333.69,"style":"docPages","align":"left","baseline":"middle","value":"pp. 1–2"},"lines":[{"x":128,"y":369.69,"w":364.0,"h":3,"r":0,"fill":"lineDark"},{"x":128,"y":386.69,"w":313.04,"h":3,"r":0,"fill":"lineDark"},{"x":128,"y":403.69,"w":342.16,"h":3,"r":0,"fill":"lineDark"},{"x":128,"y":420.69,"w":225.68,"h":3,"r":0,"fill":"lineDark"},{"x":128,"y":437.69,"w":364.0,"h":3,"r":0,"fill":"lineDark"},{"x":128,"y":454.69,"w":283.92,"h":3,"r":0,"fill":"lineDark"},{"x":128,"y":471.69,"w":327.6,"h":3,"r":0,"fill":"lineDark"},{"x":128,"y":488.69,"w":174.72,"h":3,"r":0,"fill":"lineDark"}]}},{"id":"04","bg":"black","grid":null,"nodes":[{"type":"path","d":"M 1520 300 C 1200 300 900 180 60 110","stroke":"sage","strokeWidth":1,"fill":"none","opacity":1},{"type":"path","d":"M 1520 300 C 1250 292 1000 210 200 152","stroke":"sage","strokeWidth":1,"fill":"none","opacity":1},{"type":"path","d":"M 1520 300 C 1300 288 1100 240 500 196","stroke":"sage","strokeWidth":1,"fill":"none","opacity":1},{"type":"path","d":"M 1520 300 C 1390 294 1300 262 900 234","stroke":"sage","strokeWidth":1,"fill":"none","opacity":1},{"type":"path","d":"M 1520 300 C 1540 212 1600 112 1650 40","stroke":"sage","strokeWidth":1,"fill":"none","opacity":1},{"type":"path","d":"M 1520 300 C 1580 214 1680 122 1790 40","stroke":"sage","strokeWidth":1,"fill":"none","opacity":1},{"type":"path","d":"M 1520 300 C 1620 262 1740 202 1860 148","stroke":"sage","strokeWidth":1,"fill":"none","opacity":1},{"type":"path","d":"M 1520 300 C 1640 288 1760 278 1860 264","stroke":"sage","strokeWidth":1,"fill":"none","opacity":1},{"type":"path","d":"M 1520 300 C 1630 330 1750 372 1860 404","stroke":"sage","strokeWidth":1,"fill":"none","opacity":1},{"type":"text","x":120,"y":419.84,"style":"closingLine","align":"left","baseline":"middle","value":"Credit work, connected."},{"type":"text","x":120,"y":776.5,"style":"closingWordmark","align":"left","baseline":"middle","value":"RAVEN"}]}]};
+const SPEC = {"meta":{"project":"Raven | Shorts No.1","revision":4,"date":"2026-10-08","status":"for approval","duration":43.0,"canvas":{"w":1920,"h":1080,"fps":30},"safeArea":{"top":40,"bottom":825,"side":60,"subtitleBand":255},"note":"Background bleeds to the frame edges; content stays inside safeArea. The lower 255 px are left empty for the YouTube subtitle band."},"type":{"sans":"IBM Plex Sans","mono":"IBM Plex Mono","productSans":"Open Sans","note":"Dark shots are set in IBM Plex Sans. Light shots 03 and 04 use Open Sans, matching the client vignette HTML."},"palette":{"darkBrand":{"base":"#000000","undertone":"#02100a","ink":"#ffffff","sage":"#c7d0be","muted":"#b2b2b2","arcLight":"#dcf2e3","horizonGlow":"rgba(150,215,175,0.30)","groundSheen":"rgba(70,130,95,0.22)"},"darkSchema":{"bg":"#0b0f0e","panel":"#101614","text":"#f4f5f2","muted":"#9ca7a1","accentGreen":"#7fd39a","accentGreen10":"rgba(127,211,154,0.10)","wireSoft":"rgba(127,211,154,0.16)","cardStroke":"rgba(127,211,154,0.75)","railWindow":"rgba(16,22,20,0.55)","railWindowDim":"rgba(16,22,20,0.25)","railItem":"#8c978f","railItemActive":"#ffffff","railItemDim":"#8c978f","railChevron":"#5d6b64","railAgentIdle":"rgba(146,166,154,0.35)","railAgentIdleText":"#8c978f","railAgentActiveText":"#ffffff","agentGlow":"0 8px 30px rgba(127,211,154,0.26)","ruleInactive":"#333c38"},"lightProduct":{"bg":"#ffffff","ink":"#1d1d1f","muted":"#77777c","line":"#e6e6e1","shade":"#f3f3ee","bubble":"#f0f0ec","purple":"#5b3fd6","chg":"rgba(91,63,214,0.10)","ok":"#3d8b5a","pills":{"oneTime":"#3d6a22","nonCash":"#2a5391","normalizing":"#8a5a12","synergy":"#6b3aa0","proForma":"#1f6a64","tintAlpha":0.14},"note":"Values taken verbatim from the client vignette HTML. The purple appears only inside the product interface — nowhere else in the film."}},"frames":[{"id":"01","shot":1,"name":"Name on black","t0":0.0,"t1":5.0,"theme":"darkBrand"},{"id":"02a","shot":2,"name":"Sources","t0":5.0,"t1":8.0,"theme":"darkSchema"},{"id":"02b","shot":2,"name":"Converge","t0":8.0,"t1":9.5,"theme":"darkSchema"},{"id":"02c","shot":2,"name":"The layer","t0":9.5,"t1":11.0,"theme":"darkSchema"},{"id":"02d","shot":2,"name":"Two outputs","t0":11.0,"t1":12.5,"theme":"darkSchema"},{"id":"02e","shot":2,"name":"Workflow carousel","t0":12.5,"t1":16.0,"theme":"darkSchema"},{"id":"02f","shot":2,"name":"Agent","t0":16.0,"t1":19.0,"theme":"darkSchema"},{"id":"03a","shot":3,"name":"First prompt","t0":19.0,"t1":21.5,"theme":"lightProduct"},{"id":"03b","shot":3,"name":"The table builds","t0":21.5,"t1":24.5,"theme":"lightProduct"},{"id":"03c","shot":3,"name":"25% haircut","t0":24.5,"t1":27.5,"theme":"lightProduct"},{"id":"03d","shot":3,"name":"Cap table","t0":27.5,"t1":31.0,"theme":"lightProduct"},{"id":"04a","shot":4,"name":"Summary","t0":31.0,"t1":33.5,"theme":"lightProduct"},{"id":"04b","shot":4,"name":"Prompt to the agent","t0":33.5,"t1":36.0,"theme":"lightProduct"},{"id":"04c","shot":4,"name":"The source","t0":36.0,"t1":39.0,"theme":"lightProduct"},{"id":"05","shot":5,"name":"Credit work, connected","t0":39.0,"t1":43.0,"theme":"darkBrand"}],"voiceover":[{"shot":1,"t0":0.0,"line":"Raven is built for corporate credit — around the way credit professionals actually work."},{"shot":2,"t0":5.0,"line":"Raven brings together deal documents, third-party data, firm data and firm credit policies along with the analysis Raven has already completed — so the team can build on what's known instead of starting over each time."},{"shot":3,"t0":19.0,"line":"Through Raven Agent, credit teams can engage in natural language, apply repeatable workflows, and carry the analysis forward."},{"shot":4,"t0":31.0,"line":"Every figure is sourced, traceable, and auditable — adding confidence to the analysis as the work moves forward."},{"shot":5,"t0":39.0,"line":"Raven. The AI platform for corporate credit."}],"brandLockup":{"mark":{"viewBox":"0 0 58 42","source":"sign.svg"},"shot01":{"markW":320,"markH":232,"markTop":250,"wordmark":{"size":92,"tracking":"0.30em","marginTop":34,"fill":"ink"},"arc":{"cx":960,"cy":1560,"r":1500,"strokeWidth":2.5,"stroke":"arcLight"},"horizon":{"y":700,"h":2},"glow":{"y":618,"h":170},"footnote":{"text":"raven.ai","x":140,"y":784,"size":26,"fill":"muted"}},"shot05":{"markW":320,"markH":232,"markTop":206,"wordmark":{"size":92,"tracking":"0.30em","marginTop":34,"fill":"ink"},"tagline":{"text":"Credit work, connected.","size":38,"marginTop":30,"fill":"muted"},"arc":{"cx":960,"cy":1560,"r":1500,"strokeWidth":2.5,"stroke":"arcLight"},"horizon":{"y":730,"h":2},"glow":{"y":648,"h":170}}},"schema":{"sources":[{"label":"Deal documents","centerX":240,"labelY":100,"ruleX":140,"ruleY":152,"lit":76,"litX":34},{"label":"Third-party data","centerX":600,"labelY":100,"ruleX":500,"ruleY":152,"lit":76,"litX":62},{"label":"Firm credit policies","centerX":960,"labelY":100,"ruleX":860,"ruleY":152,"lit":76,"litX":48},{"label":"Firm data","centerX":1320,"labelY":100,"ruleX":1220,"ruleY":152,"lit":76,"litX":70},{"label":"Raven credit intelligence","centerX":1680,"labelY":100,"ruleX":1580,"ruleY":152,"lit":200,"litX":0}],"ruleW":200,"ruleH":4,"labelSize":30,"convergePoint":{"x":960,"y":292},"card":{"x":760,"y":286,"w":400,"h":400,"r":0,"stroke":"cardStroke","strokeWidth":1.5,"markW":112,"wordmarkSize":40,"submark":"The intelligence layer","submarkSize":24},"outputs":[{"label":"Underwriting","side":"left","lineFrom":760,"lineTo":442,"y":486,"labelX":60,"labelW":360,"size":36},{"label":"Monitoring","side":"right","lineFrom":1160,"lineTo":1478,"y":486,"labelX":1500,"size":36}]},"rail":{"window":{"x":60,"y":736,"w":1516,"h":86,"r":43,"fill":"railWindow","stroke":null,"strokeWidth":0,"shadow":null},"fade":{"w":120,"to":"bg"},"strip":{"y":736,"h":86,"gap":84,"totalW":2228,"fontSize":32,"items":[{"label":"Deal screen","x":0,"w":176,"centerX":88},{"label":"EBITDA walk","x":260,"w":200,"centerX":360},{"label":"Sensitize model","x":544,"w":244,"centerX":666},{"label":"Peer analysis","x":872,"w":208,"centerX":976},{"label":"IC Memo","x":1164,"w":120,"centerX":1224},{"label":"Legal review","x":1368,"w":192,"centerX":1464},{"label":"Compare deals","x":1644,"w":216,"centerX":1752},{"label":"Portfolio snapshot","x":1944,"w":284,"centerX":2086}],"chevron":{"d":"M0 0 L8 9 L0 18","stroke":"railChevron","strokeWidth":2,"x":[218,502,830,1122,1326,1602,1902]}},"itemStyle":"railItem","activeStyle":"railItemActive","dimStyle":"railItemDim","activeScale":1.06,"itemBaselineY":782,"activeUnderline":{"y":796,"h":3,"r":2,"fill":"accentGreen","padX":0},"stops":[{"index":0,"scrollX":-670},{"index":1,"scrollX":-398},{"index":2,"scrollX":-92},{"index":3,"scrollX":218},{"index":4,"scrollX":466},{"index":5,"scrollX":706},{"index":6,"scrollX":994},{"index":7,"scrollX":1328}],"timing":{"travel":0.25,"dwell":0.2,"stopCount":8,"total":3.5},"agent":{"label":"Raven Agent","x":1600,"y":747,"w":240,"h":62,"r":31,"textX":1732,"textY":786,"textAlign":"center","dot":{"cx":1672,"cy":778,"r":5.5},"idle":{"fill":"none","stroke":"railAgentIdle","strokeWidth":1,"style":"railAgentIdleText","dotFill":"railAgentIdleText","opacity":1,"scale":1.0,"shadow":null},"active":{"fill":"accentGreen10","stroke":"accentGreen","strokeWidth":2,"style":"railAgentActiveText","dotFill":"accentGreen","opacity":1,"scale":1.15,"shadow":"agentGlow"}},"notes":["Item x / w / centerX are in strip coordinates, measured from the strip's left edge; totalW is the full strip width.","scrollX is the strip offset at which that item sits in the centre of the window.","At the last stop the strip's right edge lands 900 px from the window's left edge, so nothing is left beyond the right edge.","The agent capsule is in frame coordinates, outside the strip, and does not move. idle = frame 02e, active = frame 02f.","In frame 02f every item is set in dimStyle; there is no active stop and no underline.","Item widths were measured at IBM Plex Sans 32 px. Changing the typeface means recomputing widths and, with them, every centerX, chevron x and scrollX."]},"dialogue":{"columnX":310,"columnW":1300,"bubble":{"r":16,"padX":24,"padY":14,"size":26,"fill":"bubble","align":"right"},"agentHeader":{"y":150,"markW":36,"name":"Raven","context":"· Project Alpha","size":23},"status":{"rowH":58,"size":23,"tickFill":"ok","secondsAlign":"right"},"table":{"y":290,"fontSize":19,"padX":14,"padY":6},"input":{"x":310,"y":676,"w":1300,"r":14,"placeholder":"Ask about any deal, or type / for a skill","controls":["attach","Web","Skills"],"send":{"d":52,"fill":"ink","arrow":"up"},"source":"ui-01-agent-empty-state"},"note":"No sparkle icon anywhere — the Raven bird mark replaces it in the answer header and in every prompt capsule."},"figures":{"units":"USD in millions","period":"LTM 6/30/2026","ebitdaWalk":{"columns":["Item","Deal docs","Firm adj.","Type"],"rows":[{"label":"Reported EBITDA","deal":258.0,"firm":258.0,"firmHaircut":258.0,"type":null,"subtotal":true,"changes":false},{"label":"(+) Restructuring & Other Transaction Related Costs","deal":20.0,"firm":20.0,"firmHaircut":15.0,"type":"One-time","signed":true},{"label":"(+) Non-Cash Impairments","deal":8.0,"firm":8.0,"firmHaircut":6.0,"type":"Non-cash","signed":true},{"label":"(+/-) Other Management Adjustments","deal":4.0,"firm":4.0,"firmHaircut":3.0,"type":"Normalizing","signed":true},{"label":"Adjusted EBITDA","deal":290.0,"firm":290.0,"firmHaircut":282.0,"type":null,"subtotal":true},{"label":"(+) Pro Forma Acquired EBITDA","deal":12.0,"firm":12.0,"firmHaircut":9.0,"type":"Pro forma","signed":true},{"label":"(+) Run-rate Cost Savings","deal":24.0,"firm":24.0,"firmHaircut":18.0,"type":"Synergy","signed":true},{"label":"PF Adjusted EBITDA","deal":326.0,"firm":326.0,"firmHaircut":309.0,"type":null,"subtotal":true}],"haircut":0.75,"note":"Reported EBITDA does not move under the haircut; every other Firm adj. cell is highlighted on chg in frame 03c."},"capTable":{"columns":["Facility","Amount","Pricing","Maturity","Cum. leverage on 326.0","Cum. leverage on 309.0"],"rows":[{"facility":"Revolver (drawn)","sub":"$100.0 commitment","amount":25.0,"pricing":"S + 375","maturity":"2031","cum":25.0,"onDeal":"0.08x","onRevised":"0.08x"},{"facility":"First Lien Term Loan","amount":950.0,"pricing":"S + 475","maturity":"2033","cum":975.0,"onDeal":"2.99x","onRevised":"3.16x"},{"facility":"Second Lien Term Loan","amount":300.0,"pricing":"S + 850","maturity":"2034","cum":1275.0,"onDeal":"3.91x","onRevised":"4.13x"},{"facility":"Total Debt","amount":1275.0,"subtotal":true,"onDeal":"3.91x","onRevised":"4.13x"},{"facility":"Less: Cash","amount":-45.0},{"facility":"Net Debt","amount":1230.0,"subtotal":true,"onDeal":"3.77x","onRevised":"3.98x"}],"formula":"cumulative debt / PF Adjusted EBITDA, two decimal places"},"financialSummary":{"label":"PF Adjusted EBITDA","periods":["LTM","2026E","2027E","2028E"],"values":[309.0,335.0,360.0,385.0],"netDebt":1230.0,"multiples":["4.0x","3.7x","3.4x","3.2x"],"sources":[{"label":"Lender Model p.1","state":"active"},{"label":"Client Model","state":"dim"}],"note":"These continue shot 03 rather than restarting. Revision 3 carried 115.0/125.0/135.0/145.0 and Net Debt 450.0, which broke the story."}},"open":[{"id":"vo-rerecord","text":"Shot 02 now runs six beats against one voiceover line. A pause of about five seconds, or an extra line, is needed."},{"id":"closing-copy","text":"The voice says 'The AI platform for corporate credit' while the closing card reads 'Credit work, connected'. The mismatch is deliberate — to be confirmed."},{"id":"aspect","text":"16:9 or a 9:16 vertical. The carousel and the tables do not fit vertically as drawn."},{"id":"legal","text":"Deal names and figures to be cleared before publication."},{"id":"assets","text":"Vector logo, brandbook, licensed typefaces."},{"id":"music","text":"Track and usage licence."}]};
+
+/* The export maps a carousel stop to a strip offset, but its stated
+   origin is 60 px off: every item, chevron and underline in the
+   reference frames lands at  x = itemX + RAIL0 - scrollX  with
+   RAIL0 = 120. Measured across all eight stops in 02e and 02f. */
+const RAIL0 = 120;
 
 /* ============================================================
-   TIMELINE — edit seconds here, nothing else.
-   Four scenes. Scenes 02 and 03 are continuous, not cuts; their
-   internal beats are in B02 / B03 below, in seconds from the
+   TIMELINE — five scenes, 43 s. Edit seconds here, nothing else.
+   Shots 02, 03 and 04 are continuous scenes, not cuts; their
+   internal beats live in B02 / B03 / B04, in seconds from the
    scene's own start.
    ============================================================ */
 const TL = {
-  total: 34.5,
+  total: 43.0,
   xfade: 0.45,
   scenes: [
-    { id:'01', name:'Name on black',        t0: 0.0,  t1: 5.0  },
-    { id:'02', name:'Layer and workflows',  t0: 5.0,  t1:24.5  },
-    { id:'03', name:'Where the number comes from', t0:24.5, t1:31.0 },
-    { id:'04', name:'Credit work, connected',      t0:31.0, t1:34.5 }
+    { id:'01', name:'Name on black',           t0: 0.0,  t1: 5.0  },
+    { id:'02', name:'The layer and the Agent', t0: 5.0,  t1:19.0  },
+    { id:'03', name:'Asking in plain words',   t0:19.0,  t1:31.0  },
+    { id:'04', name:'Where the number comes from', t0:31.0, t1:39.0 },
+    { id:'05', name:'Credit work, connected',  t0:39.0,  t1:43.0  }
   ]
 };
 
-/* Scene 02 beats. The rail does not scroll: it is a stationary
-   breadcrumb whose active step walks along it. "Raven Agent" lights
-   first, on the words, then the workflows step through under them. */
+const B01 = { glow:0.0, arc:0.15, bird:0.95, wordmark:1.55, foot:2.15, settle:3.4 };
+const B05 = { glow:0.0, arc:0.10, bird:0.50, wordmark:1.05, tagline:1.55, fade:3.35 };
+
+/* Shot 02. The carousel is the whole point of the lower third: eight
+   stops in 3.4 s with a short magnetic dwell on each, then the strip
+   stops dead and the Agent capsule is the only thing left alive. */
 const B02 = {
-  // The schema assembles in the first ~3 s. The scene still runs its full
-  // 19.5 s against the voiceover, so the rail carries the rest: it appears
-  // early and dormant, then walks its steps slowly through the back half.
-  source:   { start: 0.15, step: 0.20, dur: 0.38 },   // five labels, one after another
-  arc:      { start: 1.15, step: 0.07, dur: 0.40 },   // five curves draw
-  node:     1.80,                                     // the point they meet
-  square:   1.90, bird: 2.10, wordmark: 2.30, sub: 2.45,
-  exit:     { line: 2.35, dur: 0.32, label: 2.55 },   // Underwriting / Monitoring
-  rail:     { bar: 3.40, agent: 4.00, dots: 4.55,
-              items: { start: 8.40, step: 2.20, dur: 0.60 } }
+  src:   { start:0.15, step:0.30, dur:0.45 },
+  wire:  { start:3.00, step:0.10, dur:0.90 },
+  card:  3.95, cardBird:4.55, cardWord:4.85, cardSub:5.10,
+  out:   { line:6.00, dur:0.65, label:6.40 },
+  rail:  { window:7.40, dur:0.50,
+           start:7.65, travel:0.24, dwell:0.18 },   /* slice = travel + dwell */
+  agent: 11.05, agentDur:0.55, dim:11.00, dimDur:0.50
 };
 
-/* Scene 03 beats. 3a states the figure, 3b asks the agent and dims
-   the panel, 3c slides the panel aside and brings the source in. */
+/* Shot 03 — the dialogue, re-instated at the client's request. */
 const B03 = {
-  card: 0.00, eyebrow: 0.35, title: 0.55, rule: 0.80,
-  caption: 1.00, heads: 1.15, figures: 1.30,
-  band: 1.60, netdebt: 1.75,
-  query: 2.30, sparkle: 2.50, typing: 2.60, check: 3.40,
-  dim: 2.45,                                          // the panel steps back
-  shift: 4.10,                                        // panel slides right, brightens
-  doc: 4.35, docLines: { start: 4.75, step: 0.07, dur: 0.30 },
-  sources: 5.10, pills: 5.25
+  bubble1:0.10, type1:0.45, header:0.80,
+  status:{ start:1.15, step:0.34, dur:0.34 },
+  statusOut:2.45,
+  legend:2.60, thead:2.85,
+  rows:{ start:3.05, step:0.14, dur:0.40 },
+  bubble2:5.60, type2:0.40, haircut:6.25, haircutDur:0.75, legend2:6.20,
+  bubble3:8.60, type3:0.40, walkOut:8.95, walkDur:0.55,
+  capIn:9.25, capDur:0.65, capRows:{ start:9.50, step:0.11, dur:0.40 }
 };
 
-/* Scene 04 beats. */
-const B04 = { lines: { start: 0.00, step: 0.09, dur: 1.10 }, line: 1.00, wordmark: 1.90, out: 2.95 };
-
-/* Scene 01 beats. */
-const B01 = { arc: 0.00, bird: 0.60, wordmark: 1.10, rule: 1.60 };
-
-/* VO cues — stand-in captions, review aid only. */
-const CUES = [
-  [ 0.0,  5.0, 'Raven is built for corporate credit — around the way credit professionals actually work.'],
-  [ 5.0, 18.1, 'Raven brings together deal documents, third-party data, firm data and firm credit policies along with the analysis Raven has already completed — so the team can build on what’s known instead of starting over each time.'],
-  [18.1, 24.5, 'Through Raven Agent, credit teams can engage in natural language, apply repeatable workflows, and carry the analysis forward.'],
-  [24.5, 31.0, 'Every figure is sourced, traceable, and auditable — adding confidence to the analysis as the work moves forward.'],
-  [31.0, 34.5, 'Raven. The AI platform for corporate credit.']
-];
+/* Shot 04 — the audit trail. */
+const B04 = {
+  card:0.10, cardDur:0.60, eyebrow:0.50, title:0.70, rule:0.95,
+  label:1.15, periods:1.30, values:1.45, band:1.75, mult:1.90,
+  capsule:2.60, capsuleDur:0.50, vault:3.15,
+  dim:2.85, dimDur:0.60, up:2.85, upDur:0.65,
+  doc:5.10, docDur:0.70, shift:5.10, shiftDur:0.80, undim:5.30,
+  docLines:{ start:5.60, step:0.07, dur:0.30 }, sources:6.10, pills:6.25
+};
 
 /* Stand-in captions at the size YouTube renders them: ~4.4% of frame
    height, Roboto, white on a 75% black box, bottom-centred above the
-   player's control bar. The spec already keeps content clear of this
-   band (safeArea.bottom), so nothing is covered. Press S to hide. */
+   player's control bar. The spec keeps all content clear of this band
+   (safeArea.bottom = 825), so nothing important is covered. S hides. */
 const YTCAP = {
   fontSize: 48, lineGap: 1.30, maxWidth: 1560,
   blockBottom: 970, maxLines: 2,
   bg: 'rgba(8,8,8,0.75)', pad: { x: 14, y: 6 }
 };
+
+const CUES = SPEC.voiceover.map((v,i,a)=>{
+  const end = a[i+1] ? a[i+1].t0 : TL.total;
+  return [v.t0 + 0.15, end - 0.15, v.line];
+});
 
 /* ===================== easing & helpers ===================== */
 const cl  = (v,a,b)=> v<a?a : v>b?b : v;
@@ -148,97 +154,32 @@ const lerp= (a,b,p)=> a+(b-a)*p;
 
 const NS='http://www.w3.org/2000/svg';
 const svg = document.getElementById('svg');
-const C   = SPEC.tokens.color;
-const TY  = SPEC.tokens.type;
-const FF  = SPEC.tokens.font;
-const col = k => (k && C[k]) ? C[k] : (k||'none');
+const P   = SPEC.palette;
+const DB  = P.darkBrand, DS = P.darkSchema, LP = P.lightProduct;
+const BIRD_D = "M33.2617 6.31543H38.5947L44.4883 12.6309H32.4189L27.9287 17.4023H34.2441L57.8213 41.2607H19.2266L12.7715 37.752L11.9287 41.2607L4.91211 35.3662V19.0869H0L12.7715 6.31543H9.96387L16.2793 0H27.3672L33.2617 6.31543ZM24.7002 5.05273C23.6803 5.05279 22.8535 5.87953 22.8535 6.89941C22.8536 7.9192 23.6804 8.74604 24.7002 8.74609C25.72 8.74609 26.5468 7.91923 26.5469 6.89941C26.5469 5.8795 25.7201 5.05273 24.7002 5.05273Z";
+const SANS = '"IBM Plex Sans",-apple-system,Segoe UI,Helvetica,Arial,sans-serif';
+const MONO = '"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace';
+const OSAN = '"Open Sans",-apple-system,Segoe UI,Helvetica,Arial,sans-serif';
 
 function mk(tag, attrs){
   const n = document.createElementNS(NS, tag);
   if(attrs) for(const k in attrs){ if(attrs[k]!=null) n.setAttribute(k, attrs[k]); }
   return n;
 }
-const ANCHOR   = { left:'start', center:'middle', right:'end' };
-const BASELINE = { top:'text-before-edge', middle:'central', bottom:'text-after-edge' };
-const FACE = {
-  sans:  `"${FF.sans.family}",system-ui,sans-serif`,
-  mono:  `"${FF.mono.family}",ui-monospace,monospace`,
-  serif: `"${FF.serif.family}",Georgia,serif`
-};
-function applyType(el, styleKey){
-  const s = TY[styleKey]; if(!s) return;
-  el.setAttribute('font-size', s.size);
-  el.setAttribute('font-weight', s.weight);
-  el.setAttribute('fill', col(s.color));
-  el.setAttribute('font-family', FACE[s.face] || FACE.sans);
-  if(s.letterSpacing) el.setAttribute('letter-spacing', s.letterSpacing);
+function txt(s, o){
+  const t = mk('text', {
+    x:o.x, y:o.y, fill:o.fill, 'font-size':o.size,
+    'font-family':o.face||SANS, 'font-weight':o.weight||400,
+    'text-anchor':o.anchor||'start', 'letter-spacing':o.track||null,
+    'dominant-baseline':o.base||null, opacity:o.opacity!=null?o.opacity:null
+  });
+  t.textContent = s;
+  return t;
 }
-
-/* arrowheads are declared on the line, not drawn as paths */
-(function defs(){
-  const d = mk('defs');
-  const AH = SPEC.arrowhead || {w:14,h:14};
-  for(const key of ['line','sage','muted','white']){
-    const m = mk('marker',{ id:'ah-'+key, viewBox:`0 0 ${AH.w} ${AH.h}`,
-      refX: AH.w, refY: AH.h/2, markerWidth: AH.w, markerHeight: AH.h,
-      orient:'auto-start-reverse', markerUnits:'userSpaceOnUse' });
-    m.appendChild(mk('path',{ d:`M 0 0 L ${AH.w} ${AH.h/2} L 0 ${AH.h}`,
-      fill:'none', stroke:col(key), 'stroke-width':1.5,
-      'stroke-linecap':'round','stroke-linejoin':'round' }));
-    d.appendChild(m);
-  }
-  svg.appendChild(d);
-})();
-
-function node(n){
-  if(n.type==='rect'){
-    const e = mk('rect',{ x:n.x, y:n.y, width:n.w, height:n.h, rx:n.r||0,
-      fill: n.fill==='none' ? 'none' : col(n.fill) });
-    if(n.stroke){ e.setAttribute('stroke', col(n.stroke)); e.setAttribute('stroke-width', n.strokeWidth||1); }
-    if(n.opacity!=null) e.setAttribute('opacity', n.opacity);
-    return e;
-  }
-  if(n.type==='line'){
-    const e = mk('line',{ x1:n.x1, y1:n.y1, x2:n.x2, y2:n.y2,
-      stroke: col(n.stroke), 'stroke-width': n.strokeWidth||1 });
-    if(n.arrow==='end')   e.setAttribute('marker-end',   `url(#ah-${n.stroke})`);
-    if(n.arrow==='start') e.setAttribute('marker-start', `url(#ah-${n.stroke})`);
-    return e;
-  }
-  if(n.type==='path'){
-    const e = mk('path',{ d:n.d, fill: (!n.fill||n.fill==='none') ? 'none' : col(n.fill),
-      stroke: n.stroke?col(n.stroke):null, 'stroke-width': n.strokeWidth||0,
-      'stroke-linecap':'round','stroke-linejoin':'round' });
-    if(n.opacity!=null) e.setAttribute('opacity', n.opacity);
-    return e;
-  }
-  if(n.type==='text'){
-    const e = mk('text',{ x:n.x, y:n.y,
-      'text-anchor': ANCHOR[n.align]||'start',
-      'dominant-baseline': BASELINE[n.baseline]||'text-before-edge' });
-    applyType(e, n.style);
-    e.textContent = n.value==null ? '' : n.value;
-    return e;
-  }
-  if(n.type==='image' && n.ref==='bird'){
-    const g  = mk('g');
-    const vb = SPEC.bird.viewBox.split(/\s+/).map(Number);
-    g.setAttribute('transform',
-      `translate(${n.x} ${n.y}) scale(${n.w/vb[2]} ${n.h/vb[3]}) translate(${-vb[0]} ${-vb[1]})`);
-    g.appendChild(mk('path',{ d: SPEC.bird.d, fill: col(n.fill) }));
-    if(n.opacity!=null) g.setAttribute('opacity', n.opacity);
-    return g;
-  }
-  return mk('g');
-}
-
-const F = id => SPEC.frames.find(f=>f.id===id);
-const SC = {};
-
-function sceneG(frame){
-  const g = mk('g',{class:'scene'});
-  g.appendChild(mk('rect',{x:0,y:0,width:1920,height:1080,fill:col(frame.bg)}));
-  svg.appendChild(g);
+function bird(x, y, w, fill){
+  const k = w/58;
+  const g = mk('g',{transform:`translate(${x} ${y}) scale(${k})`});
+  g.appendChild(mk('path',{d:BIRD_D, fill:fill}));
   return g;
 }
 function op(el,v){ el.style.opacity = v; }
@@ -250,227 +191,525 @@ function dash(el, p){
   el.setAttribute('stroke-dashoffset', L*(1-p));
 }
 function typeInto(el, full, p){ el.textContent = full.slice(0, Math.round(full.length*p)); }
-
-/* colour interpolation, for the panel stepping back and forward again */
 function hex2rgb(h){ return [parseInt(h.slice(1,3),16), parseInt(h.slice(3,5),16), parseInt(h.slice(5,7),16)]; }
 function mixCol(a, b, p){
-  const A=hex2rgb(col(a)), B=hex2rgb(col(b));
+  const A=hex2rgb(a), B=hex2rgb(b);
   return `rgb(${Math.round(lerp(A[0],B[0],p))},${Math.round(lerp(A[1],B[1],p))},${Math.round(lerp(A[2],B[2],p))})`;
 }
+const fmt = v => (v<0 ? '('+Math.abs(v).toFixed(1)+')' : v.toFixed(1));
+const sgn = v => (v>0?'+':'') + v.toFixed(1);
 
-/* ---------------- scene 01 ---------------- */
+/* ===================== defs ===================== */
 (function(){
-  const f = F('01'), g = sceneG(f);
-  const inner = mk('g',{class:'inner'}); g.appendChild(inner);
-  const arc  = node(f.nodes[0]);  inner.appendChild(arc);
-  const bird = node(f.nodes[1]);  inner.appendChild(bird);
-  const mark = node(f.nodes[2]);  inner.appendChild(mark);
-  const r0   = f.nodes[3];
-  const ruleG = mk('g'); ruleG.appendChild(node(r0)); inner.appendChild(ruleG);
-  SC['01'] = { g, inner, arc, bird, mark, ruleG, r0 };
+  const d = mk('defs');
+  d.innerHTML = `
+    <radialGradient id="brandGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"   stop-color="${DB.undertone}" stop-opacity="1"/>
+      <stop offset="100%" stop-color="${DB.base}"      stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="horizonLine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%"   stop-color="${DB.arcLight}" stop-opacity="0"/>
+      <stop offset="22%"  stop-color="${DB.arcLight}" stop-opacity=".30"/>
+      <stop offset="50%"  stop-color="${DB.arcLight}" stop-opacity=".85"/>
+      <stop offset="78%"  stop-color="${DB.arcLight}" stop-opacity=".30"/>
+      <stop offset="100%" stop-color="${DB.arcLight}" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="horizonBloom" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"   stop-color="${DB.horizonGlow}"/>
+      <stop offset="100%" stop-color="rgba(150,215,175,0)"/>
+    </radialGradient>
+    <radialGradient id="groundSheen" cx="50%" cy="0%" r="72%">
+      <stop offset="0%"   stop-color="${DB.groundSheen}"/>
+      <stop offset="100%" stop-color="rgba(70,130,95,0)"/>
+    </radialGradient>
+    <radialGradient id="schemaGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"   stop-color="rgba(127,211,154,.065)"/>
+      <stop offset="100%" stop-color="rgba(127,211,154,0)"/>
+    </radialGradient>
+    <radialGradient id="nodeBloom" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"   stop-color="rgba(170,255,200,.85)"/>
+      <stop offset="42%"  stop-color="rgba(127,211,154,.22)"/>
+      <stop offset="100%" stop-color="rgba(127,211,154,0)"/>
+    </radialGradient>
+    <linearGradient id="cardFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#141b18"/>
+      <stop offset="100%" stop-color="#0d1211"/>
+    </linearGradient>
+    <radialGradient id="cardFloor" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"   stop-color="rgba(127,211,154,.30)"/>
+      <stop offset="100%" stop-color="rgba(127,211,154,0)"/>
+    </radialGradient>
+    <linearGradient id="fadeL" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%"   stop-color="${DS.bg}" stop-opacity="1"/>
+      <stop offset="100%" stop-color="${DS.bg}" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="fadeR" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%"   stop-color="${DS.bg}" stop-opacity="0"/>
+      <stop offset="100%" stop-color="${DS.bg}" stop-opacity="1"/>
+    </linearGradient>
+    <filter id="wireGlow" x="-20%" y="-60%" width="140%" height="220%">
+      <feGaussianBlur stdDeviation="3.2" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="agentGlow" x="-60%" y="-180%" width="220%" height="460%">
+      <feDropShadow dx="0" dy="8" stdDeviation="15" flood-color="#7fd39a" flood-opacity="0.26"/>
+    </filter>
+    <filter id="softCard" x="-10%" y="-20%" width="120%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="6" flood-color="#000" flood-opacity="0.06"/>
+    </filter>
+    <clipPath id="railClip"><rect x="${SPEC.rail.window.x}" y="${SPEC.rail.window.y}" width="${SPEC.rail.window.w}" height="${SPEC.rail.window.h}"/></clipPath>`;
+  svg.appendChild(d);
 })();
 
-/* ---------------- scene 02 : one continuous scene ---------------- */
-(function(){
-  const f = F('02e'), g = sceneG(f);
-  const inner = mk('g',{class:'inner'}); g.appendChild(inner);
-  const N = f.nodes;
+const SC = {};
+function sceneG(bg){
+  const g = mk('g',{class:'scene'});
+  g.appendChild(mk('rect',{x:0,y:0,width:1920,height:1080,fill:bg}));
+  svg.appendChild(g);
+  return g;
+}
 
-  const arcs = N.slice(0,5).map(n=>{ const e=node(n); inner.appendChild(e); return e; });
+/* ============================================================
+   SHOTS 01 and 05 — the brand frames. Same construction, two
+   different lock-ups: the name alone, then the name with the line.
+   ============================================================ */
+function brandScene(cfg, withTagline){
+  const g = sceneG(DB.base);
+  const inner = mk('g'); g.appendChild(inner);
 
-  // five sources: each is its two rules plus a label
-  const srcRects = N.filter(n=>n.type==='rect' && n.h===4);
-  const srcTexts = N.filter(n=>n.style==='sourceLabel');
-  const sources = srcTexts.map((t,i)=>{
-    const sg = mk('g');
-    // the fifth source has one sage rule, the others have two
-    const mine = srcRects.filter(r => Math.abs(r.x - (t.x - 60)) < 60);
-    mine.forEach(r=>sg.appendChild(node(r)));
-    sg.appendChild(node(t));
-    inner.appendChild(sg);
-    return sg;
-  });
+  inner.appendChild(mk('rect',{x:0,y:0,width:1920,height:1080,fill:'url(#brandGlow)'}));
 
-  const nodeDot = node(F('02b').nodes.find(n=>n.type==='rect' && n.w===10));
-  inner.appendChild(nodeDot);
+  const hy = cfg.horizon.y;
+  const ground = mk('g');
+  ground.appendChild(mk('ellipse',{cx:960,cy:hy+150,rx:1500,ry:230,fill:'url(#groundSheen)'}));
+  ground.appendChild(mk('ellipse',{cx:960,cy:hy,rx:1150,ry:120,fill:'url(#horizonBloom)'}));
+  ground.appendChild(mk('rect',{x:0,y:hy,width:1920,height:cfg.horizon.h,fill:'url(#horizonLine)'}));
+  inner.appendChild(ground);
 
-  const sqSpec = N.find(n=>n.type==='rect' && n.w===400 && n.h===400);
-  const squareG = mk('g'); squareG.appendChild(node(sqSpec)); inner.appendChild(squareG);
-  const bird = node(N.find(n=>n.type==='image')); inner.appendChild(bird);
-  const wordmark = node(N.find(n=>n.style==='squareWordmark')); inner.appendChild(wordmark);
-  const sub = node(N.find(n=>n.style==='squareSub')); inner.appendChild(sub);
+  const a = cfg.arc, r = a.r;
+  const y0 = a.cy - Math.sqrt(Math.max(0, r*r - a.cx*a.cx));
+  const arc = mk('path',{
+    d:`M0 ${y0.toFixed(2)} A ${r} ${r} 0 0 1 1920 ${y0.toFixed(2)}`,
+    fill:'none', stroke:DB.arcLight, 'stroke-width':a.strokeWidth, opacity:0.55 });
+  inner.appendChild(arc);
 
-  const lines = N.filter(n=>n.type==='line');
-  const lineL = node(lines[0]), lineR = node(lines[1]);
-  inner.appendChild(lineL); inner.appendChild(lineR);
-  const labL = node(N.find(n=>n.value==='Underwriting'));
-  const labR = node(N.find(n=>n.value==='Monitoring'));
-  inner.appendChild(labL); inner.appendChild(labR);
+  const markX = 960 - cfg.markW/2;
+  const markG = bird(markX, cfg.markTop, cfg.markW, DB.ink);
+  inner.appendChild(markG);
 
-  /* ---- the workflow rail ---- */
-  const R = f.rail;
-  const railG = mk('g'); inner.appendChild(railG);
-  const barSpec = N.find(n=>n.type==='rect' && n.w===1800);
-  const bar = node(barSpec); railG.appendChild(bar);
+  /* Baselines measured off the reference frames: the export gives the
+     lock-up's block offsets, not text baselines. */
+  const w = cfg.wordmark;
+  const wmY = cfg.markTop + cfg.markH + w.marginTop + w.size*1.011;
+  const wm = txt('RAVEN',{ x:960 + w.size*0.15, y:wmY, fill:DB.ink, size:w.size,
+    weight:400, anchor:'middle', track:w.tracking });
+  inner.appendChild(wm);
 
-  const leadChev = mk('path',{ d:R.leadChevron.d, fill:'none',
-    stroke:col(R.leadChevron.stroke), 'stroke-width':R.leadChevron.strokeWidth,
-    'stroke-linecap':'round','stroke-linejoin':'round',
-    transform:`translate(${R.leadChevron.x} ${R.leadChevron.y - 8})` });
-  railG.appendChild(leadChev);
-
-  const dots = R.dot.cx.map(cx=>{
-    const e = mk('circle',{ cx, cy:R.dot.cy, r:R.dot.r, fill:col(R.dot.fill) });
-    railG.appendChild(e); return e;
-  });
-
-  const items = R.items.map((label,i)=>{
-    const t = mk('text',{ x:R.dot.cx[i], y:R.itemBaselineY,
-      'text-anchor':'middle','dominant-baseline':'central' });
-    applyType(t, R.itemStyle);
-    t.textContent = label;
-    railG.appendChild(t);
-    return t;
-  });
-
-  // chevrons sit midway between neighbouring items
-  const chevs = [];
-  for(let i=0;i<R.dot.cx.length-1;i++){
-    const e = mk('path',{ d:R.chevron.d, fill:'none', stroke:col(R.chevron.stroke),
-      'stroke-width':R.chevron.strokeWidth, 'stroke-linecap':'round','stroke-linejoin':'round' });
-    railG.appendChild(e); chevs.push(e);
+  let tag = null;
+  if(withTagline){
+    const tg = cfg.tagline;
+    tag = txt(tg.text,{ x:960, y:wmY + tg.marginTop + tg.size*1.66, fill:DB.muted,
+      size:tg.size, anchor:'middle' });
+    inner.appendChild(tag);
   }
+  let foot = null;
+  if(cfg.footnote){
+    const f = cfg.footnote;
+    foot = txt(f.text,{ x:f.x, y:f.y + f.size*0.96, fill:DB.muted, size:f.size });
+    inner.appendChild(foot);
+  }
+  const black = mk('rect',{x:0,y:0,width:1920,height:1080,fill:'#000',opacity:0});
+  g.appendChild(black);
+  return { g, inner, ground, arc, markG, wm, tag, foot, black };
+}
+SC['01'] = brandScene(SPEC.brandLockup.shot01, false);
 
-  const underline = mk('rect',{ x:R.activeUnderline.x, y:R.activeUnderline.y,
-    width:R.activeUnderline.w, height:R.activeUnderline.h, fill:col(R.activeUnderline.fill) });
-  railG.appendChild(underline);
+/* ============================================================
+   SHOT 02 — the intelligence layer, then the workflow carousel,
+   then the Agent alone. One continuous scene, six beats.
+   ============================================================ */
+SC['02'] = (function(){
+  const S = SPEC.schema, R = SPEC.rail;
+  const g = sceneG(DS.bg);
+  g.appendChild(mk('ellipse',{cx:960,cy:470,rx:780,ry:430,fill:'url(#schemaGlow)'}));
+  const inner = mk('g'); g.appendChild(inner);
 
+  /* --- sources --- */
+  const srcs = S.sources.map(s=>{
+    const q = mk('g');
+    q.appendChild(txt(s.label,{ x:s.centerX, y:s.labelY+31, fill:DS.text,
+      size:S.labelSize, weight:500, anchor:'middle' }));
+    q.appendChild(mk('rect',{x:s.ruleX,y:s.ruleY,width:S.ruleW,height:S.ruleH,
+      rx:S.ruleH/2, fill:DS.ruleInactive}));
+    const lit = mk('rect',{x:s.ruleX+s.litX,y:s.ruleY,width:s.lit,height:S.ruleH,
+      rx:S.ruleH/2, fill:DS.accentGreen});
+    q.appendChild(lit);
+    inner.appendChild(q);
+    return { q, lit, w:s.lit };
+  });
+
+  /* --- wires converging into the top edge of the card --- */
+  const CP = S.convergePoint;
+  const wires = S.sources.map(s=>{
+    const x0 = s.centerX, y1 = s.ruleY + 10;
+    const c1x = x0, c1y = y1 + 64;
+    const c2x = CP.x + (x0 - CP.x)*0.17, c2y = CP.y - 20;
+    const p = mk('path',{ d:`M${x0} ${y1} C${c1x} ${c1y} ${c2x.toFixed(1)} ${c2y} ${CP.x} ${CP.y}`,
+      fill:'none', stroke:DS.accentGreen, 'stroke-width':1.4, opacity:.85, filter:'url(#wireGlow)' });
+    inner.appendChild(p);
+    return p;
+  });
+  const node = mk('ellipse',{cx:CP.x,cy:CP.y-6,rx:86,ry:62,fill:'url(#nodeBloom)'});
+  inner.appendChild(node);
+
+  /* --- outputs --- */
+  const outs = S.outputs.map(o=>{
+    const q = mk('g');
+    const dir = o.side === 'left' ? 1 : -1;
+    const tip = o.lineTo;
+    q.appendChild(mk('line',{x1:o.lineFrom,y1:o.y,x2:tip,y2:o.y,stroke:DS.accentGreen,'stroke-width':1.4}));
+    q.appendChild(mk('path',{ d:`M${tip} ${o.y} l${14*dir} -8 M${tip} ${o.y} l${14*dir} 8`,
+      fill:'none', stroke:DS.accentGreen, 'stroke-width':1.4 }));
+    inner.appendChild(q);
+    const lab = txt(o.label,{ x:o.side==='left' ? o.labelX+o.labelW : o.labelX, y:o.y+13,
+      fill:DS.text, size:o.size, anchor:o.side==='left' ? 'end' : 'start' });
+    inner.appendChild(lab);
+    return { line:q, lab };
+  });
+
+  /* --- the layer card --- */
+  const c = S.card;
+  const cardG = mk('g');
+  cardG.appendChild(mk('rect',{x:c.x,y:c.y,width:c.w,height:c.h,rx:c.r,
+    fill:'url(#cardFill)', stroke:DS.cardStroke, 'stroke-width':c.strokeWidth}));
+  cardG.appendChild(mk('ellipse',{cx:c.x+c.w/2,cy:c.y+c.h-30,rx:108,ry:16,fill:'url(#cardFloor)'}));
+  const cBird = bird(c.x+c.w/2 - c.markW/2, c.y+91, c.markW, DB.ink);
+  const cWord = txt('RAVEN',{ x:c.x+c.w/2 + c.wordmarkSize*0.15, y:c.y+244, fill:DB.ink,
+    size:c.wordmarkSize, anchor:'middle', track:'0.26em' });
+  const cSub  = txt(c.submark,{ x:c.x+c.w/2, y:c.y+299, fill:DS.muted,
+    size:c.submarkSize, anchor:'middle' });
+  cardG.appendChild(cBird); cardG.appendChild(cWord); cardG.appendChild(cSub);
+  inner.appendChild(cardG);
+
+  /* --- the workflow carousel --- */
+  const railG = mk('g'); inner.appendChild(railG);
+  const W = R.window;
+  const win = mk('rect',{x:W.x,y:W.y,width:W.w,height:W.h,rx:W.r,fill:DS.railWindow});
+  railG.appendChild(win);
+
+  const clipG = mk('g',{'clip-path':'url(#railClip)'});
+  railG.appendChild(clipG);
+  const strip = mk('g'); clipG.appendChild(strip);
+
+  const items = R.strip.items.map(it=>{
+    const t = txt(it.label,{ x:it.centerX, y:R.itemBaselineY, fill:DS.railItem,
+      size:R.strip.fontSize, anchor:'middle' });
+    strip.appendChild(t);
+    return { t, it };
+  });
+  R.strip.chevron.x.forEach(cx=>{
+    const p = mk('path',{ d:R.strip.chevron.d, fill:'none', stroke:DS.railChevron,
+      'stroke-width':R.strip.chevron.strokeWidth,
+      transform:`translate(${cx-4} ${R.itemBaselineY-23})` });
+    strip.appendChild(p);
+  });
+  const uline = mk('rect',{ x:0, y:R.activeUnderline.y, width:0, height:R.activeUnderline.h,
+    rx:R.activeUnderline.r, fill:DS.accentGreen, opacity:0 });
+  strip.appendChild(uline);
+
+  const fade = R.fade.w;
+  railG.appendChild(mk('rect',{x:W.x-2,y:W.y,width:fade,height:W.h,fill:'url(#fadeL)'}));
+  railG.appendChild(mk('rect',{x:W.x+W.w-fade+2,y:W.y,width:fade,height:W.h,fill:'url(#fadeR)'}));
+
+  /* the Agent capsule sits outside the strip and never moves */
   const A = R.agent;
   const agentG = mk('g');
-  agentG.appendChild(mk('rect',{ x:A.x, y:R.y - A.h/2, width:A.w, height:A.h, rx:A.r,
-    fill: A.fill==='none'?'none':col(A.fill), stroke:col(A.stroke), 'stroke-width':A.strokeWidth }));
-  agentG.appendChild(mk('circle',{ cx:A.dot.cx, cy:A.dot.cy, r:A.dot.r, fill:col(A.dot.fill) }));
-  const agentT = mk('text',{ x:A.textX, y:A.textY, 'text-anchor':ANCHOR[A.textAlign]||'start',
-    'dominant-baseline':'central' });
-  applyType(agentT, A.style); agentT.textContent = A.label;
-  agentG.appendChild(agentT); railG.appendChild(agentG);
+  const aBox = mk('rect',{x:A.x,y:A.y,width:A.w,height:A.h,rx:A.r,fill:'none',
+    stroke:DS.railAgentIdle,'stroke-width':1});
+  const aDot = mk('circle',{cx:1646,cy:A.dot.cy,r:A.dot.r,fill:DS.railAgentIdleText});
+  const aTxt = txt(A.label,{ x:A.textX, y:A.textY, fill:DS.railAgentIdleText,
+    size:24, weight:500, anchor:'middle' });
+  agentG.appendChild(aBox); agentG.appendChild(aDot); agentG.appendChild(aTxt);
+  railG.appendChild(agentG);
 
-  let laid = false;
-  function layoutRail(){
-    // place the chevrons once the item widths are real
-    for(let i=0;i<chevs.length;i++){
-      const w0 = items[i].getComputedTextLength(), w1 = items[i+1].getComputedTextLength();
-      const right = R.dot.cx[i] + w0/2, left = R.dot.cx[i+1] - w1/2;
-      chevs[i].setAttribute('transform', `translate(${(right+left)/2 - 3.5} ${R.y - 8})`);
+  const white = mk('rect',{x:0,y:0,width:1920,height:1080,fill:'#ffffff',opacity:0});
+  g.appendChild(white);
+
+  return { g, inner, srcs, wires, node, outs, cardG, cBird, cWord, cSub,
+           railG, win, strip, items, uline, agentG, aBox, aDot, aTxt, white, A, R };
+})();
+
+/* ============================================================
+   SHOT 03 — the dialogue. Three prompts, each one rebuilding the
+   table underneath. The shell is the real product: no sparkle,
+   the Raven mark in the answer header, the real input bar.
+   ============================================================ */
+SC['03'] = (function(){
+  const D = SPEC.dialogue, FG = SPEC.figures;
+  const g = sceneG(LP.bg);
+  const inner = mk('g'); g.appendChild(inner);
+  const X0 = D.columnX, X1 = D.columnX + D.columnW;
+
+  /* prompt bubble, right-aligned */
+  const bubG = mk('g');
+  const bub = mk('rect',{x:0,y:52,width:0,height:63,rx:D.bubble.r,fill:LP.bubble});
+  const bubT = txt('',{ x:X1-D.bubble.padX, y:93, fill:LP.ink, size:D.bubble.size,
+    anchor:'end', face:OSAN });
+  bubG.appendChild(bub); bubG.appendChild(bubT); inner.appendChild(bubG);
+
+  /* answer header */
+  const hdr = mk('g');
+  hdr.appendChild(bird(X0, D.agentHeader.y + 5, D.agentHeader.markW, LP.ink));
+  hdr.appendChild(txt('Raven',{ x:X0+50, y:D.agentHeader.y+27, fill:LP.ink,
+    size:D.agentHeader.size, weight:700, face:OSAN }));
+  hdr.appendChild(txt('· Project Alpha',{ x:X0+140, y:D.agentHeader.y+27, fill:LP.muted,
+    size:D.agentHeader.size, face:OSAN }));
+  inner.appendChild(hdr);
+
+  /* status rows */
+  const STAT = [
+    ['Pulling the EBITDA walk from the vault', '12s', true],
+    ['Reading the reconciliation already computed in the vault', '10s', false],
+    ['Loading Deal docs values and pre-filling Firm adj.', '8s', false]
+  ];
+  const statG = mk('g'); inner.appendChild(statG);
+  const stats = STAT.map((s,i)=>{
+    const y = 231 + i*D.status.rowH;
+    const q = mk('g');
+    q.appendChild(mk('path',{ d:`M${X0+2} ${y-5} l9 10 l17 -20`, fill:'none',
+      stroke:LP.ok, 'stroke-width':2.6, 'stroke-linecap':'round', 'stroke-linejoin':'round' }));
+    q.appendChild(txt(s[0],{ x:X0+38, y:y+8, fill:LP.muted, size:D.status.size, face:OSAN }));
+    if(s[2]){
+      q.appendChild(mk('rect',{x:X0+466,y:y-14,width:136,height:33,rx:6,
+        fill:'none',stroke:LP.line,'stroke-width':1}));
+      q.appendChild(txt('Raven Agent',{ x:X0+534, y:y+7, fill:LP.muted, size:19,
+        anchor:'middle', face:OSAN }));
     }
-    laid = true;
-  }
-  function itemWidth(i){ return items[i].getComputedTextLength() || 160; }
-
-  SC['02'] = { g, inner, arcs, sources, nodeDot, squareG, sqSpec, bird, wordmark, sub,
-               lineL, lineR, labL, labR, railG, bar, leadChev, dots, items, chevs,
-               underline, agentG, R, itemWidth, layout:()=>{ if(!laid) layoutRail(); } };
-})();
-
-/* ---------------- scene 03 : one continuous scene ---------------- */
-(function(){
-  const f3a=F('03a'), f3b=F('03b'), f3c=F('03c');
-  const g = sceneG(f3a);
-  const inner = mk('g',{class:'inner'}); g.appendChild(inner);
-
-  /* Everything except the document card lives in one group that slides
-     +240 on the last beat, exactly as 03b → 03c does. */
-  const SHIFT = f3c.table.card.x - f3a.table.card.x;      // 240
-  const moving = mk('g'); inner.appendChild(moving);
-
-  // query capsule, sparkle, label, check — authored at the 03b position
-  const q = f3b.nodes;
-  const queryG = mk('g'); moving.appendChild(queryG);
-  queryG.appendChild(node(q[0]));
-  queryG.appendChild(node(q[1]));
-  const queryT = node(Object.assign({}, q[2], {value:''}));
-  queryG.appendChild(queryT);
-  const checkG = mk('g'); moving.appendChild(checkG);
-  checkG.appendChild(node(q[3])); checkG.appendChild(node(q[4]));
-
-  // panel
-  const T = f3a.table;
-  const cardG = mk('g'); moving.appendChild(cardG);
-  cardG.appendChild(node(f3a.nodes[0]));
-  const eyebrow = node(f3a.nodes[1]); moving.appendChild(eyebrow);
-  const title   = node(f3a.nodes[2]); moving.appendChild(title);
-  const rule    = node(f3a.nodes[3]); moving.appendChild(rule);
-  const band    = node(f3a.nodes[4]); moving.appendChild(band);
-
-  // table cells, grouped by row, built from the table block
-  const colOf={}; T.columns.forEach(c=>colOf[c.key]=c);
-  const rowOf={}; T.rows.forEach(r=>rowOf[r.key]=r);
-  const byRow={};
-  const DIM = { tableCaption:'tableCaptionDim', colHead:'colHeadDim', figure:'figureDim',
-                rowLabel:'rowLabelDim', rowValue:'rowValueDim', multiple:'multipleDim',
-                panelEyebrow:'panelEyebrowDim', panelTitle:'panelTitleDim' };
-  function tinted(el, styleKey){
-    el.__bright = TY[styleKey].color;
-    el.__dim    = TY[DIM[styleKey]] ? TY[DIM[styleKey]].color : TY[styleKey].color;
-  }
-  tinted(eyebrow,'panelEyebrow'); tinted(title,'panelTitle');
-  T.cells.forEach(c=>{
-    if(c.value==null || !c.style) return;
-    const cc=colOf[c.col], rr=rowOf[c.row]; if(!cc||!rr) return;
-    const x = c.align==='left' ? cc.x : (c.align==='center' ? cc.anchorX : cc.anchorX);
-    const e = mk('text',{ x, y: rr.y + rr.h/2,
-      'text-anchor':ANCHOR[c.align]||'start', 'dominant-baseline':'central' });
-    applyType(e, c.style); e.textContent = c.value;
-    tinted(e, c.style);
-    moving.appendChild(e);
-    (byRow[c.row] = byRow[c.row]||[]).push(e);
+    q.appendChild(txt(s[1],{ x:X1, y:y+8, fill:LP.muted, size:D.status.size,
+      anchor:'end', face:OSAN }));
+    statG.appendChild(q);
+    return q;
   });
 
-  // SOURCES row — authored at the 03c position, so pull it back by SHIFT
-  const srcEyebrow = node(Object.assign({}, f3c.nodes.find(n=>n.style==='sourcesEyebrow'), {}));
-  srcEyebrow.setAttribute('x', Number(f3c.nodes.find(n=>n.style==='sourcesEyebrow').x) - SHIFT);
-  moving.appendChild(srcEyebrow);
-  const pills = f3c.sourcePills.map(p=>{
-    const pg = mk('g');
-    pg.appendChild(mk('rect',{ x:p.x - SHIFT, y:p.y, width:p.w, height:p.h, rx:p.r,
-      fill: p.fill==='none'?'none':col(p.fill), stroke:col(p.stroke), 'stroke-width':p.strokeWidth }));
-    const t = mk('text',{ x:p.textX - SHIFT, y:p.textY, 'text-anchor':'start','dominant-baseline':'central' });
-    applyType(t, p.style); t.textContent = p.label;
-    pg.appendChild(t); moving.appendChild(pg);
-    return pg;
+  /* ---- the EBITDA walk ---- */
+  const walkG = mk('g'); inner.appendChild(walkG);
+  const legG = mk('g'); walkG.appendChild(legG);
+  legG.appendChild(txt('USD in millions (MM)',{ x:X0, y:229, fill:LP.ink, size:23,
+    weight:700, face:OSAN }));
+  const legMid = txt('Deal docs — source of record, locked',{ x:X0+249, y:229,
+    fill:LP.muted, size:21, face:OSAN });
+  legG.appendChild(legMid);
+  const legDot = mk('circle',{cx:X0+640,cy:221,r:5,fill:LP.purple});
+  const legRight = txt('Firm adjustment — pre-filled, editable',{ x:X0+656, y:229,
+    fill:LP.purple, size:22, face:OSAN });
+  legG.appendChild(legDot); legG.appendChild(legRight);
+
+  const COLX = { item:X0+14, deal:1128, firm:1388, type:1596 };
+  const RY = [292,329,369,409,449,486,526,567,602];
+  const theadG = mk('g'); walkG.appendChild(theadG);
+  theadG.appendChild(txt('Item',{ x:COLX.item, y:276, fill:LP.muted, size:21, face:OSAN }));
+  theadG.appendChild(txt('Deal docs',{ x:COLX.deal, y:276, fill:LP.muted, size:21,
+    anchor:'end', face:OSAN }));
+  theadG.appendChild(txt('Firm adj.',{ x:COLX.firm, y:276, fill:LP.muted, size:21,
+    anchor:'end', face:OSAN }));
+  theadG.appendChild(txt('Type',{ x:COLX.type, y:276, fill:LP.muted, size:21,
+    anchor:'end', face:OSAN }));
+  theadG.appendChild(mk('line',{x1:X0,y1:292,x2:X1,y2:292,stroke:LP.line,'stroke-width':1}));
+
+  const TAGC = { 'One-time':LP.pills.oneTime, 'Non-cash':LP.pills.nonCash,
+    'Normalizing':LP.pills.normalizing, 'Synergy':LP.pills.synergy, 'Pro forma':LP.pills.proForma };
+  function tint(hex){ const c=hex2rgb(hex); return `rgba(${c[0]},${c[1]},${c[2]},${LP.pills.tintAlpha})`; }
+
+  const rows = FG.ebitdaWalk.rows.map((r,i)=>{
+    const yA = RY[i], yB = RY[i+1], h = yB-yA, cy = yA + h/2 + 8;
+    const q = mk('g');
+    if(r.subtotal) q.appendChild(mk('rect',{x:X0,y:yA+1,width:D.columnW,height:h-1,fill:LP.shade}));
+    q.appendChild(mk('line',{x1:X0,y1:yB,x2:X1,y2:yB,stroke:LP.line,'stroke-width':1}));
+    q.appendChild(mk('line',{x1:855,y1:yA,x2:855,y2:yB,stroke:LP.line,'stroke-width':1}));
+    q.appendChild(mk('line',{x1:1404,y1:yA,x2:1404,y2:yB,stroke:LP.line,'stroke-width':1}));
+    q.appendChild(txt(r.label,{ x:COLX.item, y:cy, fill:LP.ink, size:22,
+      weight:r.subtotal?700:400, face:OSAN }));
+    const dealT = txt(r.signed? sgn(r.deal) : fmt(r.deal),{ x:COLX.deal, y:cy,
+      fill:r.subtotal?LP.ink:LP.muted, size:22, weight:r.subtotal?700:400,
+      anchor:'end', face:OSAN });
+    q.appendChild(dealT);
+    const hl = mk('rect',{x:1162,y:yA+1,width:242,height:h-1,fill:LP.chg,opacity:0});
+    q.appendChild(hl);
+    const firmT = txt(r.signed? sgn(r.firm) : fmt(r.firm),{ x:COLX.firm, y:cy,
+      fill:LP.purple, size:22, weight:r.subtotal?700:400, anchor:'end', face:OSAN });
+    q.appendChild(firmT);
+    if(r.type){
+      const w = r.type.length*11 + 26;
+      q.appendChild(mk('rect',{x:COLX.type-w,y:cy-25,width:w,height:33,rx:16,fill:tint(TAGC[r.type])}));
+      q.appendChild(txt(r.type,{ x:COLX.type-w/2, y:cy-2, fill:TAGC[r.type], size:19,
+        weight:600, anchor:'middle', face:OSAN }));
+    } else {
+      q.appendChild(txt('–',{ x:COLX.type, y:cy, fill:LP.muted, size:22, anchor:'end', face:OSAN }));
+    }
+    walkG.appendChild(q);
+    return { q, firmT, hl, r, cy };
   });
 
-  /* document card — enters from the left, outside the moving group */
-  const D = f3c.docCard;
-  const docG = mk('g'); inner.appendChild(docG);
-  docG.appendChild(mk('rect',{ x:D.card.x, y:D.card.y, width:D.card.w, height:D.card.h, rx:D.card.r,
-    fill:col(D.card.fill), stroke:col(D.card.stroke), 'stroke-width':D.card.strokeWidth }));
-  const docIcon = mk('path',{ d:D.icon.d, fill:'none', stroke:col(D.icon.stroke),
-    'stroke-width':D.icon.strokeWidth, 'stroke-linecap':'round','stroke-linejoin':'round' });
-  docG.appendChild(docIcon);
-  const docTitle = node(Object.assign({type:'text'}, D.title)); docG.appendChild(docTitle);
-  const docPages = node(Object.assign({type:'text'}, D.pages)); docG.appendChild(docPages);
-  const docLines = D.lines.map(l=>{
-    const e = mk('rect',{ x:l.x, y:l.y, width:l.w, height:l.h, fill:col(l.fill) });
-    docG.appendChild(e); return e;
+  /* ---- the cap table ---- */
+  const capG = mk('g'); inner.appendChild(capG);
+  capG.appendChild(txt('USD in millions (MM)',{ x:X0, y:229, fill:LP.ink, size:23,
+    weight:700, face:OSAN }));
+  const CC = { fac:X0+14, amt:759, pri:789, mat:919, d1:1307, d2:1597 };
+  const chd = mk('g'); capG.appendChild(chd);
+  [['Facility',CC.fac,'start',LP.muted],['Amount',CC.amt,'end',LP.muted],
+   ['Pricing',CC.pri,'start',LP.muted],['Maturity',CC.mat,'start',LP.muted],
+   ['Cum. leverage on 326.0',CC.d1,'end',LP.muted],
+   ['Cum. leverage on 309.0',CC.d2,'end',LP.purple]].forEach(c=>{
+    chd.appendChild(txt(c[0],{ x:c[1], y:279, fill:c[3], size:21, anchor:c[2], face:OSAN }));
+  });
+  chd.appendChild(mk('line',{x1:X0,y1:296,x2:X1,y2:296,stroke:LP.line,'stroke-width':1}));
+  const CRY = [296,360,407,454,503,550,597];
+  const capRows = FG.capTable.rows.map((r,i)=>{
+    const yA = CRY[i], yB = CRY[i+1], h = yB-yA, cy = yA + h/2 + 8;
+    const q = mk('g');
+    if(r.subtotal) q.appendChild(mk('rect',{x:X0,y:yA+1,width:D.columnW,height:h-1,fill:LP.shade}));
+    if(!r.subtotal && i<3) q.appendChild(mk('line',{x1:X0,y1:yB,x2:X1,y2:yB,stroke:LP.line,'stroke-width':1}));
+    const ty = r.sub ? cy-10 : cy;
+    q.appendChild(txt(r.facility,{ x:CC.fac, y:ty, fill:LP.ink, size:22,
+      weight:r.subtotal?700:400, face:OSAN }));
+    if(r.sub) q.appendChild(txt(r.sub,{ x:CC.fac, y:ty+26, fill:LP.muted, size:17, face:OSAN }));
+    q.appendChild(txt(fmt(r.amount),{ x:CC.amt, y:cy, fill:LP.ink, size:22,
+      weight:r.subtotal?700:400, anchor:'end', face:OSAN }));
+    if(r.pricing) q.appendChild(txt(r.pricing,{ x:CC.pri, y:cy, fill:LP.ink, size:22, face:OSAN }));
+    if(r.maturity) q.appendChild(txt(r.maturity,{ x:CC.mat, y:cy, fill:LP.ink, size:22, face:OSAN }));
+    if(r.onDeal) q.appendChild(txt(r.onDeal,{ x:CC.d1, y:cy, fill:LP.ink, size:22,
+      weight:r.subtotal?700:400, anchor:'end', face:OSAN }));
+    if(r.onRevised) q.appendChild(txt(r.onRevised,{ x:CC.d2, y:cy, fill:LP.purple, size:22,
+      weight:r.subtotal?700:400, anchor:'end', face:OSAN }));
+    capG.appendChild(q);
+    return q;
   });
 
-  SC['03'] = { g, inner, moving, SHIFT, queryG, queryT, queryFull:q[2].value, checkG,
-               cardG, eyebrow, title, rule, band, byRow,
-               srcEyebrow, pills, docG, docIcon, docTitle, docPages, docLines };
+  /* ---- the input bar, straight from ui-01 ---- */
+  const I = D.input;
+  const inp = mk('g'); inner.appendChild(inp);
+  inp.appendChild(mk('rect',{x:I.x,y:I.y,width:I.w,height:147,rx:I.r,fill:'#ffffff',
+    stroke:LP.line,'stroke-width':1}));
+  inp.appendChild(txt(I.placeholder,{ x:I.x+26, y:I.y+48, fill:LP.muted, size:26, face:OSAN }));
+  inp.appendChild(mk('path',{
+    d:'M11 5 a5.5 5.5 0 0 1 8 8 l-12 12 a3.6 3.6 0 0 1-5.5-5.5 l11.5-11.5',
+    transform:`translate(${I.x+28} ${I.y+88})`, fill:'none', stroke:LP.muted,
+    'stroke-width':2, 'stroke-linecap':'round', 'stroke-linejoin':'round' }));
+  inp.appendChild(mk('circle',{cx:I.x+92,cy:I.y+102,r:11,fill:'none',stroke:LP.muted,'stroke-width':1.7}));
+  inp.appendChild(mk('path',{ d:`M${I.x+81} ${I.y+102} h22 M${I.x+92} ${I.y+91} a5.5 11 0 0 1 0 22 a5.5 11 0 0 1 0 -22`,
+    fill:'none', stroke:LP.muted, 'stroke-width':1.5 }));
+  inp.appendChild(txt('Web',{ x:I.x+112, y:I.y+110, fill:LP.muted, size:23, face:OSAN }));
+  [[0,0],[12,0],[0,12],[12,12]].forEach(d=>{
+    inp.appendChild(mk('rect',{x:I.x+190+d[0],y:I.y+92+d[1],width:9,height:9,rx:2,
+      fill:'none',stroke:LP.muted,'stroke-width':1.8}));
+  });
+  inp.appendChild(txt('Skills',{ x:I.x+222, y:I.y+110, fill:LP.muted, size:23, face:OSAN }));
+  inp.appendChild(mk('circle',{cx:I.x+I.w-50,cy:I.y+101,r:I.send.d/2,fill:LP.ink}));
+  inp.appendChild(mk('path',{ d:`M${I.x+I.w-50} ${I.y+113} V${I.y+89} M${I.x+I.w-60} ${I.y+99} l10 -10 l10 10`,
+    fill:'none', stroke:'#ffffff', 'stroke-width':2.4, 'stroke-linecap':'round',
+    'stroke-linejoin':'round' }));
+
+  return { g, inner, bubG, bub, bubT, hdr, statG, stats, walkG, legG, legMid, legDot,
+           legRight, theadG, rows, capG, chd, capRows, inp, X0, X1 };
 })();
 
-/* ---------------- scene 04 ---------------- */
-(function(){
-  const f = F('04'), g = sceneG(f);
-  const inner = mk('g',{class:'inner'}); g.appendChild(inner);
-  const rays = f.nodes.filter(n=>n.type==='path').map(n=>{ const e=node(n); inner.appendChild(e); return e; });
-  const lineSpec = f.nodes.find(n=>n.style==='closingLine');
-  const lineG = mk('g'); const lineT = node(lineSpec); lineG.appendChild(lineT); inner.appendChild(lineG);
-  const mark = node(f.nodes.find(n=>n.style==='closingWordmark')); inner.appendChild(mark);
-  const black = mk('rect',{x:0,y:0,width:1920,height:1080,fill:'#000',opacity:0}); g.appendChild(black);
-  SC['04'] = { g, inner, rays, lineG, lineT, mark, black };
+/* ============================================================
+   SHOT 04 — where the number comes from. The summary, the question,
+   the document behind the figure.
+   ============================================================ */
+SC['04'] = (function(){
+  const FS = SPEC.figures.financialSummary;
+  const g = sceneG(LP.bg);
+  const inner = mk('g'); g.appendChild(inner);
+
+  /* the prompt capsule — the Raven mark, never a sparkle */
+  const capsG = mk('g');
+  capsG.appendChild(mk('rect',{x:741,y:101,width:437,height:66,rx:33,fill:'#ffffff',
+    stroke:LP.line,'stroke-width':1,filter:'url(#softCard)'}));
+  capsG.appendChild(bird(776, 122, 34, LP.ink));
+  capsG.appendChild(txt('Compare to client model',{ x:824, y:146, fill:LP.ink,
+    size:27, face:OSAN }));
+  inner.appendChild(capsG);
+
+  const vaultG = mk('g');
+  vaultG.appendChild(mk('path',{ d:'M345 208 l9 10 l17 -20', fill:'none', stroke:LP.ok,
+    'stroke-width':2.6, 'stroke-linecap':'round', 'stroke-linejoin':'round' }));
+  vaultG.appendChild(txt('Call the vault and check sources',{ x:376, y:222, fill:LP.muted,
+    size:24, face:OSAN }));
+  inner.appendChild(vaultG);
+
+  /* the document, sliding in from the left */
+  const docG = mk('g');
+  docG.appendChild(mk('rect',{x:110,y:273,width:400,height:394,rx:16,fill:'#ffffff',
+    stroke:LP.line,'stroke-width':1,filter:'url(#softCard)'}));
+  docG.appendChild(mk('path',{ d:'M0 0 h22 l10 10 v34 h-32 z M22 0 v10 h10',
+    transform:'translate(147 306) scale(1.18)', fill:'none', stroke:LP.ink,
+    'stroke-width':1.8, 'stroke-linejoin':'round' }));
+  docG.appendChild(txt('Project Alpha — Lender',{ x:140, y:410, fill:LP.ink, size:26,
+    weight:600, face:OSAN }));
+  docG.appendChild(txt('Model',{ x:140, y:444, fill:LP.ink, size:26, weight:600, face:OSAN }));
+  docG.appendChild(txt('pp. 1–2',{ x:140, y:484, fill:LP.muted, size:22, face:MONO }));
+  const docLines = [340,300,320,195,260,200].map((w,i)=>{
+    const r = mk('rect',{x:140,y:515+i*19,width:w,height:9,rx:4,fill:LP.line,opacity:0});
+    docG.appendChild(r); return r;
+  });
+  inner.appendChild(docG);
+
+  /* the summary card — built at its shot-04a position, then moved */
+  const cardG = mk('g'); inner.appendChild(cardG);
+  const CX = 340, CY = 300, CW = 1240, CH = 487;
+  cardG.appendChild(mk('rect',{x:CX,y:CY,width:CW,height:CH,rx:18,fill:'#ffffff',
+    stroke:LP.line,'stroke-width':1,filter:'url(#softCard)'}));
+  const eyebrow = txt('PROJECT ALPHA',{ x:CX+38, y:CY+57, fill:LP.purple, size:23,
+    weight:700, track:'0.16em', face:OSAN });
+  const title = txt('Financial Summary',{ x:CX+38, y:CY+122, fill:LP.ink, size:48,
+    weight:700, face:OSAN });
+  const rule = mk('line',{x1:CX+38,y1:CY+159,x2:CX+1202,y2:CY+159,stroke:LP.line,'stroke-width':1});
+  const label = txt(FS.label,{ x:CX+1202, y:CY+205, fill:LP.muted, size:26,
+    anchor:'end', face:OSAN });
+  cardG.appendChild(eyebrow); cardG.appendChild(title); cardG.appendChild(rule); cardG.appendChild(label);
+
+  const PCX = [738, 967, 1197, 1427];
+  const periods = FS.periods.map((p,i)=>{
+    const t = txt(p,{ x:PCX[i], y:CY+251, fill:LP.muted, size:22, anchor:'middle', face:MONO });
+    cardG.appendChild(t); return t;
+  });
+  const values = FS.values.map((v,i)=>{
+    const t = txt(v.toFixed(1),{ x:PCX[i], y:CY+310, fill:LP.ink, size:42,
+      weight:700, anchor:'middle', face:OSAN });
+    cardG.appendChild(t); return t;
+  });
+  const bandG = mk('g');
+  bandG.appendChild(mk('rect',{x:CX+38,y:CY+343,width:1164,height:112,rx:4,fill:LP.shade}));
+  bandG.appendChild(txt('Net Debt',{ x:CX+58, y:CY+390, fill:LP.ink, size:26, weight:700, face:OSAN }));
+  bandG.appendChild(txt(FS.netDebt.toFixed(1),{ x:CX+80, y:CY+428, fill:LP.ink, size:26, face:MONO }));
+  cardG.appendChild(bandG);
+  const mults = FS.multiples.map((m,i)=>{
+    const t = txt(m,{ x:PCX[i], y:CY+411, fill:LP.purple, size:32, weight:700,
+      anchor:'middle', face:OSAN });
+    cardG.appendChild(t); return t;
+  });
+
+  /* source pills, under the card once it has moved right */
+  const srcG = mk('g');
+  srcG.appendChild(txt('SOURCES',{ x:580, y:755, fill:LP.muted, size:21, track:'0.10em', face:OSAN }));
+  const pills = FS.sources.map((s,i)=>{
+    const x = 725 + i*262, w = i===0 ? 239 : 174;
+    const q = mk('g');
+    q.appendChild(mk('rect',{x:x,y:724,width:w,height:46,rx:23,fill:'#ffffff',
+      stroke:s.state==='active'?LP.purple:LP.line,'stroke-width':s.state==='active'?1.6:1}));
+    q.appendChild(txt(s.label,{ x:x+w/2, y:754, fill:s.state==='active'?LP.purple:LP.muted,
+      size:23, weight:s.state==='active'?600:400, anchor:'middle', face:OSAN }));
+    srcG.appendChild(q); return q;
+  });
+  inner.appendChild(srcG);
+
+  const inkers = [title, label, ...values, ...periods, ...mults, eyebrow];
+  return { g, inner, capsG, vaultG, docG, docLines, cardG, eyebrow, title, rule, label,
+           periods, values, bandG, mults, srcG, pills, inkers, CX, CY };
 })();
+
+SC['05'] = brandScene(SPEC.brandLockup.shot05, true);
 
 /* ===================== caption layer ===================== */
 const CAPL = (function(){
@@ -501,6 +740,8 @@ const CAPL = (function(){
     if(cur) out.push(cur);
     return out;
   }
+  /* narrow the measure until the lines divide evenly, so a cue never
+     ends on one orphan word held for seconds */
   function wrap(text){
     let first = null;
     for(const f of [1,0.90,0.82,0.74,0.66]){
@@ -543,167 +784,223 @@ const CAPL = (function(){
 })();
 
 /* ===================== per-scene animation ===================== */
+function brandAnim(s, cfg, B, lt, withTag, fadeOut){
+  op(s.ground, E(lt, B.glow, 1.4));
+  const a = EI(lt, B.arc, 1.9);
+  dash(s.arc, a); op(s.arc, a>0 ? 0.55 : 0);
+  op(s.markG, E(lt, B.bird, 1.0));
+  op(s.wm,    E(lt, B.wordmark, 0.85));
+  if(s.tag)  op(s.tag,  E(lt, B.tagline, 0.85));
+  if(s.foot) op(s.foot, E(lt, B.foot, 0.7));
+  const k = lerp(1.035, 1.0, EI(lt, 0, B.settle || 3.2));
+  tr(s.inner, `translate(960 540) scale(${k}) translate(-960 -540)`);
+  if(fadeOut) s.black.setAttribute('opacity', EI(lt, B.fade, 0.65));
+}
+
 const ANIM = {
 
-  '01'(lt, dur){
-    const s = SC['01'];
-    const a = EI(lt, B01.arc, 1.6);
-    dash(s.arc, a); op(s.arc, a>0?1:0);
-    op(s.bird, E(lt, B01.bird, 1.0));
-    op(s.mark, E(lt, B01.wordmark, 0.8));
-    const r = EI(lt, B01.rule, 0.6);
-    const cx = s.r0.x + s.r0.w/2;
-    tr(s.ruleG, `translate(${cx} 0) scale(${r} 1) translate(${-cx} 0)`);
-    op(s.ruleG, r>0?1:0);
-    const k = lerp(1.05, 1.0, EI(lt, 0, 3.0));
-    tr(s.inner, `translate(960 540) scale(${k}) translate(-960 -540)`);
-  },
+  '01'(lt){ brandAnim(SC['01'], SPEC.brandLockup.shot01, B01, lt, false, false); },
 
-  '02'(lt, dur){
-    const s = SC['02']; s.layout();
-    const R = s.R;
+  '02'(lt){
+    const s = SC['02'], R = s.R, B = B02;
 
-    s.sources.forEach((g,i)=>{
-      const p = E(lt, B02.source.start + i*B02.source.step, B02.source.dur);
-      op(g, p); tr(g, `translate(0 ${lerp(-12,0,p)})`);
+    s.srcs.forEach((q,i)=>{
+      const p = E(lt, B.src.start + i*B.src.step, B.src.dur);
+      op(q.q, p);
+      q.lit.setAttribute('width', (q.w * EI(lt, B.src.start + i*B.src.step + 0.12, 0.55)).toFixed(1));
     });
 
-    s.arcs.forEach((e,i)=>{
-      const k = EI(lt, B02.arc.start + i*B02.arc.step, B02.arc.dur);
-      dash(e, k); op(e, k>0?1:0);
+    s.wires.forEach((w,i)=>{
+      const p = EI(lt, B.wire.start + i*B.wire.step, B.wire.dur);
+      dash(w, p); op(w, p>0 ? 0.85 : 0);
     });
-    op(s.nodeDot, E(lt, B02.node, 0.4));
+    op(s.node, E(lt, B.wire.start + 0.55, 0.7) * (0.75 + 0.25*Math.sin(lt*2.1)));
 
-    const sq = EI(lt, B02.square, 0.75);
-    const cx = s.sqSpec.x + s.sqSpec.w/2, cy = s.sqSpec.y + s.sqSpec.h/2;
-    tr(s.squareG, `translate(${cx} ${cy}) scale(${lerp(0.9,1,sq)}) translate(${-cx} ${-cy})`);
-    op(s.squareG, sq);
-    op(s.bird,     E(lt, B02.bird, 0.6));
-    op(s.wordmark, E(lt, B02.wordmark, 0.55));
-    op(s.sub,      E(lt, B02.sub, 0.5));
+    const c = EI(lt, B.card, 0.7);
+    op(s.cardG, c);
+    const cc = SPEC.schema.card;
+    tr(s.cardG, `translate(${cc.x+cc.w/2} ${cc.y+cc.h/2}) scale(${lerp(0.9,1,c)}) translate(${-(cc.x+cc.w/2)} ${-(cc.y+cc.h/2)})`);
+    op(s.cBird, E(lt, B.cardBird, 0.6));
+    op(s.cWord, E(lt, B.cardWord, 0.6));
+    op(s.cSub,  E(lt, B.cardSub, 0.6));
 
-    const dl = EI(lt, B02.exit.line, B02.exit.dur);
-    dash(s.lineL, dl); op(s.lineL, dl>0?1:0);
-    dash(s.lineR, dl); op(s.lineR, dl>0?1:0);
-    op(s.labL, E(lt, B02.exit.label, 0.5));
-    op(s.labR, E(lt, B02.exit.label, 0.5));
-
-    /* ---- the rail: stationary breadcrumb, the active step walks it ---- */
-    const barIn = E(lt, B02.rail.bar, 0.6);
-    op(s.railG, barIn);
-    tr(s.railG, `translate(0 ${lerp(16,0,barIn)})`);
-
-    op(s.agentG, E(lt, B02.rail.agent, 0.7));
-    const dotsIn = E(lt, B02.rail.dots, 0.5);
-    op(s.leadChev, dotsIn);
-    s.dots.forEach(d=>{ d.style.opacity = dotsIn; });
-    s.chevs.forEach(c=>{ c.style.opacity = dotsIn; });
-    s.items.forEach(t=>{ t.style.opacity = dotsIn; });
-
-    /* Three states per step. The exported still is the dormant rail — every
-       step in lineDark with only the Agent capsule lit — while the spec's
-       tokens describe the active one. Both are used: steps sit dormant, the
-       active step is white over a sage underline, and steps it has passed
-       stay in muted, so the rail reads as a workflow running left to right. */
-    const I = B02.rail.items;
-    let active = -1;
-    for(let i=0;i<s.items.length;i++) if(lt >= I.start + i*I.step) active = i;
-
-    s.items.forEach((t,i)=>{
-      t.style.opacity = 1;
-      const state = i === active ? 'active' : (i < active ? 'done' : 'idle');
-      const to = state==='active' ? TY[R.activeStyle].color
-               : state==='done'   ? TY[R.itemStyle].color
-               : 'lineDark';
-      // ease the colour so a step does not snap on
-      const k = state==='idle' ? 0 : EI(lt, I.start + Math.min(i,Math.max(active,0))*I.step, I.dur);
-      t.setAttribute('fill', state==='idle' ? col('lineDark') : mixCol('lineDark', to, k));
+    s.outs.forEach((o,i)=>{
+      const p = EI(lt, B.out.line + i*0.08, B.out.dur);
+      op(o.line, p);
+      tr(o.line, `translate(${SPEC.schema.card.x + (i?SPEC.schema.card.w:0)} 0) scale(${p} 1) translate(${-(SPEC.schema.card.x + (i?SPEC.schema.card.w:0))} 0)`);
+      op(o.lab, E(lt, B.out.label + i*0.08, 0.55));
     });
-    s.dots.forEach((d,i)=>
-      d.setAttribute('fill', col(i === active ? R.dot.activeFill : R.dot.fill)));
 
-    if(active >= 0){
-      const at = p => ({ x: R.dot.cx[p] - s.itemWidth(p)/2, w: s.itemWidth(p) });
-      const a0 = at(Math.max(0, active-1)), a1 = at(active);
-      const k  = EI(lt, I.start + active*I.step, I.dur);
-      s.underline.setAttribute('x', lerp(a0.x, a1.x, k));
-      s.underline.setAttribute('width', lerp(a0.w, a1.w, k));
-      s.underline.style.opacity = E(lt, I.start, 0.4);
-    } else {
-      s.underline.style.opacity = 0;
+    /* --- the carousel --- */
+    const rw = EI(lt, B.rail.window, B.rail.dur);
+    op(s.railG, rw);
+    const slice = B.rail.travel + B.rail.dwell;
+    const stops = R.stops;
+    let idx = 0, k = 1;
+    if(lt >= B.rail.start){
+      idx = cl(Math.floor((lt - B.rail.start)/slice), 0, stops.length-1);
+      const local = (lt - B.rail.start) - idx*slice;
+      k = eio(cl(local / B.rail.travel, 0, 1));
     }
+    const from = stops[Math.max(0, idx-1)].scrollX, to = stops[idx].scrollX;
+    const scroll = lerp(from, to, k);
+    tr(s.strip, `translate(${(RAIL0 - scroll).toFixed(2)} 0)`);
+
+    const dimP = EI(lt, B.dim, B.dimDur);           /* shot 02f: everything steps back */
+    s.items.forEach((m,i)=>{
+      const act = (i === idx) && k > 0.45 ? 1 : 0;
+      const live = act * (1 - dimP);
+      m.t.setAttribute('fill', live > 0.5 ? DS.railItemActive : DS.railItem);
+      const sc = 1 + (R.activeScale - 1) * live;
+      m.t.setAttribute('transform',
+        `translate(${m.it.centerX} ${R.itemBaselineY}) scale(${sc.toFixed(3)}) translate(${-m.it.centerX} ${-R.itemBaselineY})`);
+      m.t.style.opacity = lerp(1, 0.78, dimP);
+    });
+    const a = s.items[idx].it;
+    s.uline.setAttribute('x', a.centerX - a.w/2);
+    s.uline.setAttribute('width', a.w);
+    s.uline.setAttribute('opacity', (k>0.45 ? 1 : 0) * (1 - dimP));
+    s.win.setAttribute('fill', dimP > 0 ? DS.railWindowDim : DS.railWindow);
+    s.win.setAttribute('opacity', 1);
+
+    /* --- the Agent --- */
+    const A = R.agent, ia = A.idle, aa = A.active;
+    const g = EI(lt, B.agent, B.agentDur);
+    const sc = lerp(ia.scale, aa.scale, g);
+    const cx = A.x + A.w/2, cy = A.y + A.h/2;
+    tr(s.agentG, `translate(${cx} ${cy}) scale(${sc.toFixed(3)}) translate(${-cx} ${-cy})`);
+    s.aBox.setAttribute('fill', g > 0.02 ? DS.accentGreen10 : 'none');
+    s.aBox.setAttribute('fill-opacity', g);
+    s.aBox.setAttribute('stroke', g > 0.5 ? DS.accentGreen : DS.railAgentIdle);
+    s.aBox.setAttribute('stroke-width', lerp(ia.strokeWidth, aa.strokeWidth, g));
+    s.aTxt.setAttribute('fill', mixCol(DS.railAgentIdleText, DS.railAgentActiveText, g));
+    s.aDot.setAttribute('fill', mixCol(DS.railAgentIdleText, DS.accentGreen, g));
+    s.aDot.setAttribute('opacity', lerp(1, 0.55 + 0.45*Math.sin((lt-B.agent)*3.4), g));
+    s.agentG.setAttribute('filter', g > 0.5 ? 'url(#agentGlow)' : null);
+
+    /* hand over to the light interface on a whiteout, not a grey dissolve */
+    s.white.setAttribute('opacity', EI(lt, 13.55, 0.45) * 0.9);
   },
 
-  '03'(lt, dur){
-    const s = SC['03'];
+  '03'(lt){
+    const s = SC['03'], B = B03, D = SPEC.dialogue;
 
-    /* 3a — the figure */
-    op(s.cardG, E(lt, B03.card, 0.5));
-    op(s.rule,  E(lt, B03.rule, 0.4));
-    op(s.band,  E(lt, B03.band, 0.4));
-    const show = (keys, at) => keys.forEach(k => (s.byRow[k]||[]).forEach(e=>{ e.style.opacity = E(lt, at, 0.4); }));
-    op(s.eyebrow, E(lt, B03.eyebrow, 0.4));
-    op(s.title,   E(lt, B03.title, 0.45));
-    show(['caption'], B03.caption);
-    show(['head'],    B03.heads);
-    show(['pfadj'],   B03.figures);
-    show(['netdebt'], B03.netdebt);
+    /* which prompt is on screen */
+    let cue = 0, bt = B.bubble1, dur = B.type1, label = 'Provide the EBITDA walk for Project Alpha';
+    if(lt >= B.bubble3){ cue = 2; bt = B.bubble3; dur = B.type3; label = 'Produce an opening cap table'; }
+    else if(lt >= B.bubble2){ cue = 1; bt = B.bubble2; dur = B.type2; label = 'Haircut the adjustments by 25%'; }
+    const tp = seg(lt, bt, dur);
+    typeInto(s.bubT, label, tp);
+    op(s.bubG, E(lt, bt, 0.25));
+    const bw = s.bubT.getComputedTextLength ? s.bubT.getComputedTextLength() : 0;
+    s.bub.setAttribute('x', s.X1 - bw - D.bubble.padX*2);
+    s.bub.setAttribute('width', bw + D.bubble.padX*2);
 
-    /* 3b — the query, and the panel steps back */
-    const qin = E(lt, B03.query, 0.55);
-    op(s.queryG, qin); tr(s.queryG, `translate(0 ${lerp(-14,0,qin)})`);
-    typeInto(s.queryT, s.queryFull, seg(lt, B03.typing, 0.9));
-    op(s.checkG, E(lt, B03.check, 0.45));
+    op(s.hdr, E(lt, B.header, 0.5));
 
-    // dim on the question, brighten again when the source lands
-    const dimP = EI(lt, B03.dim, 0.55) * (1 - EI(lt, B03.shift, 0.6));
-    const paint = el => { if(el.__bright) el.setAttribute('fill', mixCol(el.__bright, el.__dim, dimP)); };
-    paint(s.eyebrow); paint(s.title);
-    for(const k in s.byRow) s.byRow[k].forEach(paint);
+    const sOut = 1 - EI(lt, B.statusOut, 0.35);
+    s.stats.forEach((q,i)=> op(q, E(lt, B.status.start + i*B.status.step, B.status.dur) * sOut));
 
-    /* 3c — the panel slides aside, the source comes in */
-    const sh = EI(lt, B03.shift, 0.75);
-    tr(s.moving, `translate(${s.SHIFT*sh} 0)`);
+    /* the walk: builds, then takes the haircut, then leaves */
+    const wOut = 1 - EI(lt, B.walkOut, B.walkDur);
+    op(s.walkG, wOut);
+    tr(s.walkG, `translate(0 ${(-70*(1-wOut)).toFixed(1)})`);
+    op(s.legG, E(lt, B.legend, 0.45));
+    op(s.theadG, E(lt, B.thead, 0.45));
 
-    const dc = EI(lt, B03.doc, 0.7);
-    op(s.docG, dc);
-    tr(s.docG, `translate(${lerp(-90,0,dc)} 0)`);
-    op(s.docIcon,  E(lt, B03.doc+0.2, 0.4));
-    op(s.docTitle, E(lt, B03.doc+0.3, 0.4));
-    op(s.docPages, E(lt, B03.doc+0.4, 0.4));
-    s.docLines.forEach((e,i)=>{
-      e.style.opacity = E(lt, B03.docLines.start + i*B03.docLines.step, B03.docLines.dur);
+    const hc = EI(lt, B.haircut, B.haircutDur);
+    if(lt >= B.legend2){
+      s.legMid.textContent = 'Deal docs — locked';
+      s.legRight.textContent = 'Firm adjustment — 75% haircut applied';
+      s.legDot.setAttribute('cx', s.X0 + 467);
+      s.legRight.setAttribute('x', s.X0 + 483);
+    } else {
+      s.legMid.textContent = 'Deal docs — source of record, locked';
+      s.legRight.textContent = 'Firm adjustment — pre-filled, editable';
+      s.legDot.setAttribute('cx', s.X0 + 640);
+      s.legRight.setAttribute('x', s.X0 + 656);
+    }
+
+    s.rows.forEach((row,i)=>{
+      op(row.q, E(lt, B.rows.start + i*B.rows.step, B.rows.dur));
+      const r = row.r;
+      const v = lerp(r.firm, r.firmHaircut, hc);
+      row.firmT.textContent = r.signed ? sgn(v) : fmt(v);
+      const moves = r.firm !== r.firmHaircut;
+      row.hl.setAttribute('opacity', moves ? EI(lt, B.haircut, 0.5) : 0);
     });
 
-    op(s.srcEyebrow, E(lt, B03.sources, 0.45));
-    s.pills.forEach((p,i)=> op(p, E(lt, B03.pills + i*0.14, 0.45)));
+    /* the cap table slides up into its place */
+    const cp = EI(lt, B.capIn, B.capDur);
+    op(s.capG, cp);
+    tr(s.capG, `translate(0 ${(90*(1-cp)).toFixed(1)})`);
+    op(s.chd, E(lt, B.capIn + 0.1, 0.4));
+    s.capRows.forEach((q,i)=> op(q, E(lt, B.capRows.start + i*B.capRows.step, B.capRows.dur)));
+
+    op(s.inp, E(lt, 0.35, 0.6));
   },
 
-  '04'(lt, dur){
-    const s = SC['04'];
-    s.rays.forEach((e,i)=>{
-      const k = EI(lt, B04.lines.start + i*B04.lines.step, B04.lines.dur);
-      dash(e, k); op(e, k>0?1:0);
+  '04'(lt){
+    const s = SC['04'], B = B04;
+
+    const c = EI(lt, B.card, B.cardDur);
+    op(s.cardG, c);
+
+    /* the card steps up for the question, then right for the document */
+    const up    = EI(lt, B.up, B.upDur);
+    const shift = EI(lt, B.shift, B.shiftDur);
+    const dx = 240 * shift;
+    const dy = lerp(0, -28, up) + lerp(0, -10, shift);
+    tr(s.cardG, `translate(${dx.toFixed(1)} ${dy.toFixed(1)}) scale(${lerp(0.985,1,c).toFixed(3)})`);
+
+    op(s.eyebrow, E(lt, B.eyebrow, 0.4));
+    op(s.title,   E(lt, B.title, 0.45));
+    const r = EI(lt, B.rule, 0.55);
+    tr(s.rule, `translate(${s.CX+38} 0) scale(${r} 1) translate(${-(s.CX+38)} 0)`);
+    op(s.rule, r>0?1:0);
+    op(s.label, E(lt, B.label, 0.4));
+    s.periods.forEach((t,i)=> op(t, E(lt, B.periods + i*0.06, 0.35)));
+    s.values.forEach((t,i)=> op(t, E(lt, B.values + i*0.07, 0.4)));
+    const bd = EI(lt, B.band, 0.5);
+    op(s.bandG, bd);
+    s.mults.forEach((t,i)=> op(t, E(lt, B.mult + i*0.07, 0.4)));
+
+    /* dim while the agent is asked, bright again once the source is open */
+    const dim = EI(lt, B.dim, B.dimDur) * (1 - EI(lt, B.undim, 0.5));
+    s.inkers.forEach(t=>{
+      const base = t === s.eyebrow ? LP.purple : (s.mults.includes(t) ? LP.purple :
+                   (s.periods.includes(t) || t === s.label ? LP.muted : LP.ink));
+      t.setAttribute('fill', mixCol(base, LP.muted, dim));
     });
-    const li = E(lt, B04.line, 0.9);
-    op(s.lineG, li); tr(s.lineG, `translate(${lerp(-26,0,li)} 0)`);
-    op(s.mark, E(lt, B04.wordmark, 0.6));
-    s.black.setAttribute('opacity', seg(lt, B04.out, dur - B04.out));
-  }
+
+    op(s.capsG, EI(lt, B.capsule, B.capsuleDur));
+    tr(s.capsG, `translate(0 ${(-14*(1-EI(lt,B.capsule,B.capsuleDur))).toFixed(1)})`);
+    op(s.vaultG, E(lt, B.vault, 0.4));
+
+    const dp = EI(lt, B.doc, B.docDur);
+    op(s.docG, dp);
+    tr(s.docG, `translate(${(-150*(1-dp)).toFixed(1)} 0)`);
+    s.docLines.forEach((l,i)=> l.setAttribute('opacity', E(lt, B.docLines.start + i*B.docLines.step, B.docLines.dur)));
+
+    op(s.srcG, E(lt, B.sources, 0.45));
+    s.pills.forEach((p,i)=> op(p, E(lt, B.pills + i*0.12, 0.4)));
+  },
+
+  '05'(lt){ brandAnim(SC['05'], SPEC.brandLockup.shot05, B05, lt, true, true); }
 };
 
-/* ===================== playback ===================== */
-let T = 0, playing = false, last = 0;
+/* ===================== transport ===================== */
 const scrub = document.getElementById('scrub');
 const tc = document.getElementById('tc');
 const namesEl = document.getElementById('names');
+let T = 0, playing = false, last = 0;
 
 /* Scenes are opaque and stacked in order, so a cross-dissolve is the
    incoming scene fading in ON TOP — fading both would dip to black. */
 function sceneAlpha(sc, t){
-  const x = TL.xfade, last = sc.t1 >= TL.total;
+  const x = TL.xfade, lastSc = sc.t1 >= TL.total;
   if(t < sc.t0 - x) return 0;
-  if(!last && t >= sc.t1) return 0;
+  if(!lastSc && t >= sc.t1) return 0;
   return sc.t0 === 0 ? 1 : cl((t - (sc.t0 - x)) / x, 0, 1);
 }
 
@@ -755,7 +1052,7 @@ addEventListener('keydown', e=>{
 });
 
 /* Fit the frame into the viewport, reserving a strip for the control
-   bar. The captions are inside the frame, so nothing else is needed. */
+   bar. The captions sit inside the frame, so nothing else is needed. */
 const stage = document.getElementById('stage');
 function fit(){
   const clean = document.body.classList.contains('clean');
@@ -767,7 +1064,7 @@ function fit(){
 }
 addEventListener('resize', fit);
 
-function start(){ SC['02'].layout(); CAPL.build(); fit(); render(0); requestAnimationFrame(loop); }
+function start(){ CAPL.build(); fit(); render(0); requestAnimationFrame(loop); }
 if(document.fonts && document.fonts.ready) document.fonts.ready.then(start); else addEventListener('load', start);
 </script>
 </body>
