@@ -101,13 +101,18 @@ const B05 = { glow:0.0, arc:0.10, bird:0.50, wordmark:1.05, tagline:1.55, fade:3
 /* Shot 02. The carousel is the whole point of the lower third: eight
    stops in 3.4 s with a short magnetic dwell on each, then the strip
    stops dead and the Agent capsule is the only thing left alive. */
+/* The scene is 14 s because it is pinned to one voiceover line, and the
+   content runs about eleven at a brisk pace. The spare seconds go to the
+   source build — the only part of the scene the voice actually describes —
+   not to the carousel, which stays short. Re-pace the build against the
+   recorded line when the MP3 lands. */
 const B02 = {
-  src:   { start:0.10, step:0.16, dur:0.30 },
-  wire:  { start:1.10, step:0.055, dur:0.50 },
-  card:  1.85, cardDur:0.45, cardBird:2.15, cardWord:2.35, cardSub:2.52,
-  out:   { line:2.85, dur:0.45, label:3.10 },
-  rail:  { window:3.70, dur:0.40,
-           start:4.00, travel:0.32, dwell:0.55 },   /* slice = travel + dwell */
+  src:   { start:0.15, step:0.42, dur:0.40 },
+  wire:  { start:2.30, step:0.09, dur:0.55 },
+  card:  3.25, cardDur:0.45, cardBird:3.55, cardWord:3.72, cardSub:3.88,
+  out:   { line:4.15, dur:0.45, label:4.40 },
+  rail:  { window:4.95, dur:0.40,
+           start:5.45, travel:0.30, dwell:0.32 },   /* slice = travel + dwell */
   agent: 11.05, agentDur:0.55, dim:11.00, dimDur:0.50
 };
 

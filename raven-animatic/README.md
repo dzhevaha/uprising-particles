@@ -35,8 +35,8 @@ Changed from the previous cut:
   the client's own dark schema colours for scene 02, and the light product
   palette for the interface. Scenes 01 and 05 are the only black frames.
 - **The workflow rail scrolls.** It was a stationary breadcrumb; it is now a
-  carousel of eight steps with a magnetic dwell on each — a 0.32 s run between
-  stops, half a second held on the step. When it stops, every step steps back and the Raven Agent capsule
+  carousel of eight steps with a short magnetic dwell on each — 0.30 s between
+  stops, 0.32 s held on the step, five seconds for the whole run. When it stops, every step steps back and the Raven Agent capsule
   lights alone for three seconds — timed to land on the words "Through Raven
   Agent" as scene 03 opens.
 - **The figures are continuous.** The third edit ended the vignette at a PF
@@ -44,10 +44,13 @@ Changed from the previous cut:
   on 115.0 and 450.0 for the same deal. Scene 04 now carries the numbers scene
   03 arrives at.
 
-The schema at the top of scene 02 assembles in under four seconds — the five
-sources, their wires, the layer card and the two outputs — and the carousel
-starts the moment the outputs land. Nothing in the scene waits: the eighth stop
-releases at 10.96 s and the Agent beat opens at 11.05.
+Scene 02 runs 14 s because it is pinned to a single voiceover line, and its
+content runs about eleven at a brisk pace. Where the spare seconds sit is a
+real choice, and they sit in the source build: that is the part the voice
+actually describes, so it can take its time without reading as a wait. The
+carousel stays short — five seconds for eight steps — and the Agent beat keeps
+its three. The build is the part to re-pace against the recorded line once the
+MP3 arrives.
 
 Scenes 02, 03 and 04 are continuous, not cuts. Scene 02 hands over to the light
 interface on a whiteout rather than a dissolve: both scenes are opaque, so a
