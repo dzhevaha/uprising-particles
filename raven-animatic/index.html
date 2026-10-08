@@ -72,6 +72,11 @@ const SPEC = {"meta":{"project":"Raven | Shorts No.1","revision":4,"date":"2026-
    RAIL0 = 120. Measured across all eight stops in 02e and 02f. */
 const RAIL0 = 120;
 
+/* Same story for the strip's baseline: the export says 782, the frames
+   put every item's baseline on 791 and draw the chevrons at ~10 px,
+   centred on 781.5. The agent capsule's own text is correct as exported. */
+const RAILBASE = 791, CHEVH = 10, CHEVCY = 781.5;
+
 /* ============================================================
    TIMELINE — five scenes, 43 s. Edit seconds here, nothing else.
    Shots 02, 03 and 04 are continuous scenes, not cuts; their
@@ -97,12 +102,12 @@ const B05 = { glow:0.0, arc:0.10, bird:0.50, wordmark:1.05, tagline:1.55, fade:3
    stops in 3.4 s with a short magnetic dwell on each, then the strip
    stops dead and the Agent capsule is the only thing left alive. */
 const B02 = {
-  src:   { start:0.15, step:0.30, dur:0.45 },
-  wire:  { start:3.00, step:0.10, dur:0.90 },
-  card:  3.95, cardBird:4.55, cardWord:4.85, cardSub:5.10,
-  out:   { line:6.00, dur:0.65, label:6.40 },
-  rail:  { window:7.40, dur:0.50,
-           start:7.65, travel:0.24, dwell:0.18 },   /* slice = travel + dwell */
+  src:   { start:0.10, step:0.16, dur:0.30 },
+  wire:  { start:1.10, step:0.055, dur:0.50 },
+  card:  1.85, cardDur:0.45, cardBird:2.15, cardWord:2.35, cardSub:2.52,
+  out:   { line:2.85, dur:0.45, label:3.10 },
+  rail:  { window:5.60, dur:0.45,
+           start:5.95, travel:0.28, dwell:0.22 },   /* slice = travel + dwell */
   agent: 11.05, agentDur:0.55, dim:11.00, dimDur:0.50
 };
 
@@ -402,15 +407,16 @@ SC['02'] = (function(){
   const strip = mk('g'); clipG.appendChild(strip);
 
   const items = R.strip.items.map(it=>{
-    const t = txt(it.label,{ x:it.centerX, y:R.itemBaselineY, fill:DS.railItem,
+    const t = txt(it.label,{ x:it.centerX, y:RAILBASE, fill:DS.railItem,
       size:R.strip.fontSize, anchor:'middle' });
     strip.appendChild(t);
     return { t, it };
   });
   R.strip.chevron.x.forEach(cx=>{
+    const k = CHEVH/18;
     const p = mk('path',{ d:R.strip.chevron.d, fill:'none', stroke:DS.railChevron,
-      'stroke-width':R.strip.chevron.strokeWidth,
-      transform:`translate(${cx-4} ${R.itemBaselineY-23})` });
+      'stroke-width':R.strip.chevron.strokeWidth/k,
+      transform:`translate(${(cx-4*k).toFixed(2)} ${CHEVCY-CHEVH/2}) scale(${k.toFixed(4)})` });
     strip.appendChild(p);
   });
   const uline = mk('rect',{ x:0, y:R.activeUnderline.y, width:0, height:R.activeUnderline.h,
@@ -816,7 +822,7 @@ const ANIM = {
     });
     op(s.node, E(lt, B.wire.start + 0.55, 0.7) * (0.75 + 0.25*Math.sin(lt*2.1)));
 
-    const c = EI(lt, B.card, 0.7);
+    const c = EI(lt, B.card, B.cardDur);
     op(s.cardG, c);
     const cc = SPEC.schema.card;
     tr(s.cardG, `translate(${cc.x+cc.w/2} ${cc.y+cc.h/2}) scale(${lerp(0.9,1,c)}) translate(${-(cc.x+cc.w/2)} ${-(cc.y+cc.h/2)})`);
@@ -853,7 +859,7 @@ const ANIM = {
       m.t.setAttribute('fill', live > 0.5 ? DS.railItemActive : DS.railItem);
       const sc = 1 + (R.activeScale - 1) * live;
       m.t.setAttribute('transform',
-        `translate(${m.it.centerX} ${R.itemBaselineY}) scale(${sc.toFixed(3)}) translate(${-m.it.centerX} ${-R.itemBaselineY})`);
+        `translate(${m.it.centerX} ${RAILBASE}) scale(${sc.toFixed(3)}) translate(${-m.it.centerX} ${-RAILBASE})`);
       m.t.style.opacity = lerp(1, 0.78, dimP);
     });
     const a = s.items[idx].it;

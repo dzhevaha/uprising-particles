@@ -35,7 +35,7 @@ Changed from the previous cut:
   the client's own dark schema colours for scene 02, and the light product
   palette for the interface. Scenes 01 and 05 are the only black frames.
 - **The workflow rail scrolls.** It was a stationary breadcrumb; it is now a
-  carousel of eight steps with a short magnetic dwell on each, 3.4 s for the
+  carousel of eight steps with a short magnetic dwell on each, 4 s for the
   whole run. When it stops, every step steps back and the Raven Agent capsule
   lights alone for three seconds — timed to land on the words "Through Raven
   Agent" as scene 03 opens.
@@ -43,6 +43,10 @@ Changed from the previous cut:
   Adjusted EBITDA of 309.0 and Net Debt of 1230.0, then opened the audit frame
   on 115.0 and 450.0 for the same deal. Scene 04 now carries the numbers scene
   03 arrives at.
+
+The schema at the top of scene 02 assembles in under four seconds — the five
+sources, their wires, the layer card and the two outputs — so the scene spends
+its length on the carousel and the Agent rather than on the build.
 
 Scenes 02, 03 and 04 are continuous, not cuts. Scene 02 hands over to the light
 interface on a whiteout rather than a dissolve: both scenes are opaque, so a
@@ -77,6 +81,10 @@ reference frames disagree and the frames win:
   its origin 60 px off; every item, chevron and underline in the reference
   frames lands at `x = itemX + 120 − scrollX`. Checked across all eight stops in
   both 02e and 02f.
+- `RAILBASE = 791`, `CHEVH = 10`. The export puts the strip's baseline at 782
+  and its chevrons at 18 px; the frames put the baseline on 791 and draw the
+  chevrons at about 10 px, centred on 781.5. The Agent capsule's own text is
+  correct as exported.
 - The brand lock-up baselines. The export gives the lock-up's block offsets, not
   text baselines, so the wordmark, tagline and footnote are placed from the
   reference frames.
