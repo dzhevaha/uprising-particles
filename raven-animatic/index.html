@@ -1,1082 +1,1835 @@
 <!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
+<html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Raven Shorts 1 — animatic · rev 4</title>
+<title>Raven | Shorts No.1 — animatic, revision 5</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;700&family=Open+Sans:wght@400;600;700&family=Roboto:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..700&display=swap">
 <style>
-  :root{ --ui:#d8dadd; --uibg:rgba(14,16,15,.88); --uiline:rgba(255,255,255,.16); }
-  *{box-sizing:border-box}
-  html,body{margin:0;height:100%;background:#000;overflow:hidden}
-  body{font-family:"IBM Plex Sans",-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
-
-  #wrap{position:fixed;inset:0;overflow:hidden;background:#000}
-  #stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:50% 50%;will-change:transform}
-  #stage svg{display:block;width:1920px;height:1080px}
-
-  .scene{opacity:0;visibility:hidden}
-  .scene.on{visibility:visible}
-
-  /* Stand-in captions live INSIDE the frame — see YTCAP. */
-  #ytcap{opacity:0;transition:opacity .15s}
-  body.nosubs #ytcap{display:none}
-
-  #bar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom,0px));
-    z-index:9;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;
-    max-width:calc(100vw - 20px);padding:9px 12px;background:var(--uibg);border:1px solid var(--uiline);
-    border-radius:12px;color:var(--ui);font-size:13px;backdrop-filter:blur(8px)}
-  body.clean #bar{display:none}
-  #bar button,#bar select{font:inherit;font-family:inherit;color:var(--ui);background:transparent;
-    border:1px solid var(--uiline);border-radius:8px;padding:5px 11px;cursor:pointer}
-  #bar button:hover,#bar select:hover{border-color:rgba(255,255,255,.4)}
-  #bar input[type=range]{width:min(44vw,420px);accent-color:#7fd39a}
-  #tc{font-family:"IBM Plex Mono",monospace;font-size:12px;min-width:98px;text-align:center;opacity:.85}
-  #names{font-size:12px;opacity:.6;min-width:200px;text-align:center}
-  .hint{font-size:11px;opacity:.5;width:100%;text-align:center}
-  @media (max-width:760px){ #names{display:none} .hint{display:none} #bar{gap:7px;padding:7px 9px} }
-</style>
-</head>
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#000;overflow:hidden}
+body{font-family:'Google Sans','Google Sans Text','DM Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+#wrap{position:fixed;inset:0;overflow:hidden;background:#000}
+#stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:50% 50%;background:#000}
+.sc{position:absolute;inset:0;overflow:hidden}
+.beat{position:absolute;inset:0}
+#flash{position:absolute;inset:0;pointer-events:none;opacity:0;background:#fff}
+#caps{position:absolute;left:0;top:836px;width:1920px;height:230px;display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-start;gap:8px;padding-top:10px;pointer-events:none}
+#caps span{display:inline-block;max-width:1560px;padding:6px 18px;border-radius:6px;background:rgba(8,8,8,.78);
+  color:#fff;font-size:40px;line-height:1.28;letter-spacing:-.01em;text-align:center}
+body.nosubs #caps{display:none}
+.ln{display:block;overflow:hidden}
+.ln>i{display:block;font-style:normal;will-change:transform}
+#bar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom,0px));
+  z-index:9;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;max-width:calc(100vw - 20px);
+  padding:9px 12px;background:rgba(14,16,15,.88);border:1px solid rgba(255,255,255,.16);border-radius:12px;
+  color:#d8dadd;font-size:13px;backdrop-filter:blur(8px)}
+body.clean #bar{display:none}
+#bar button{font:inherit;color:#d8dadd;background:transparent;border:1px solid rgba(255,255,255,.16);
+  border-radius:8px;padding:5px 11px;cursor:pointer}
+#bar button:hover{border-color:rgba(255,255,255,.45)}
+#bar button.on{background:rgba(255,255,255,.14)}
+#scrub{width:min(46vw,520px);accent-color:#C7D0BE}
+#tc{font-variant-numeric:tabular-nums;min-width:96px;text-align:center}
+#hud{position:fixed;right:14px;top:12px;z-index:9;color:rgba(216,218,221,.72);font-size:12px;text-align:right;
+  line-height:1.5;pointer-events:none}
+body.clean #hud{display:none}
+</style></head>
 <body>
-<div id="wrap">
-  <div id="stage">
-    <svg id="svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid meet" shape-rendering="geometricPrecision"></svg>
+<div id="wrap"><div id="stage">
+  <div class="sc" id="s01"><div style="width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: linear-gradient(162deg, #060606 0%, #000000 58%, #040404 100%); font-family: 'Google Sans', 'Google Sans Text', 'DM Sans', system-ui, sans-serif; color: #ffffff">
+
+  <svg viewBox="0 0 58 42" aria-hidden="true" style="position: absolute; left: 750px; top: 80px; width: 1366px; height: 989px; opacity: 0.15">
+    <path d="M33.2617 6.31543H38.5947L44.4883 12.6309H32.4189L27.9287 17.4023H34.2441L57.8213 41.2607H19.2266L12.7715 37.752L11.9287 41.2607L4.91211 35.3662V19.0869H0L12.7715 6.31543H9.96387L16.2793 0H27.3672L33.2617 6.31543ZM24.7002 5.05273C23.6803 5.05279 22.8535 5.87953 22.8535 6.89941C22.8536 7.9192 23.6804 8.74604 24.7002 8.74609C25.72 8.74609 26.5468 7.91923 26.5469 6.89941C26.5469 5.8795 25.7201 5.05273 24.7002 5.05273Z" fill="#C7D0BE"></path>
+  </svg>
+
+  <div style="position: absolute; left: 120px; top: 80px; width: 250px; height: 64px; display: flex; align-items: center; gap: 20px">
+    <svg viewBox="0 0 58 42" aria-hidden="true" style="width: 86px; height: 62px">
+      <path d="M33.2617 6.31543H38.5947L44.4883 12.6309H32.4189L27.9287 17.4023H34.2441L57.8213 41.2607H19.2266L12.7715 37.752L11.9287 41.2607L4.91211 35.3662V19.0869H0L12.7715 6.31543H9.96387L16.2793 0H27.3672L33.2617 6.31543ZM24.7002 5.05273C23.6803 5.05279 22.8535 5.87953 22.8535 6.89941C22.8536 7.9192 23.6804 8.74604 24.7002 8.74609C25.72 8.74609 26.5468 7.91923 26.5469 6.89941C26.5469 5.8795 25.7201 5.05273 24.7002 5.05273Z" fill="#C7D0BE"></path>
+    </svg>
+    <span style="font-size: 46px; font-weight: 500; letter-spacing: -0.02em; color: #C7D0BE">Raven</span>
   </div>
-</div>
 
+  <h1 style="position: absolute; left: 120px; top: 430px; margin: 0; width: 1020px; font-size: 120px; font-weight: 500; line-height: 1.1; letter-spacing: -0.02em; color: #ffffff">Built for<br>corporate credit</h1>
+
+  <div style="position: absolute; left: 120px; top: 762px; font-size: 32px; font-weight: 400; line-height: 1.1; letter-spacing: -0.02em; color: rgba(255,255,255,0.7)">raven.ai</div>
+
+</div></div>
+  <div class="sc" id="s02"><div style="width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: linear-gradient(162deg, #060606 0%, #000000 58%, #040404 100%); font-family: 'Google Sans', 'Google Sans Text', 'DM Sans', system-ui, sans-serif; color: #ffffff">
+
+  <div style="position: absolute; left: 120px; top: 104px; width: 1680px; display: flex">
+    
+      <div style="width: 336px; display: flex; flex-direction: column; align-items: center; gap: 18px">
+        <span style="font-size: 30px; font-weight: 400; line-height: 1.1; letter-spacing: -0.02em; color: rgba(255,255,255,0.88); white-space: nowrap">Deal documents</span>
+        <div style="width: 180px; height: 3px; background: rgba(199,208,190,0.5)"></div>
+      </div>
+    
+      <div style="width: 336px; display: flex; flex-direction: column; align-items: center; gap: 18px">
+        <span style="font-size: 30px; font-weight: 400; line-height: 1.1; letter-spacing: -0.02em; color: rgba(255,255,255,0.88); white-space: nowrap">Third-party data</span>
+        <div style="width: 180px; height: 3px; background: rgba(199,208,190,0.5)"></div>
+      </div>
+    
+      <div style="width: 336px; display: flex; flex-direction: column; align-items: center; gap: 18px">
+        <span style="font-size: 30px; font-weight: 400; line-height: 1.1; letter-spacing: -0.02em; color: rgba(255,255,255,0.88); white-space: nowrap">Firm credit policies</span>
+        <div style="width: 180px; height: 3px; background: rgba(199,208,190,0.5)"></div>
+      </div>
+    
+      <div style="width: 336px; display: flex; flex-direction: column; align-items: center; gap: 18px">
+        <span style="font-size: 30px; font-weight: 400; line-height: 1.1; letter-spacing: -0.02em; color: rgba(255,255,255,0.88); white-space: nowrap">Firm data</span>
+        <div style="width: 180px; height: 3px; background: rgba(199,208,190,0.5)"></div>
+      </div>
+    
+      <div style="width: 336px; display: flex; flex-direction: column; align-items: center; gap: 18px">
+        <span style="font-size: 30px; font-weight: 400; line-height: 1.1; letter-spacing: -0.02em; color: rgba(255,255,255,0.88); white-space: nowrap">Raven credit intelligence</span>
+        <div style="width: 220px; height: 6px; background: #C7D0BE"></div>
+      </div>
+    
+  </div>
+
+  
+    <svg viewBox="0 0 1920 130" aria-hidden="true" style="position: absolute; left: 0; top: 172px; width: 1920px; height: 130px">
+      <g stroke="#C7D0BE" stroke-opacity="0.5" stroke-width="3" fill="none">
+        <path d="M288 0 L960 130"></path>
+        <path d="M624 0 L960 130"></path>
+        <path d="M960 0 L960 130"></path>
+        <path d="M1296 0 L960 130"></path>
+        <path d="M1632 0 L960 130"></path>
+      </g>
+    </svg>
+  
+
+  
+    <div style="position: absolute; left: 760px; top: 300px; width: 400px; height: 400px; box-sizing: border-box; border: 3px solid rgba(199,208,190,0.45); border-radius: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 26px">
+      <svg viewBox="0 0 58 42" aria-hidden="true" style="width: 96px; height: 70px">
+        <path d="M33.2617 6.31543H38.5947L44.4883 12.6309H32.4189L27.9287 17.4023H34.2441L57.8213 41.2607H19.2266L12.7715 37.752L11.9287 41.2607L4.91211 35.3662V19.0869H0L12.7715 6.31543H9.96387L16.2793 0H27.3672L33.2617 6.31543ZM24.7002 5.05273C23.6803 5.05279 22.8535 5.87953 22.8535 6.89941C22.8536 7.9192 23.6804 8.74604 24.7002 8.74609C25.72 8.74609 26.5468 7.91923 26.5469 6.89941C26.5469 5.8795 25.7201 5.05273 24.7002 5.05273Z" fill="#C7D0BE"></path>
+      </svg>
+      <div style="font-size: 40px; font-weight: 500; line-height: 1.1; letter-spacing: 0.24em; text-indent: 0.24em; color: #ffffff">RAVEN</div>
+      <div style="font-size: 24px; font-weight: 400; line-height: 1.1; letter-spacing: -0.02em; color: rgba(255,255,255,0.7)">The intelligence layer</div>
+    </div>
+  
+
+  
+    <div>
+      <svg viewBox="0 0 1920 60" aria-hidden="true" style="position: absolute; left: 0; top: 470px; width: 1920px; height: 60px">
+        <g stroke="#C7D0BE" stroke-opacity="0.6" stroke-width="3" fill="#C7D0BE">
+          <path d="M760 30 L450 30"></path>
+          <polygon points="424,30 452,18 452,42" stroke="none"></polygon>
+          <path d="M1160 30 L1470 30"></path>
+          <polygon points="1496,30 1468,18 1468,42" stroke="none"></polygon>
+        </g>
+      </svg>
+      <div style="position: absolute; left: 160px; top: 482px; width: 240px; text-align: right; font-size: 32px; font-weight: 400; letter-spacing: -0.02em; color: #ffffff">Underwriting</div>
+      <div style="position: absolute; left: 1520px; top: 482px; font-size: 32px; font-weight: 400; letter-spacing: -0.02em; color: #ffffff">Monitoring</div>
+    </div>
+  
+
+  
+    <div style="position: absolute; left: 120px; top: 730px; width: 1680px; height: 84px; box-sizing: border-box; border: 3px solid rgba(255,255,255,0.14); border-radius: 14px; overflow: hidden">
+      <div style="position: absolute; left: -387px; top: 0; height: 84px; display: flex; align-items: center">
+        
+          <div style="width: 200px; flex: 0 0 200px; display: flex; flex-direction: column; align-items: center; gap: 9px;">
+            <span style="font-size: 32px; font-weight: 400; line-height: 1.1; letter-spacing: -0.02em; white-space: nowrap; color: rgba(255,255,255,0.35)">Deal screen</span>
+            <div style="width: 0; height: 6px"></div>
+          </div>
+          <div style="width: 68px; flex: 0 0 68px; display: flex; align-items: center; justify-content: center; padding-bottom: 12px">
+            <svg viewBox="0 0 12 20" aria-hidden="true" style="width: 12px; height: 20px">
+              <path d="M2.5 2.5 L9.5 10 L2.5 17.5" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="3"></path>
+            </svg>
+          </div>
+        
+          <div style="width: 210px; flex: 0 0 210px; display: flex; flex-direction: column; align-items: center; gap: 9px;">
+            <span style="font-size: 32px; font-weight: 400; line-height: 1.1; letter-spacing: -0.02em; white-space: nowrap; color: rgba(255,255,255,0.35)">EBITDA walk</span>
+            <div style="width: 0; height: 6px"></div>
+          </div>
+          <div style="width: 68px; flex: 0 0 68px; display: flex; align-items: center; justify-content: center; padding-bottom: 12px">
+            <svg viewBox="0 0 12 20" aria-hidden="true" style="width: 12px; height: 20px">
+              <path d="M2.5 2.5 L9.5 10 L2.5 17.5" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="3"></path>
+            </svg>
+          </div>
+        
+          <div style="width: 250px; flex: 0 0 250px; display: flex; flex-direction: column; align-items: center; gap: 9px;">
+            <span style="font-size: 32px; font-weight: 400; line-height: 1.1; letter-spacing: -0.02em; white-space: nowrap; color: rgba(255,255,255,0.35)">Sensitize model</span>
+            <div style="width: 0; height: 6px"></div>
+          </div>
+          <div style="width: 68px; flex: 0 0 68px; display: flex; align-items: center; justify-content: center; padding-bottom: 12px">
+            <svg viewBox="0 0 12 20" aria-hidden="true" style="width: 12px; height: 20px">
+              <path d="M2.5 2.5 L9.5 10 L2.5 17.5" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="3"></path>
+            </svg>
+          </div>
+        
+          <div style="width: 225px; flex: 0 0 225px; display: flex; flex-direction: column; align-items: center; gap: 9px;">
+            <span style="font-size: 32px; font-weight: 400; line-height: 1.1; letter-spacing: -0.02em; white-space: nowrap; color: rgba(255,255,255,0.35)">Peer analysis</span>
+            <div style="width: 0; height: 6px"></div>
+          </div>
+          <div style="width: 68px; flex: 0 0 68px; display: flex; align-items: center; justify-content: center; padding-bottom: 12px">
+            <svg viewBox="0 0 12 20" aria-hidden="true" style="width: 12px; height: 20px">
+              <path d="M2.5 2.5 L9.5 10 L2.5 17.5" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="3"></path>
+            </svg>
+          </div>
+        
+          <div style="width: 140px; flex: 0 0 140px; display: flex; flex-direction: column; align-items: center; gap: 9px; transform: scale(1.06); transform-origin: center">
+            <span style="font-size: 32px; font-weight: 400; line-height: 1.1; letter-spacing: -0.02em; white-space: nowrap; color: #ffffff">IC Memo</span>
+            <div style="width: 100px; height: 4px; background: rgba(199,208,190,0.8)"></div>
+          </div>
+          <div style="width: 68px; flex: 0 0 68px; display: flex; align-items: center; justify-content: center; padding-bottom: 12px">
+            <svg viewBox="0 0 12 20" aria-hidden="true" style="width: 12px; height: 20px">
+              <path d="M2.5 2.5 L9.5 10 L2.5 17.5" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="3"></path>
+            </svg>
+          </div>
+        
+          <div style="width: 210px; flex: 0 0 210px; display: flex; flex-direction: column; align-items: center; gap: 9px;">
+            <span style="font-size: 32px; font-weight: 400; line-height: 1.1; letter-spacing: -0.02em; white-space: nowrap; color: rgba(255,255,255,0.35)">Legal review</span>
+            <div style="width: 0; height: 6px"></div>
+          </div>
+          <div style="width: 68px; flex: 0 0 68px; display: flex; align-items: center; justify-content: center; padding-bottom: 12px">
+            <svg viewBox="0 0 12 20" aria-hidden="true" style="width: 12px; height: 20px">
+              <path d="M2.5 2.5 L9.5 10 L2.5 17.5" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="3"></path>
+            </svg>
+          </div>
+        
+          <div style="width: 230px; flex: 0 0 230px; display: flex; flex-direction: column; align-items: center; gap: 9px;">
+            <span style="font-size: 32px; font-weight: 400; line-height: 1.1; letter-spacing: -0.02em; white-space: nowrap; color: rgba(255,255,255,0.35)">Compare deals</span>
+            <div style="width: 0; height: 6px"></div>
+          </div>
+          <div style="width: 68px; flex: 0 0 68px; display: flex; align-items: center; justify-content: center; padding-bottom: 12px">
+            <svg viewBox="0 0 12 20" aria-hidden="true" style="width: 12px; height: 20px">
+              <path d="M2.5 2.5 L9.5 10 L2.5 17.5" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="3"></path>
+            </svg>
+          </div>
+        
+          <div style="width: 300px; flex: 0 0 300px; display: flex; flex-direction: column; align-items: center; gap: 9px;">
+            <span style="font-size: 32px; font-weight: 400; line-height: 1.1; letter-spacing: -0.02em; white-space: nowrap; color: rgba(255,255,255,0.35)">Portfolio snapshot</span>
+            <div style="width: 0; height: 6px"></div>
+          </div>
+          <div style="width: 68px; flex: 0 0 68px; display: flex; align-items: center; justify-content: center; padding-bottom: 12px">
+            <svg viewBox="0 0 12 20" aria-hidden="true" style="width: 12px; height: 20px">
+              <path d="M2.5 2.5 L9.5 10 L2.5 17.5" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="3"></path>
+            </svg>
+          </div>
+        
+          <div style="width: 210px; flex: 0 0 210px; display: flex; flex-direction: column; align-items: center; gap: 9px;">
+            <span style="font-size: 32px; font-weight: 400; line-height: 1.1; letter-spacing: -0.02em; white-space: nowrap; color: rgba(255,255,255,0.35)">Raven Agent</span>
+            <div style="width: 0; height: 6px"></div>
+          </div>
+          <div style="display: none">
+            <svg viewBox="0 0 12 20" aria-hidden="true" style="width: 12px; height: 20px">
+              <path d="M2.5 2.5 L9.5 10 L2.5 17.5" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="3"></path>
+            </svg>
+          </div>
+        
+      </div>
+      <div style="position: absolute; left: 0; top: 0; width: 120px; height: 100%; background: linear-gradient(to right, #000000 0%, rgba(0,0,0,0) 100%)"></div>
+      <div style="position: absolute; right: 0; top: 0; width: 120px; height: 100%; background: linear-gradient(to left, #000000 0%, rgba(0,0,0,0) 100%)"></div>
+    </div>
+  
+
+</div></div>
+  <div class="sc" id="chat"><div class="beat" data-id="frame-03a"><div style="width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #faf9f5; font-family: 'Google Sans', 'Google Sans Text', 'DM Sans', system-ui, sans-serif; color: #1d1d1f">
+
+  <div style="position: absolute; left: 310px; top: 38px; width: 1300px; height: 787px; box-sizing: border-box; background: #ffffff; border: 3px solid #e6e6e1; border-radius: 14px; display: flex; flex-direction: column; overflow: hidden">
+
+    <div style="height: 60px; flex: 0 0 60px; box-sizing: border-box; padding: 0 28px; display: flex; align-items: center; gap: 12px; border-bottom: 3px solid #e6e6e1">
+      <svg viewBox="0 0 58 42" aria-hidden="true" style="width: 32px; height: 23px">
+        <path d="M33.2617 6.31543H38.5947L44.4883 12.6309H32.4189L27.9287 17.4023H34.2441L57.8213 41.2607H19.2266L12.7715 37.752L11.9287 41.2607L4.91211 35.3662V19.0869H0L12.7715 6.31543H9.96387L16.2793 0H27.3672L33.2617 6.31543ZM24.7002 5.05273C23.6803 5.05279 22.8535 5.87953 22.8535 6.89941C22.8536 7.9192 23.6804 8.74604 24.7002 8.74609C25.72 8.74609 26.5468 7.91923 26.5469 6.89941C26.5469 5.8795 25.7201 5.05273 24.7002 5.05273Z" fill="#141a2e"></path>
+      </svg>
+      <span style="font-size: 22px; font-weight: 700; letter-spacing: -0.01em">Raven Agent</span>
+      <span style="font-size: 22px; font-weight: 400; color: #77777c">· Project Alpha</span>
+    </div>
+
+    <div style="flex: 1 1 auto; min-height: 0; box-sizing: border-box; padding: 12px 28px; display: flex; flex-direction: column; justify-content: flex-end; gap: 5px; overflow: hidden">
+
+      
+
+      
+
+      
+    </div>
+
+    <div style="flex: 0 0 140px; box-sizing: border-box; padding: 0 28px 14px; display: flex; flex-direction: column; gap: 8px">
+      <div style="border: 3px solid #e6e6e1; border-radius: 14px; padding: 12px 18px 10px; display: flex; flex-direction: column; gap: 8px">
+        <div style="display: flex; align-items: center; min-height: 30px">
+          <span style="font-size: 21px; letter-spacing: -0.01em; color: #1d1d1f">Provide the EBITDA walk for Project Alpha</span>
+          
+            <span style="display: inline-block; width: 3px; height: 28px; background: #1d1d1f; margin-left: 2px"></span>
+          
+        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between">
+          <div style="display: flex; align-items: center; gap: 22px; color: #77777c; font-size: 19px">
+            <svg viewBox="0 0 22 22" aria-hidden="true" style="width: 22px; height: 22px">
+              <path d="M16 10 L10 16 a3.6 3.6 0 0 1-5.1-5.1 L12.2 3.7 a2.5 2.5 0 0 1 3.5 3.5 L8.6 14.6" fill="none" stroke="#77777c" stroke-width="3" stroke-linecap="round"></path>
+            </svg>
+            <span style="display: inline-flex; align-items: center; gap: 8px">
+              <svg viewBox="0 0 22 22" aria-hidden="true" style="width: 22px; height: 22px">
+                <circle cx="11" cy="11" r="8" fill="none" stroke="#77777c" stroke-width="3"></circle>
+                <path d="M3 11 H19 M11 3 a12 12 0 0 1 0 16 a12 12 0 0 1 0-16" fill="none" stroke="#77777c" stroke-width="3"></path>
+              </svg>
+              Web
+            </span>
+            <span style="display: inline-flex; align-items: center; gap: 8px">
+              <svg viewBox="0 0 22 22" aria-hidden="true" style="width: 22px; height: 22px">
+                <g fill="none" stroke="#77777c" stroke-width="3">
+                  <rect x="3.5" y="3.5" width="6.5" height="6.5" rx="1.6"></rect>
+                  <rect x="12" y="3.5" width="6.5" height="6.5" rx="1.6"></rect>
+                  <rect x="3.5" y="12" width="6.5" height="6.5" rx="1.6"></rect>
+                  <rect x="12" y="12" width="6.5" height="6.5" rx="1.6"></rect>
+                </g>
+              </svg>
+              Skills
+            </span>
+          </div>
+          <button type="button" aria-label="Send" style="width: 44px; height: 44px; border: none; border-radius: 999px; background: #141a2e; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0">
+            <svg viewBox="0 0 22 22" aria-hidden="true" style="width: 20px; height: 20px">
+              <path d="M11 17 V5.5 M5.6 11 L11 5 L16.4 11" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div style="font-size: 16px; line-height: 1.3; color: #77777c; text-align: center">Raven reads your deal room to answer. Check figures against the sources it cites.</div>
+    </div>
+
+  </div>
+</div></div>
+<div class="beat" data-id="frame-03b"><div style="width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #faf9f5; font-family: 'Google Sans', 'Google Sans Text', 'DM Sans', system-ui, sans-serif; color: #1d1d1f">
+
+  <div style="position: absolute; left: 310px; top: 38px; width: 1300px; height: 787px; box-sizing: border-box; background: #ffffff; border: 3px solid #e6e6e1; border-radius: 14px; display: flex; flex-direction: column; overflow: hidden">
+
+    <div style="height: 60px; flex: 0 0 60px; box-sizing: border-box; padding: 0 28px; display: flex; align-items: center; gap: 12px; border-bottom: 3px solid #e6e6e1">
+      <svg viewBox="0 0 58 42" aria-hidden="true" style="width: 32px; height: 23px">
+        <path d="M33.2617 6.31543H38.5947L44.4883 12.6309H32.4189L27.9287 17.4023H34.2441L57.8213 41.2607H19.2266L12.7715 37.752L11.9287 41.2607L4.91211 35.3662V19.0869H0L12.7715 6.31543H9.96387L16.2793 0H27.3672L33.2617 6.31543ZM24.7002 5.05273C23.6803 5.05279 22.8535 5.87953 22.8535 6.89941C22.8536 7.9192 23.6804 8.74604 24.7002 8.74609C25.72 8.74609 26.5468 7.91923 26.5469 6.89941C26.5469 5.8795 25.7201 5.05273 24.7002 5.05273Z" fill="#141a2e"></path>
+      </svg>
+      <span style="font-size: 22px; font-weight: 700; letter-spacing: -0.01em">Raven Agent</span>
+      <span style="font-size: 22px; font-weight: 400; color: #77777c">· Project Alpha</span>
+    </div>
+
+    <div style="flex: 1 1 auto; min-height: 0; box-sizing: border-box; padding: 12px 28px; display: flex; flex-direction: column; justify-content: flex-end; gap: 5px; overflow: hidden">
+
+      
+
+      
+        <div style="display: flex; justify-content: flex-end; padding-bottom: 4px">
+          <div style="max-width: 820px; background: #f0f0ec; border-radius: 10px; padding: 11px 20px; font-size: 21px; line-height: 1.3; letter-spacing: -0.01em">Provide the EBITDA walk for Project Alpha</div>
+        </div>
+      
+
+      
+        <div style="display: flex; flex-direction: column; gap: 10px">
+
+          <div style="display: flex; align-items: center; gap: 11px">
+            <svg viewBox="0 0 58 42" aria-hidden="true" style="width: 30px; height: 22px">
+              <path d="M33.2617 6.31543H38.5947L44.4883 12.6309H32.4189L27.9287 17.4023H34.2441L57.8213 41.2607H19.2266L12.7715 37.752L11.9287 41.2607L4.91211 35.3662V19.0869H0L12.7715 6.31543H9.96387L16.2793 0H27.3672L33.2617 6.31543ZM24.7002 5.05273C23.6803 5.05279 22.8535 5.87953 22.8535 6.89941C22.8536 7.9192 23.6804 8.74604 24.7002 8.74609C25.72 8.74609 26.5468 7.91923 26.5469 6.89941C26.5469 5.8795 25.7201 5.05273 24.7002 5.05273Z" fill="#141a2e"></path>
+            </svg>
+            <span style="font-size: 21px; font-weight: 700; letter-spacing: -0.01em">Raven</span>
+          </div>
+
+          
+            <div style="display: flex; align-items: center; gap: 12px; font-size: 19px; color: #77777c; padding: 2px 0 4px">
+              <svg viewBox="0 0 18 18" aria-hidden="true" style="width: 20px; height: 20px; flex: 0 0 20px">
+                <path d="M3.5 9.5 L7.2 13.2 L14.5 5" fill="none" stroke="#3d8b5a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+              <span style="color: #1d1d1f">Pulled the EBITDA walk from the vault</span>
+              <span style="display: inline-flex; align-items: center; border: 3px solid #e6e6e1; border-radius: 7px; padding: 1px 11px; font-size: 17px; color: #1d1d1f">Raven Agent</span>
+              <span>3 steps · 12s</span>
+              <svg viewBox="0 0 18 18" aria-hidden="true" style="width: 18px; height: 18px">
+                <path d="M4.5 6.8 L9 11.5 L13.5 6.8" fill="none" stroke="#77777c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </div>
+          
+
+          
+            <p style="margin: 0 0 4px; font-size: 20px; line-height: 1.45; letter-spacing: -0.01em; text-wrap: pretty">PF Adjusted EBITDA is <strong>$326.0MM</strong> on the deal documents: <strong>$258.0MM</strong> reported, plus <strong>$32.0MM</strong> of management adjustments and <strong>$36.0MM</strong> of pro forma items.</p>
+          
+
+          <div style="display: flex; flex-direction: column">
+            <div style="display: flex; align-items: center; gap: 12px; padding-bottom: 8px; font-size: 18px; color: #77777c">
+              <span style="font-weight: 700; color: #1d1d1f">USD in millions (MM)</span>
+              
+                <span>Deal docs, locked</span>
+              
+              
+            </div>
+
+            <div style="display: flex; border-bottom: 3px solid #e6e6e1; padding-bottom: 7px">
+              
+                <div style="width: 780px; flex: 0 0 780px; box-sizing: border-box; padding: 0 12px; font-size: 18px; font-weight: 500; line-height: 1.25; color: #77777c; text-align: left;">Item</div>
+              
+                <div style="width: 220px; flex: 0 0 220px; box-sizing: border-box; padding: 0 12px; font-size: 18px; font-weight: 500; line-height: 1.25; color: #77777c; text-align: right;">Deal docs</div>
+              
+                <div style="width: 244px; flex: 0 0 244px; box-sizing: border-box; padding: 0 12px; font-size: 18px; font-weight: 500; line-height: 1.25; color: #77777c; text-align: right;">Type</div>
+              
+            </div>
+
+            
+              <div style="display: flex; align-items: baseline; border-bottom: 3px solid #f2f2ed; background: #f3f3ee; font-weight: 700;">
+                
+                  <div style="width: 780px; flex: 0 0 780px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: left; font-weight: 700;">
+                    <span style="">Reported EBITDA</span>
+                    
+                  </div>
+                
+                  <div style="width: 220px; flex: 0 0 220px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right; font-weight: 700;">
+                    <span style="">258.0</span>
+                    
+                  </div>
+                
+                  <div style="width: 244px; flex: 0 0 244px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right; color: #9a9a93;">
+                    <span style="">–</span>
+                    
+                  </div>
+                
+              </div>
+            
+              <div style="display: flex; align-items: baseline; border-bottom: 3px solid #f2f2ed;">
+                
+                  <div style="width: 780px; flex: 0 0 780px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: left;">
+                    <span style="">(+) Restructuring &amp; Other Transaction Related Costs</span>
+                    
+                  </div>
+                
+                  <div style="width: 220px; flex: 0 0 220px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right;">
+                    <span style="">+20.0</span>
+                    
+                  </div>
+                
+                  <div style="width: 244px; flex: 0 0 244px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right;">
+                    <span style="display: inline-block; padding: 2px 11px; border-radius: 7px; font-size: 17px; font-weight: 500; color: #3d6a22; background: rgba(61,106,34,0.14);">One-time</span>
+                    
+                  </div>
+                
+              </div>
+            
+              <div style="display: flex; align-items: baseline; border-bottom: 3px solid #f2f2ed;">
+                
+                  <div style="width: 780px; flex: 0 0 780px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: left;">
+                    <span style="">(+) Non-Cash Impairments</span>
+                    
+                  </div>
+                
+                  <div style="width: 220px; flex: 0 0 220px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right;">
+                    <span style="">+8.0</span>
+                    
+                  </div>
+                
+                  <div style="width: 244px; flex: 0 0 244px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right;">
+                    <span style="display: inline-block; padding: 2px 11px; border-radius: 7px; font-size: 17px; font-weight: 500; color: #2a5391; background: rgba(42,83,145,0.14);">Non-cash</span>
+                    
+                  </div>
+                
+              </div>
+            
+              <div style="display: flex; align-items: baseline; border-bottom: 3px solid #f2f2ed;">
+                
+                  <div style="width: 780px; flex: 0 0 780px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: left;">
+                    <span style="">(+/-) Other Management Adjustments</span>
+                    
+                  </div>
+                
+                  <div style="width: 220px; flex: 0 0 220px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right;">
+                    <span style="">+4.0</span>
+                    
+                  </div>
+                
+                  <div style="width: 244px; flex: 0 0 244px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right;">
+                    <span style="display: inline-block; padding: 2px 11px; border-radius: 7px; font-size: 17px; font-weight: 500; color: #8a5a12; background: rgba(138,90,18,0.14);">Normalizing</span>
+                    
+                  </div>
+                
+              </div>
+            
+              <div style="display: flex; align-items: baseline; border-bottom: 3px solid #f2f2ed; background: #f3f3ee; font-weight: 700;">
+                
+                  <div style="width: 780px; flex: 0 0 780px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: left; font-weight: 700;">
+                    <span style="">Adjusted EBITDA</span>
+                    
+                  </div>
+                
+                  <div style="width: 220px; flex: 0 0 220px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right; font-weight: 700;">
+                    <span style="">290.0</span>
+                    
+                  </div>
+                
+                  <div style="width: 244px; flex: 0 0 244px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right; color: #9a9a93;">
+                    <span style="">–</span>
+                    
+                  </div>
+                
+              </div>
+            
+              <div style="display: flex; align-items: baseline; border-bottom: 3px solid #f2f2ed;">
+                
+                  <div style="width: 780px; flex: 0 0 780px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: left;">
+                    <span style="">(+) Pro Forma Acquired EBITDA</span>
+                    
+                  </div>
+                
+                  <div style="width: 220px; flex: 0 0 220px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right;">
+                    <span style="">+12.0</span>
+                    
+                  </div>
+                
+                  <div style="width: 244px; flex: 0 0 244px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right;">
+                    <span style="display: inline-block; padding: 2px 11px; border-radius: 7px; font-size: 17px; font-weight: 500; color: #1f6a64; background: rgba(31,106,100,0.14);">Pro forma</span>
+                    
+                  </div>
+                
+              </div>
+            
+              <div style="display: flex; align-items: baseline; border-bottom: 3px solid #f2f2ed;">
+                
+                  <div style="width: 780px; flex: 0 0 780px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: left;">
+                    <span style="">(+) Run-rate Cost Savings</span>
+                    
+                  </div>
+                
+                  <div style="width: 220px; flex: 0 0 220px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right;">
+                    <span style="">+24.0</span>
+                    
+                  </div>
+                
+                  <div style="width: 244px; flex: 0 0 244px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right;">
+                    <span style="display: inline-block; padding: 2px 11px; border-radius: 7px; font-size: 17px; font-weight: 500; color: #6b3aa0; background: rgba(107,58,160,0.14);">Synergy</span>
+                    
+                  </div>
+                
+              </div>
+            
+              <div style="display: flex; align-items: baseline; border-bottom: 3px solid #f2f2ed; background: #f3f3ee; font-weight: 700;">
+                
+                  <div style="width: 780px; flex: 0 0 780px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: left; font-weight: 700;">
+                    <span style="">PF Adjusted EBITDA</span>
+                    
+                  </div>
+                
+                  <div style="width: 220px; flex: 0 0 220px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right; font-weight: 700;">
+                    <span style="">326.0</span>
+                    
+                  </div>
+                
+                  <div style="width: 244px; flex: 0 0 244px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right; color: #9a9a93;">
+                    <span style="">–</span>
+                    
+                  </div>
+                
+              </div>
+            
+          </div>
+
+          
+            <p style="margin: 8px 0 0; font-size: 20px; line-height: 1.4; letter-spacing: -0.01em; text-wrap: pretty">Add-backs and pro forma items total <strong>$68.0MM</strong>, about 21% of the PF figure.</p>
+          
+        </div>
+      
+    </div>
+
+    <div style="flex: 0 0 140px; box-sizing: border-box; padding: 0 28px 14px; display: flex; flex-direction: column; gap: 8px">
+      <div style="border: 3px solid #e6e6e1; border-radius: 14px; padding: 12px 18px 10px; display: flex; flex-direction: column; gap: 8px">
+        <div style="display: flex; align-items: center; min-height: 30px">
+          <span style="font-size: 21px; letter-spacing: -0.01em; color: #77777c">Ask about any deal, or type / for a skill</span>
+          
+        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between">
+          <div style="display: flex; align-items: center; gap: 22px; color: #77777c; font-size: 19px">
+            <svg viewBox="0 0 22 22" aria-hidden="true" style="width: 22px; height: 22px">
+              <path d="M16 10 L10 16 a3.6 3.6 0 0 1-5.1-5.1 L12.2 3.7 a2.5 2.5 0 0 1 3.5 3.5 L8.6 14.6" fill="none" stroke="#77777c" stroke-width="3" stroke-linecap="round"></path>
+            </svg>
+            <span style="display: inline-flex; align-items: center; gap: 8px">
+              <svg viewBox="0 0 22 22" aria-hidden="true" style="width: 22px; height: 22px">
+                <circle cx="11" cy="11" r="8" fill="none" stroke="#77777c" stroke-width="3"></circle>
+                <path d="M3 11 H19 M11 3 a12 12 0 0 1 0 16 a12 12 0 0 1 0-16" fill="none" stroke="#77777c" stroke-width="3"></path>
+              </svg>
+              Web
+            </span>
+            <span style="display: inline-flex; align-items: center; gap: 8px">
+              <svg viewBox="0 0 22 22" aria-hidden="true" style="width: 22px; height: 22px">
+                <g fill="none" stroke="#77777c" stroke-width="3">
+                  <rect x="3.5" y="3.5" width="6.5" height="6.5" rx="1.6"></rect>
+                  <rect x="12" y="3.5" width="6.5" height="6.5" rx="1.6"></rect>
+                  <rect x="3.5" y="12" width="6.5" height="6.5" rx="1.6"></rect>
+                  <rect x="12" y="12" width="6.5" height="6.5" rx="1.6"></rect>
+                </g>
+              </svg>
+              Skills
+            </span>
+          </div>
+          <button type="button" aria-label="Send" style="width: 44px; height: 44px; border: none; border-radius: 999px; background: #141a2e; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0">
+            <svg viewBox="0 0 22 22" aria-hidden="true" style="width: 20px; height: 20px">
+              <path d="M11 17 V5.5 M5.6 11 L11 5 L16.4 11" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div style="font-size: 16px; line-height: 1.3; color: #77777c; text-align: center">Raven reads your deal room to answer. Check figures against the sources it cites.</div>
+    </div>
+
+  </div>
+</div></div>
+<div class="beat" data-id="frame-03c"><div style="width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #faf9f5; font-family: 'Google Sans', 'Google Sans Text', 'DM Sans', system-ui, sans-serif; color: #1d1d1f">
+
+  <div style="position: absolute; left: 310px; top: 38px; width: 1300px; height: 787px; box-sizing: border-box; background: #ffffff; border: 3px solid #e6e6e1; border-radius: 14px; display: flex; flex-direction: column; overflow: hidden">
+
+    <div style="height: 60px; flex: 0 0 60px; box-sizing: border-box; padding: 0 28px; display: flex; align-items: center; gap: 12px; border-bottom: 3px solid #e6e6e1">
+      <svg viewBox="0 0 58 42" aria-hidden="true" style="width: 32px; height: 23px">
+        <path d="M33.2617 6.31543H38.5947L44.4883 12.6309H32.4189L27.9287 17.4023H34.2441L57.8213 41.2607H19.2266L12.7715 37.752L11.9287 41.2607L4.91211 35.3662V19.0869H0L12.7715 6.31543H9.96387L16.2793 0H27.3672L33.2617 6.31543ZM24.7002 5.05273C23.6803 5.05279 22.8535 5.87953 22.8535 6.89941C22.8536 7.9192 23.6804 8.74604 24.7002 8.74609C25.72 8.74609 26.5468 7.91923 26.5469 6.89941C26.5469 5.8795 25.7201 5.05273 24.7002 5.05273Z" fill="#141a2e"></path>
+      </svg>
+      <span style="font-size: 22px; font-weight: 700; letter-spacing: -0.01em">Raven Agent</span>
+      <span style="font-size: 22px; font-weight: 400; color: #77777c">· Project Alpha</span>
+    </div>
+
+    <div style="flex: 1 1 auto; min-height: 0; box-sizing: border-box; padding: 12px 28px; display: flex; flex-direction: column; justify-content: flex-end; gap: 5px; overflow: hidden">
+
+      
+        <div style="height: 12px; flex: 0 0 12px; background: linear-gradient(to bottom, #ffffff 0%, rgba(255,255,255,0) 100%)"></div>
+      
+
+      
+        <div style="display: flex; justify-content: flex-end; padding-bottom: 4px">
+          <div style="max-width: 820px; background: #f0f0ec; border-radius: 10px; padding: 11px 20px; font-size: 21px; line-height: 1.3; letter-spacing: -0.01em">Haircut the adjustments by 25%</div>
+        </div>
+      
+
+      
+        <div style="display: flex; flex-direction: column; gap: 10px">
+
+          <div style="display: flex; align-items: center; gap: 11px">
+            <svg viewBox="0 0 58 42" aria-hidden="true" style="width: 30px; height: 22px">
+              <path d="M33.2617 6.31543H38.5947L44.4883 12.6309H32.4189L27.9287 17.4023H34.2441L57.8213 41.2607H19.2266L12.7715 37.752L11.9287 41.2607L4.91211 35.3662V19.0869H0L12.7715 6.31543H9.96387L16.2793 0H27.3672L33.2617 6.31543ZM24.7002 5.05273C23.6803 5.05279 22.8535 5.87953 22.8535 6.89941C22.8536 7.9192 23.6804 8.74604 24.7002 8.74609C25.72 8.74609 26.5468 7.91923 26.5469 6.89941C26.5469 5.8795 25.7201 5.05273 24.7002 5.05273Z" fill="#141a2e"></path>
+            </svg>
+            <span style="font-size: 21px; font-weight: 700; letter-spacing: -0.01em">Raven</span>
+          </div>
+
+          
+
+          
+
+          <div style="display: flex; flex-direction: column">
+            <div style="display: flex; align-items: center; gap: 12px; padding-bottom: 8px; font-size: 18px; color: #77777c">
+              <span style="font-weight: 700; color: #1d1d1f">USD in millions (MM)</span>
+              
+                <span>Deal docs, locked</span>
+              
+              
+                <span style="display: inline-flex; align-items: center; gap: 9px; color: #5b3fd6">
+                  <span style="width: 9px; height: 9px; border-radius: 999px; background: #5b3fd6; display: inline-block"></span>
+                  <span>Firm adjustment, 25% haircut applied</span>
+                </span>
+              
+            </div>
+
+            <div style="display: flex; border-bottom: 3px solid #e6e6e1; padding-bottom: 7px">
+              
+                <div style="width: 620px; flex: 0 0 620px; box-sizing: border-box; padding: 0 12px; font-size: 18px; font-weight: 500; line-height: 1.25; color: #77777c; text-align: left;">Item</div>
+              
+                <div style="width: 180px; flex: 0 0 180px; box-sizing: border-box; padding: 0 12px; font-size: 18px; font-weight: 500; line-height: 1.25; color: #77777c; text-align: right;">Deal docs</div>
+              
+                <div style="width: 180px; flex: 0 0 180px; box-sizing: border-box; padding: 0 12px; font-size: 18px; font-weight: 500; line-height: 1.25; color: #77777c; text-align: right; background: rgba(91,63,214,0.06);">Firm adj.</div>
+              
+                <div style="width: 264px; flex: 0 0 264px; box-sizing: border-box; padding: 0 12px; font-size: 18px; font-weight: 500; line-height: 1.25; color: #77777c; text-align: right;">Type</div>
+              
+            </div>
+
+            
+              <div style="display: flex; align-items: baseline; border-bottom: 3px solid #f2f2ed; background: #f3f3ee; font-weight: 700;">
+                
+                  <div style="width: 620px; flex: 0 0 620px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: left; font-weight: 700;">
+                    <span style="">Reported EBITDA</span>
+                    
+                  </div>
+                
+                  <div style="width: 180px; flex: 0 0 180px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right; font-weight: 700;">
+                    <span style="">258.0</span>
+                    
+                  </div>
+                
+                  <div style="width: 180px; flex: 0 0 180px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right; font-weight: 700; color: #5b3fd6; background: rgba(91,63,214,0.06);">
+                    <span style="">258.0</span>
+                    
+                  </div>
+                
+                  <div style="width: 264px; flex: 0 0 264px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right; color: #9a9a93;">
+                    <span style="">–</span>
+                    
+                  </div>
+                
+              </div>
+            
+              <div style="display: flex; align-items: baseline; border-bottom: 3px solid #f2f2ed;">
+                
+                  <div style="width: 620px; flex: 0 0 620px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: left;">
+                    <span style="">(+) Restructuring &amp; Other Transaction Related Costs</span>
+                    
+                  </div>
+                
+                  <div style="width: 180px; flex: 0 0 180px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right;">
+                    <span style="">+20.0</span>
+                    
+                  </div>
+                
+                  <div style="width: 180px; flex: 0 0 180px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right; color: #5b3fd6; background: rgba(91,63,214,0.10);">
+                    <span style="">+15.0</span>
+                    
+                  </div>
+                
+                  <div style="width: 264px; flex: 0 0 264px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right;">
+                    <span style="display: inline-block; padding: 2px 11px; border-radius: 7px; font-size: 17px; font-weight: 500; color: #3d6a22; background: rgba(61,106,34,0.14);">One-time</span>
+                    
+                  </div>
+                
+              </div>
+            
+              <div style="display: flex; align-items: baseline; border-bottom: 3px solid #f2f2ed;">
+                
+                  <div style="width: 620px; flex: 0 0 620px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: left;">
+                    <span style="">(+) Non-Cash Impairments</span>
+                    
+                  </div>
+                
+                  <div style="width: 180px; flex: 0 0 180px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right;">
+                    <span style="">+8.0</span>
+                    
+                  </div>
+                
+                  <div style="width: 180px; flex: 0 0 180px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right; color: #5b3fd6; background: rgba(91,63,214,0.10);">
+                    <span style="">+6.0</span>
+                    
+                  </div>
+                
+                  <div style="width: 264px; flex: 0 0 264px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right;">
+                    <span style="display: inline-block; padding: 2px 11px; border-radius: 7px; font-size: 17px; font-weight: 500; color: #2a5391; background: rgba(42,83,145,0.14);">Non-cash</span>
+                    
+                  </div>
+                
+              </div>
+            
+              <div style="display: flex; align-items: baseline; border-bottom: 3px solid #f2f2ed;">
+                
+                  <div style="width: 620px; flex: 0 0 620px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: left;">
+                    <span style="">(+/-) Other Management Adjustments</span>
+                    
+                  </div>
+                
+                  <div style="width: 180px; flex: 0 0 180px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right;">
+                    <span style="">+4.0</span>
+                    
+                  </div>
+                
+                  <div style="width: 180px; flex: 0 0 180px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right; color: #5b3fd6; background: rgba(91,63,214,0.10);">
+                    <span style="">+3.0</span>
+                    
+                  </div>
+                
+                  <div style="width: 264px; flex: 0 0 264px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right;">
+                    <span style="display: inline-block; padding: 2px 11px; border-radius: 7px; font-size: 17px; font-weight: 500; color: #8a5a12; background: rgba(138,90,18,0.14);">Normalizing</span>
+                    
+                  </div>
+                
+              </div>
+            
+              <div style="display: flex; align-items: baseline; border-bottom: 3px solid #f2f2ed; background: #f3f3ee; font-weight: 700;">
+                
+                  <div style="width: 620px; flex: 0 0 620px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: left; font-weight: 700;">
+                    <span style="">Adjusted EBITDA</span>
+                    
+                  </div>
+                
+                  <div style="width: 180px; flex: 0 0 180px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right; font-weight: 700;">
+                    <span style="">290.0</span>
+                    
+                  </div>
+                
+                  <div style="width: 180px; flex: 0 0 180px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right; font-weight: 700; color: #5b3fd6; background: rgba(91,63,214,0.10);">
+                    <span style="">282.0</span>
+                    
+                  </div>
+                
+                  <div style="width: 264px; flex: 0 0 264px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right; color: #9a9a93;">
+                    <span style="">–</span>
+                    
+                  </div>
+                
+              </div>
+            
+              <div style="display: flex; align-items: baseline; border-bottom: 3px solid #f2f2ed;">
+                
+                  <div style="width: 620px; flex: 0 0 620px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: left;">
+                    <span style="">(+) Pro Forma Acquired EBITDA</span>
+                    
+                  </div>
+                
+                  <div style="width: 180px; flex: 0 0 180px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right;">
+                    <span style="">+12.0</span>
+                    
+                  </div>
+                
+                  <div style="width: 180px; flex: 0 0 180px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right; color: #5b3fd6; background: rgba(91,63,214,0.10);">
+                    <span style="">+9.0</span>
+                    
+                  </div>
+                
+                  <div style="width: 264px; flex: 0 0 264px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right;">
+                    <span style="display: inline-block; padding: 2px 11px; border-radius: 7px; font-size: 17px; font-weight: 500; color: #1f6a64; background: rgba(31,106,100,0.14);">Pro forma</span>
+                    
+                  </div>
+                
+              </div>
+            
+              <div style="display: flex; align-items: baseline; border-bottom: 3px solid #f2f2ed;">
+                
+                  <div style="width: 620px; flex: 0 0 620px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: left;">
+                    <span style="">(+) Run-rate Cost Savings</span>
+                    
+                  </div>
+                
+                  <div style="width: 180px; flex: 0 0 180px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right;">
+                    <span style="">+24.0</span>
+                    
+                  </div>
+                
+                  <div style="width: 180px; flex: 0 0 180px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right; color: #5b3fd6; background: rgba(91,63,214,0.10);">
+                    <span style="">+18.0</span>
+                    
+                  </div>
+                
+                  <div style="width: 264px; flex: 0 0 264px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right;">
+                    <span style="display: inline-block; padding: 2px 11px; border-radius: 7px; font-size: 17px; font-weight: 500; color: #6b3aa0; background: rgba(107,58,160,0.14);">Synergy</span>
+                    
+                  </div>
+                
+              </div>
+            
+              <div style="display: flex; align-items: baseline; border-bottom: 3px solid #f2f2ed; background: #f3f3ee; font-weight: 700;">
+                
+                  <div style="width: 620px; flex: 0 0 620px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: left; font-weight: 700;">
+                    <span style="">PF Adjusted EBITDA</span>
+                    
+                  </div>
+                
+                  <div style="width: 180px; flex: 0 0 180px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right; font-weight: 700;">
+                    <span style="">326.0</span>
+                    
+                  </div>
+                
+                  <div style="width: 180px; flex: 0 0 180px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right; font-weight: 700; color: #5b3fd6; background: rgba(91,63,214,0.10);">
+                    <span style="">309.0</span>
+                    
+                  </div>
+                
+                  <div style="width: 264px; flex: 0 0 264px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right; color: #9a9a93;">
+                    <span style="">–</span>
+                    
+                  </div>
+                
+              </div>
+            
+          </div>
+
+          
+        </div>
+      
+    </div>
+
+    <div style="flex: 0 0 140px; box-sizing: border-box; padding: 0 28px 14px; display: flex; flex-direction: column; gap: 8px">
+      <div style="border: 3px solid #e6e6e1; border-radius: 14px; padding: 12px 18px 10px; display: flex; flex-direction: column; gap: 8px">
+        <div style="display: flex; align-items: center; min-height: 30px">
+          <span style="font-size: 21px; letter-spacing: -0.01em; color: #77777c">Ask about any deal, or type / for a skill</span>
+          
+        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between">
+          <div style="display: flex; align-items: center; gap: 22px; color: #77777c; font-size: 19px">
+            <svg viewBox="0 0 22 22" aria-hidden="true" style="width: 22px; height: 22px">
+              <path d="M16 10 L10 16 a3.6 3.6 0 0 1-5.1-5.1 L12.2 3.7 a2.5 2.5 0 0 1 3.5 3.5 L8.6 14.6" fill="none" stroke="#77777c" stroke-width="3" stroke-linecap="round"></path>
+            </svg>
+            <span style="display: inline-flex; align-items: center; gap: 8px">
+              <svg viewBox="0 0 22 22" aria-hidden="true" style="width: 22px; height: 22px">
+                <circle cx="11" cy="11" r="8" fill="none" stroke="#77777c" stroke-width="3"></circle>
+                <path d="M3 11 H19 M11 3 a12 12 0 0 1 0 16 a12 12 0 0 1 0-16" fill="none" stroke="#77777c" stroke-width="3"></path>
+              </svg>
+              Web
+            </span>
+            <span style="display: inline-flex; align-items: center; gap: 8px">
+              <svg viewBox="0 0 22 22" aria-hidden="true" style="width: 22px; height: 22px">
+                <g fill="none" stroke="#77777c" stroke-width="3">
+                  <rect x="3.5" y="3.5" width="6.5" height="6.5" rx="1.6"></rect>
+                  <rect x="12" y="3.5" width="6.5" height="6.5" rx="1.6"></rect>
+                  <rect x="3.5" y="12" width="6.5" height="6.5" rx="1.6"></rect>
+                  <rect x="12" y="12" width="6.5" height="6.5" rx="1.6"></rect>
+                </g>
+              </svg>
+              Skills
+            </span>
+          </div>
+          <button type="button" aria-label="Send" style="width: 44px; height: 44px; border: none; border-radius: 999px; background: #141a2e; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0">
+            <svg viewBox="0 0 22 22" aria-hidden="true" style="width: 20px; height: 20px">
+              <path d="M11 17 V5.5 M5.6 11 L11 5 L16.4 11" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div style="font-size: 16px; line-height: 1.3; color: #77777c; text-align: center">Raven reads your deal room to answer. Check figures against the sources it cites.</div>
+    </div>
+
+  </div>
+</div></div>
+<div class="beat" data-id="frame-03d"><div style="width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #faf9f5; font-family: 'Google Sans', 'Google Sans Text', 'DM Sans', system-ui, sans-serif; color: #1d1d1f">
+
+  <div style="position: absolute; left: 310px; top: 38px; width: 1300px; height: 787px; box-sizing: border-box; background: #ffffff; border: 3px solid #e6e6e1; border-radius: 14px; display: flex; flex-direction: column; overflow: hidden">
+
+    <div style="height: 60px; flex: 0 0 60px; box-sizing: border-box; padding: 0 28px; display: flex; align-items: center; gap: 12px; border-bottom: 3px solid #e6e6e1">
+      <svg viewBox="0 0 58 42" aria-hidden="true" style="width: 32px; height: 23px">
+        <path d="M33.2617 6.31543H38.5947L44.4883 12.6309H32.4189L27.9287 17.4023H34.2441L57.8213 41.2607H19.2266L12.7715 37.752L11.9287 41.2607L4.91211 35.3662V19.0869H0L12.7715 6.31543H9.96387L16.2793 0H27.3672L33.2617 6.31543ZM24.7002 5.05273C23.6803 5.05279 22.8535 5.87953 22.8535 6.89941C22.8536 7.9192 23.6804 8.74604 24.7002 8.74609C25.72 8.74609 26.5468 7.91923 26.5469 6.89941C26.5469 5.8795 25.7201 5.05273 24.7002 5.05273Z" fill="#141a2e"></path>
+      </svg>
+      <span style="font-size: 22px; font-weight: 700; letter-spacing: -0.01em">Raven Agent</span>
+      <span style="font-size: 22px; font-weight: 400; color: #77777c">· Project Alpha</span>
+    </div>
+
+    <div style="flex: 1 1 auto; min-height: 0; box-sizing: border-box; padding: 12px 28px; display: flex; flex-direction: column; justify-content: flex-end; gap: 5px; overflow: hidden">
+
+      
+        <div style="height: 12px; flex: 0 0 12px; background: linear-gradient(to bottom, #ffffff 0%, rgba(255,255,255,0) 100%)"></div>
+      
+
+      
+        <div style="display: flex; justify-content: flex-end; padding-bottom: 4px">
+          <div style="max-width: 820px; background: #f0f0ec; border-radius: 10px; padding: 11px 20px; font-size: 21px; line-height: 1.3; letter-spacing: -0.01em">Produce an opening cap table</div>
+        </div>
+      
+
+      
+        <div style="display: flex; flex-direction: column; gap: 10px">
+
+          <div style="display: flex; align-items: center; gap: 11px">
+            <svg viewBox="0 0 58 42" aria-hidden="true" style="width: 30px; height: 22px">
+              <path d="M33.2617 6.31543H38.5947L44.4883 12.6309H32.4189L27.9287 17.4023H34.2441L57.8213 41.2607H19.2266L12.7715 37.752L11.9287 41.2607L4.91211 35.3662V19.0869H0L12.7715 6.31543H9.96387L16.2793 0H27.3672L33.2617 6.31543ZM24.7002 5.05273C23.6803 5.05279 22.8535 5.87953 22.8535 6.89941C22.8536 7.9192 23.6804 8.74604 24.7002 8.74609C25.72 8.74609 26.5468 7.91923 26.5469 6.89941C26.5469 5.8795 25.7201 5.05273 24.7002 5.05273Z" fill="#141a2e"></path>
+            </svg>
+            <span style="font-size: 21px; font-weight: 700; letter-spacing: -0.01em">Raven</span>
+          </div>
+
+          
+
+          
+
+          <div style="display: flex; flex-direction: column">
+            <div style="display: flex; align-items: center; gap: 12px; padding-bottom: 8px; font-size: 18px; color: #77777c">
+              <span style="font-weight: 700; color: #1d1d1f">USD in millions (MM)</span>
+              
+              
+            </div>
+
+            <div style="display: flex; border-bottom: 3px solid #e6e6e1; padding-bottom: 7px">
+              
+                <div style="width: 380px; flex: 0 0 380px; box-sizing: border-box; padding: 0 12px; font-size: 18px; font-weight: 500; line-height: 1.25; color: #77777c; text-align: left;">Facility</div>
+              
+                <div style="width: 140px; flex: 0 0 140px; box-sizing: border-box; padding: 0 12px; font-size: 18px; font-weight: 500; line-height: 1.25; color: #77777c; text-align: right;">Amount</div>
+              
+                <div style="width: 150px; flex: 0 0 150px; box-sizing: border-box; padding: 0 12px; font-size: 18px; font-weight: 500; line-height: 1.25; color: #77777c; text-align: right;">Pricing</div>
+              
+                <div style="width: 150px; flex: 0 0 150px; box-sizing: border-box; padding: 0 12px; font-size: 18px; font-weight: 500; line-height: 1.25; color: #77777c; text-align: right;">Maturity</div>
+              
+                <div style="width: 212px; flex: 0 0 212px; box-sizing: border-box; padding: 0 12px; font-size: 18px; font-weight: 500; line-height: 1.25; color: #77777c; text-align: right;">Cum. leverage on 326.0</div>
+              
+                <div style="width: 212px; flex: 0 0 212px; box-sizing: border-box; padding: 0 12px; font-size: 18px; font-weight: 500; line-height: 1.25; color: #5b3fd6; text-align: right;">Cum. leverage on 309.0</div>
+              
+            </div>
+
+            
+              <div style="display: flex; align-items: baseline; border-bottom: 3px solid #f2f2ed;">
+                
+                  <div style="width: 380px; flex: 0 0 380px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: left;">
+                    <span style="">Revolver (drawn)</span>
+                    
+                      <span style="display: block; font-size: 15px; color: #77777c; margin-top: 1px">$100.0 commitment</span>
+                    
+                  </div>
+                
+                  <div style="width: 140px; flex: 0 0 140px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right;">
+                    <span style="">25.0</span>
+                    
+                  </div>
+                
+                  <div style="width: 150px; flex: 0 0 150px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right; color: #77777c;">
+                    <span style="">S + 375</span>
+                    
+                  </div>
+                
+                  <div style="width: 150px; flex: 0 0 150px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right; color: #77777c;">
+                    <span style="">2031</span>
+                    
+                  </div>
+                
+                  <div style="width: 212px; flex: 0 0 212px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right;">
+                    <span style="">0.08x</span>
+                    
+                  </div>
+                
+                  <div style="width: 212px; flex: 0 0 212px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right; color: #5b3fd6;">
+                    <span style="">0.08x</span>
+                    
+                  </div>
+                
+              </div>
+            
+              <div style="display: flex; align-items: baseline; border-bottom: 3px solid #f2f2ed;">
+                
+                  <div style="width: 380px; flex: 0 0 380px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: left;">
+                    <span style="">First Lien Term Loan</span>
+                    
+                  </div>
+                
+                  <div style="width: 140px; flex: 0 0 140px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right;">
+                    <span style="">950.0</span>
+                    
+                  </div>
+                
+                  <div style="width: 150px; flex: 0 0 150px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right; color: #77777c;">
+                    <span style="">S + 475</span>
+                    
+                  </div>
+                
+                  <div style="width: 150px; flex: 0 0 150px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right; color: #77777c;">
+                    <span style="">2033</span>
+                    
+                  </div>
+                
+                  <div style="width: 212px; flex: 0 0 212px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right;">
+                    <span style="">2.99x</span>
+                    
+                  </div>
+                
+                  <div style="width: 212px; flex: 0 0 212px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right; color: #5b3fd6;">
+                    <span style="">3.16x</span>
+                    
+                  </div>
+                
+              </div>
+            
+              <div style="display: flex; align-items: baseline; border-bottom: 3px solid #f2f2ed;">
+                
+                  <div style="width: 380px; flex: 0 0 380px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: left;">
+                    <span style="">Second Lien Term Loan</span>
+                    
+                  </div>
+                
+                  <div style="width: 140px; flex: 0 0 140px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right;">
+                    <span style="">300.0</span>
+                    
+                  </div>
+                
+                  <div style="width: 150px; flex: 0 0 150px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right; color: #77777c;">
+                    <span style="">S + 850</span>
+                    
+                  </div>
+                
+                  <div style="width: 150px; flex: 0 0 150px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right; color: #77777c;">
+                    <span style="">2034</span>
+                    
+                  </div>
+                
+                  <div style="width: 212px; flex: 0 0 212px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right;">
+                    <span style="">3.91x</span>
+                    
+                  </div>
+                
+                  <div style="width: 212px; flex: 0 0 212px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right; color: #5b3fd6;">
+                    <span style="">4.13x</span>
+                    
+                  </div>
+                
+              </div>
+            
+              <div style="display: flex; align-items: baseline; border-bottom: 3px solid #f2f2ed; background: #f3f3ee; font-weight: 700;">
+                
+                  <div style="width: 380px; flex: 0 0 380px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: left; font-weight: 700;">
+                    <span style="">Total Debt</span>
+                    
+                  </div>
+                
+                  <div style="width: 140px; flex: 0 0 140px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right; font-weight: 700;">
+                    <span style="">1275.0</span>
+                    
+                  </div>
+                
+                  <div style="width: 150px; flex: 0 0 150px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right; color: #77777c;">
+                    <span style=""></span>
+                    
+                  </div>
+                
+                  <div style="width: 150px; flex: 0 0 150px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right; color: #77777c;">
+                    <span style=""></span>
+                    
+                  </div>
+                
+                  <div style="width: 212px; flex: 0 0 212px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right; font-weight: 700;">
+                    <span style="">3.91x</span>
+                    
+                  </div>
+                
+                  <div style="width: 212px; flex: 0 0 212px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right; font-weight: 700; color: #5b3fd6;">
+                    <span style="">4.13x</span>
+                    
+                  </div>
+                
+              </div>
+            
+              <div style="display: flex; align-items: baseline; border-bottom: 3px solid #f2f2ed;">
+                
+                  <div style="width: 380px; flex: 0 0 380px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: left;">
+                    <span style="">Less: Cash</span>
+                    
+                  </div>
+                
+                  <div style="width: 140px; flex: 0 0 140px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right;">
+                    <span style="">(45.0)</span>
+                    
+                  </div>
+                
+                  <div style="width: 150px; flex: 0 0 150px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right; color: #77777c;">
+                    <span style=""></span>
+                    
+                  </div>
+                
+                  <div style="width: 150px; flex: 0 0 150px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right; color: #77777c;">
+                    <span style=""></span>
+                    
+                  </div>
+                
+                  <div style="width: 212px; flex: 0 0 212px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right;">
+                    <span style=""></span>
+                    
+                  </div>
+                
+                  <div style="width: 212px; flex: 0 0 212px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right; color: #5b3fd6;">
+                    <span style=""></span>
+                    
+                  </div>
+                
+              </div>
+            
+              <div style="display: flex; align-items: baseline; border-bottom: 3px solid #f2f2ed; background: #f3f3ee; font-weight: 700;">
+                
+                  <div style="width: 380px; flex: 0 0 380px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: left; font-weight: 700;">
+                    <span style="">Net Debt</span>
+                    
+                  </div>
+                
+                  <div style="width: 140px; flex: 0 0 140px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right; font-weight: 700;">
+                    <span style="">1230.0</span>
+                    
+                  </div>
+                
+                  <div style="width: 150px; flex: 0 0 150px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right; color: #77777c;">
+                    <span style=""></span>
+                    
+                  </div>
+                
+                  <div style="width: 150px; flex: 0 0 150px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right; color: #77777c;">
+                    <span style=""></span>
+                    
+                  </div>
+                
+                  <div style="width: 212px; flex: 0 0 212px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right; font-weight: 700;">
+                    <span style="">3.77x</span>
+                    
+                  </div>
+                
+                  <div style="width: 212px; flex: 0 0 212px; box-sizing: border-box; padding: 4px 12px; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; text-align: right; font-weight: 700; color: #5b3fd6;">
+                    <span style="">3.98x</span>
+                    
+                  </div>
+                
+              </div>
+            
+          </div>
+
+          
+        </div>
+      
+    </div>
+
+    <div style="flex: 0 0 140px; box-sizing: border-box; padding: 0 28px 14px; display: flex; flex-direction: column; gap: 8px">
+      <div style="border: 3px solid #e6e6e1; border-radius: 14px; padding: 12px 18px 10px; display: flex; flex-direction: column; gap: 8px">
+        <div style="display: flex; align-items: center; min-height: 30px">
+          <span style="font-size: 21px; letter-spacing: -0.01em; color: #77777c">Ask about any deal, or type / for a skill</span>
+          
+        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between">
+          <div style="display: flex; align-items: center; gap: 22px; color: #77777c; font-size: 19px">
+            <svg viewBox="0 0 22 22" aria-hidden="true" style="width: 22px; height: 22px">
+              <path d="M16 10 L10 16 a3.6 3.6 0 0 1-5.1-5.1 L12.2 3.7 a2.5 2.5 0 0 1 3.5 3.5 L8.6 14.6" fill="none" stroke="#77777c" stroke-width="3" stroke-linecap="round"></path>
+            </svg>
+            <span style="display: inline-flex; align-items: center; gap: 8px">
+              <svg viewBox="0 0 22 22" aria-hidden="true" style="width: 22px; height: 22px">
+                <circle cx="11" cy="11" r="8" fill="none" stroke="#77777c" stroke-width="3"></circle>
+                <path d="M3 11 H19 M11 3 a12 12 0 0 1 0 16 a12 12 0 0 1 0-16" fill="none" stroke="#77777c" stroke-width="3"></path>
+              </svg>
+              Web
+            </span>
+            <span style="display: inline-flex; align-items: center; gap: 8px">
+              <svg viewBox="0 0 22 22" aria-hidden="true" style="width: 22px; height: 22px">
+                <g fill="none" stroke="#77777c" stroke-width="3">
+                  <rect x="3.5" y="3.5" width="6.5" height="6.5" rx="1.6"></rect>
+                  <rect x="12" y="3.5" width="6.5" height="6.5" rx="1.6"></rect>
+                  <rect x="3.5" y="12" width="6.5" height="6.5" rx="1.6"></rect>
+                  <rect x="12" y="12" width="6.5" height="6.5" rx="1.6"></rect>
+                </g>
+              </svg>
+              Skills
+            </span>
+          </div>
+          <button type="button" aria-label="Send" style="width: 44px; height: 44px; border: none; border-radius: 999px; background: #141a2e; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0">
+            <svg viewBox="0 0 22 22" aria-hidden="true" style="width: 20px; height: 20px">
+              <path d="M11 17 V5.5 M5.6 11 L11 5 L16.4 11" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div style="font-size: 16px; line-height: 1.3; color: #77777c; text-align: center">Raven reads your deal room to answer. Check figures against the sources it cites.</div>
+    </div>
+
+  </div>
+</div></div>
+<div class="beat" data-id="frame-04a"><div style="width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #faf9f5; font-family: 'Google Sans', 'Google Sans Text', 'DM Sans', system-ui, sans-serif; color: #1d1d1f">
+
+  <div style="position: absolute; left: 310px; top: 38px; width: 1300px; height: 787px; box-sizing: border-box; background: #ffffff; border: 3px solid #e6e6e1; border-radius: 14px; display: flex; flex-direction: column; overflow: hidden">
+
+    <div style="height: 60px; flex: 0 0 60px; box-sizing: border-box; padding: 0 28px; display: flex; align-items: center; gap: 12px; border-bottom: 3px solid #e6e6e1">
+      <svg viewBox="0 0 58 42" aria-hidden="true" style="width: 32px; height: 23px">
+        <path d="M33.2617 6.31543H38.5947L44.4883 12.6309H32.4189L27.9287 17.4023H34.2441L57.8213 41.2607H19.2266L12.7715 37.752L11.9287 41.2607L4.91211 35.3662V19.0869H0L12.7715 6.31543H9.96387L16.2793 0H27.3672L33.2617 6.31543ZM24.7002 5.05273C23.6803 5.05279 22.8535 5.87953 22.8535 6.89941C22.8536 7.9192 23.6804 8.74604 24.7002 8.74609C25.72 8.74609 26.5468 7.91923 26.5469 6.89941C26.5469 5.8795 25.7201 5.05273 24.7002 5.05273Z" fill="#141a2e"></path>
+      </svg>
+      <span style="font-size: 22px; font-weight: 700; letter-spacing: -0.01em">Raven Agent</span>
+      <span style="font-size: 22px; font-weight: 400; color: #77777c">· Project Alpha</span>
+    </div>
+
+    <div style="flex: 1 1 auto; min-height: 0; box-sizing: border-box; padding: 12px 28px; display: flex; flex-direction: column; justify-content: flex-end; gap: 8px; overflow: hidden">
+
+      <div style="height: 12px; flex: 0 0 12px; background: linear-gradient(to bottom, #ffffff 0%, rgba(255,255,255,0) 100%)"></div>
+
+      <div style="display: flex; justify-content: flex-end; padding-bottom: 4px">
+        <div style="background: #f0f0ec; border-radius: 10px; padding: 11px 20px; font-size: 21px; line-height: 1.3; letter-spacing: -0.01em">Compare to client model</div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 11px">
+        <svg viewBox="0 0 58 42" aria-hidden="true" style="width: 30px; height: 22px">
+          <path d="M33.2617 6.31543H38.5947L44.4883 12.6309H32.4189L27.9287 17.4023H34.2441L57.8213 41.2607H19.2266L12.7715 37.752L11.9287 41.2607L4.91211 35.3662V19.0869H0L12.7715 6.31543H9.96387L16.2793 0H27.3672L33.2617 6.31543ZM24.7002 5.05273C23.6803 5.05279 22.8535 5.87953 22.8535 6.89941C22.8536 7.9192 23.6804 8.74604 24.7002 8.74609C25.72 8.74609 26.5468 7.91923 26.5469 6.89941C26.5469 5.8795 25.7201 5.05273 24.7002 5.05273Z" fill="#141a2e"></path>
+        </svg>
+        <span style="font-size: 21px; font-weight: 700; letter-spacing: -0.01em">Raven</span>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 12px; font-size: 19px; color: #77777c; padding: 2px 0 4px">
+        <svg viewBox="0 0 18 18" aria-hidden="true" style="width: 20px; height: 20px; flex: 0 0 20px">
+          <path d="M3.5 9.5 L7.2 13.2 L14.5 5" fill="none" stroke="#3d8b5a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+        <span style="color: #1d1d1f">Checked sources in the vault</span>
+        <span style="display: inline-flex; align-items: center; border: 3px solid #e6e6e1; border-radius: 7px; padding: 1px 11px; font-size: 17px; color: #1d1d1f">Raven Agent</span>
+        <svg viewBox="0 0 18 18" aria-hidden="true" style="width: 18px; height: 18px">
+          <path d="M4.5 6.8 L9 11.5 L13.5 6.8" fill="none" stroke="#77777c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+      </div>
+
+      
+
+      
+
+    </div>
+
+    <div style="flex: 0 0 140px; box-sizing: border-box; padding: 0 28px 14px; display: flex; flex-direction: column; gap: 8px">
+      <div style="border: 3px solid #e6e6e1; border-radius: 14px; padding: 12px 18px 10px; display: flex; flex-direction: column; gap: 8px">
+        <div style="display: flex; align-items: center; min-height: 30px">
+          <span style="font-size: 21px; letter-spacing: -0.01em; color: #77777c">Ask about any deal, or type / for a skill</span>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between">
+          <div style="display: flex; align-items: center; gap: 22px; color: #77777c; font-size: 19px">
+            <svg viewBox="0 0 22 22" aria-hidden="true" style="width: 22px; height: 22px">
+              <path d="M16 10 L10 16 a3.6 3.6 0 0 1-5.1-5.1 L12.2 3.7 a2.5 2.5 0 0 1 3.5 3.5 L8.6 14.6" fill="none" stroke="#77777c" stroke-width="3" stroke-linecap="round"></path>
+            </svg>
+            <span style="display: inline-flex; align-items: center; gap: 8px">
+              <svg viewBox="0 0 22 22" aria-hidden="true" style="width: 22px; height: 22px">
+                <circle cx="11" cy="11" r="8" fill="none" stroke="#77777c" stroke-width="3"></circle>
+                <path d="M3 11 H19 M11 3 a12 12 0 0 1 0 16 a12 12 0 0 1 0-16" fill="none" stroke="#77777c" stroke-width="3"></path>
+              </svg>
+              Web
+            </span>
+            <span style="display: inline-flex; align-items: center; gap: 8px">
+              <svg viewBox="0 0 22 22" aria-hidden="true" style="width: 22px; height: 22px">
+                <g fill="none" stroke="#77777c" stroke-width="3">
+                  <rect x="3.5" y="3.5" width="6.5" height="6.5" rx="1.6"></rect>
+                  <rect x="12" y="3.5" width="6.5" height="6.5" rx="1.6"></rect>
+                  <rect x="3.5" y="12" width="6.5" height="6.5" rx="1.6"></rect>
+                  <rect x="12" y="12" width="6.5" height="6.5" rx="1.6"></rect>
+                </g>
+              </svg>
+              Skills
+            </span>
+          </div>
+          <button type="button" aria-label="Send" style="width: 44px; height: 44px; border: none; border-radius: 999px; background: #141a2e; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0">
+            <svg viewBox="0 0 22 22" aria-hidden="true" style="width: 20px; height: 20px">
+              <path d="M11 17 V5.5 M5.6 11 L11 5 L16.4 11" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div style="font-size: 16px; line-height: 1.3; color: #77777c; text-align: center">Raven reads your deal room to answer. Check figures against the sources it cites.</div>
+    </div>
+
+  </div>
+
+  
+
+</div></div>
+<div class="beat" data-id="frame-04b"><div style="width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #faf9f5; font-family: 'Google Sans', 'Google Sans Text', 'DM Sans', system-ui, sans-serif; color: #1d1d1f">
+
+  <div style="position: absolute; left: 310px; top: 38px; width: 1300px; height: 787px; box-sizing: border-box; background: #ffffff; border: 3px solid #e6e6e1; border-radius: 14px; display: flex; flex-direction: column; overflow: hidden">
+
+    <div style="height: 60px; flex: 0 0 60px; box-sizing: border-box; padding: 0 28px; display: flex; align-items: center; gap: 12px; border-bottom: 3px solid #e6e6e1">
+      <svg viewBox="0 0 58 42" aria-hidden="true" style="width: 32px; height: 23px">
+        <path d="M33.2617 6.31543H38.5947L44.4883 12.6309H32.4189L27.9287 17.4023H34.2441L57.8213 41.2607H19.2266L12.7715 37.752L11.9287 41.2607L4.91211 35.3662V19.0869H0L12.7715 6.31543H9.96387L16.2793 0H27.3672L33.2617 6.31543ZM24.7002 5.05273C23.6803 5.05279 22.8535 5.87953 22.8535 6.89941C22.8536 7.9192 23.6804 8.74604 24.7002 8.74609C25.72 8.74609 26.5468 7.91923 26.5469 6.89941C26.5469 5.8795 25.7201 5.05273 24.7002 5.05273Z" fill="#141a2e"></path>
+      </svg>
+      <span style="font-size: 22px; font-weight: 700; letter-spacing: -0.01em">Raven Agent</span>
+      <span style="font-size: 22px; font-weight: 400; color: #77777c">· Project Alpha</span>
+    </div>
+
+    <div style="flex: 1 1 auto; min-height: 0; box-sizing: border-box; padding: 12px 28px; display: flex; flex-direction: column; justify-content: flex-end; gap: 8px; overflow: hidden">
+
+      <div style="height: 12px; flex: 0 0 12px; background: linear-gradient(to bottom, #ffffff 0%, rgba(255,255,255,0) 100%)"></div>
+
+      <div style="display: flex; justify-content: flex-end; padding-bottom: 4px">
+        <div style="background: #f0f0ec; border-radius: 10px; padding: 11px 20px; font-size: 21px; line-height: 1.3; letter-spacing: -0.01em">Compare to client model</div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 11px">
+        <svg viewBox="0 0 58 42" aria-hidden="true" style="width: 30px; height: 22px">
+          <path d="M33.2617 6.31543H38.5947L44.4883 12.6309H32.4189L27.9287 17.4023H34.2441L57.8213 41.2607H19.2266L12.7715 37.752L11.9287 41.2607L4.91211 35.3662V19.0869H0L12.7715 6.31543H9.96387L16.2793 0H27.3672L33.2617 6.31543ZM24.7002 5.05273C23.6803 5.05279 22.8535 5.87953 22.8535 6.89941C22.8536 7.9192 23.6804 8.74604 24.7002 8.74609C25.72 8.74609 26.5468 7.91923 26.5469 6.89941C26.5469 5.8795 25.7201 5.05273 24.7002 5.05273Z" fill="#141a2e"></path>
+        </svg>
+        <span style="font-size: 21px; font-weight: 700; letter-spacing: -0.01em">Raven</span>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 12px; font-size: 19px; color: #77777c; padding: 2px 0 4px">
+        <svg viewBox="0 0 18 18" aria-hidden="true" style="width: 20px; height: 20px; flex: 0 0 20px">
+          <path d="M3.5 9.5 L7.2 13.2 L14.5 5" fill="none" stroke="#3d8b5a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+        <span style="color: #1d1d1f">Checked sources in the vault</span>
+        <span style="display: inline-flex; align-items: center; border: 3px solid #e6e6e1; border-radius: 7px; padding: 1px 11px; font-size: 17px; color: #1d1d1f">Raven Agent</span>
+        <svg viewBox="0 0 18 18" aria-hidden="true" style="width: 18px; height: 18px">
+          <path d="M4.5 6.8 L9 11.5 L13.5 6.8" fill="none" stroke="#77777c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+      </div>
+
+      
+        <div style="display: flex; flex-direction: column; gap: 10px">
+          <p style="margin: 0; font-size: 20px; line-height: 1.45; letter-spacing: -0.01em; text-wrap: pretty">LTM PF Adjusted EBITDA is <strong>$309.0MM</strong> on the firm-adjusted basis, growing to <strong>$385.0MM</strong> by 2028E in the client model.</p>
+
+          <div style="border: 3px solid #e6e6e1; border-radius: 12px; padding: 14px 24px 16px">
+            <div style="font-size: 15px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: #77777c">Project Alpha</div>
+            <div style="margin-top: 2px; font-family: 'Source Serif 4', Georgia, serif; font-size: 34px; font-weight: 400; letter-spacing: -0.01em; line-height: 1.1">Financial Summary</div>
+            <div style="height: 3px; background: #e6e6e1; margin: 10px 0 8px"></div>
+
+            <div style="display: flex; justify-content: flex-end; font-size: 17px; color: #77777c; margin-bottom: 10px">PF Adjusted EBITDA</div>
+
+            <div style="display: flex; align-items: flex-end">
+              <div style="flex: 1 1 auto"></div>
+              
+                <div style="width: 200px; flex: 0 0 200px; text-align: center">
+                  <div style="font-size: 17px; color: #77777c">LTM</div>
+                  <div style="margin-top: 1px; font-size: 40px; font-weight: 700; letter-spacing: -0.025em">309.0</div>
+                </div>
+              
+                <div style="width: 200px; flex: 0 0 200px; text-align: center">
+                  <div style="font-size: 17px; color: #77777c">2026E</div>
+                  <div style="margin-top: 1px; font-size: 40px; font-weight: 700; letter-spacing: -0.025em">335.0</div>
+                </div>
+              
+                <div style="width: 200px; flex: 0 0 200px; text-align: center">
+                  <div style="font-size: 17px; color: #77777c">2027E</div>
+                  <div style="margin-top: 1px; font-size: 40px; font-weight: 700; letter-spacing: -0.025em">360.0</div>
+                </div>
+              
+                <div style="width: 200px; flex: 0 0 200px; text-align: center">
+                  <div style="font-size: 17px; color: #77777c">2028E</div>
+                  <div style="margin-top: 1px; font-size: 40px; font-weight: 700; letter-spacing: -0.025em">385.0</div>
+                </div>
+              
+            </div>
+
+            <div style="margin-top: 10px; background: #f3f3ee; border-radius: 8px; display: flex; align-items: center; padding: 10px 0">
+              <div style="flex: 1 1 auto; padding-left: 16px">
+                <div style="font-size: 19px; font-weight: 700">Net Debt</div>
+                <div style="font-size: 16px; color: #77777c">1230.0</div>
+              </div>
+              
+                <div style="width: 200px; flex: 0 0 200px; text-align: center; font-size: 30px; font-weight: 700; letter-spacing: -0.02em; color: #1d1d1f">4.0x</div>
+              
+                <div style="width: 200px; flex: 0 0 200px; text-align: center; font-size: 30px; font-weight: 700; letter-spacing: -0.02em; color: #1d1d1f">3.7x</div>
+              
+                <div style="width: 200px; flex: 0 0 200px; text-align: center; font-size: 30px; font-weight: 700; letter-spacing: -0.02em; color: #1d1d1f">3.4x</div>
+              
+                <div style="width: 200px; flex: 0 0 200px; text-align: center; font-size: 30px; font-weight: 700; letter-spacing: -0.02em; color: #1d1d1f">3.2x</div>
+              
+            </div>
+          </div>
+        </div>
+      
+
+      
+
+    </div>
+
+    <div style="flex: 0 0 140px; box-sizing: border-box; padding: 0 28px 14px; display: flex; flex-direction: column; gap: 8px">
+      <div style="border: 3px solid #e6e6e1; border-radius: 14px; padding: 12px 18px 10px; display: flex; flex-direction: column; gap: 8px">
+        <div style="display: flex; align-items: center; min-height: 30px">
+          <span style="font-size: 21px; letter-spacing: -0.01em; color: #77777c">Ask about any deal, or type / for a skill</span>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between">
+          <div style="display: flex; align-items: center; gap: 22px; color: #77777c; font-size: 19px">
+            <svg viewBox="0 0 22 22" aria-hidden="true" style="width: 22px; height: 22px">
+              <path d="M16 10 L10 16 a3.6 3.6 0 0 1-5.1-5.1 L12.2 3.7 a2.5 2.5 0 0 1 3.5 3.5 L8.6 14.6" fill="none" stroke="#77777c" stroke-width="3" stroke-linecap="round"></path>
+            </svg>
+            <span style="display: inline-flex; align-items: center; gap: 8px">
+              <svg viewBox="0 0 22 22" aria-hidden="true" style="width: 22px; height: 22px">
+                <circle cx="11" cy="11" r="8" fill="none" stroke="#77777c" stroke-width="3"></circle>
+                <path d="M3 11 H19 M11 3 a12 12 0 0 1 0 16 a12 12 0 0 1 0-16" fill="none" stroke="#77777c" stroke-width="3"></path>
+              </svg>
+              Web
+            </span>
+            <span style="display: inline-flex; align-items: center; gap: 8px">
+              <svg viewBox="0 0 22 22" aria-hidden="true" style="width: 22px; height: 22px">
+                <g fill="none" stroke="#77777c" stroke-width="3">
+                  <rect x="3.5" y="3.5" width="6.5" height="6.5" rx="1.6"></rect>
+                  <rect x="12" y="3.5" width="6.5" height="6.5" rx="1.6"></rect>
+                  <rect x="3.5" y="12" width="6.5" height="6.5" rx="1.6"></rect>
+                  <rect x="12" y="12" width="6.5" height="6.5" rx="1.6"></rect>
+                </g>
+              </svg>
+              Skills
+            </span>
+          </div>
+          <button type="button" aria-label="Send" style="width: 44px; height: 44px; border: none; border-radius: 999px; background: #141a2e; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0">
+            <svg viewBox="0 0 22 22" aria-hidden="true" style="width: 20px; height: 20px">
+              <path d="M11 17 V5.5 M5.6 11 L11 5 L16.4 11" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div style="font-size: 16px; line-height: 1.3; color: #77777c; text-align: center">Raven reads your deal room to answer. Check figures against the sources it cites.</div>
+    </div>
+
+  </div>
+
+  
+
+</div></div>
+<div class="beat" data-id="frame-04c"><div style="width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #faf9f5; font-family: 'Google Sans', 'Google Sans Text', 'DM Sans', system-ui, sans-serif; color: #1d1d1f">
+
+  <div style="position: absolute; left: 310px; top: 38px; width: 1300px; height: 787px; box-sizing: border-box; background: #ffffff; border: 3px solid #e6e6e1; border-radius: 14px; display: flex; flex-direction: column; overflow: hidden">
+
+    <div style="height: 60px; flex: 0 0 60px; box-sizing: border-box; padding: 0 28px; display: flex; align-items: center; gap: 12px; border-bottom: 3px solid #e6e6e1">
+      <svg viewBox="0 0 58 42" aria-hidden="true" style="width: 32px; height: 23px">
+        <path d="M33.2617 6.31543H38.5947L44.4883 12.6309H32.4189L27.9287 17.4023H34.2441L57.8213 41.2607H19.2266L12.7715 37.752L11.9287 41.2607L4.91211 35.3662V19.0869H0L12.7715 6.31543H9.96387L16.2793 0H27.3672L33.2617 6.31543ZM24.7002 5.05273C23.6803 5.05279 22.8535 5.87953 22.8535 6.89941C22.8536 7.9192 23.6804 8.74604 24.7002 8.74609C25.72 8.74609 26.5468 7.91923 26.5469 6.89941C26.5469 5.8795 25.7201 5.05273 24.7002 5.05273Z" fill="#141a2e"></path>
+      </svg>
+      <span style="font-size: 22px; font-weight: 700; letter-spacing: -0.01em">Raven Agent</span>
+      <span style="font-size: 22px; font-weight: 400; color: #77777c">· Project Alpha</span>
+    </div>
+
+    <div style="flex: 1 1 auto; min-height: 0; box-sizing: border-box; padding: 12px 28px; display: flex; flex-direction: column; justify-content: flex-end; gap: 8px; overflow: hidden">
+
+      <div style="height: 12px; flex: 0 0 12px; background: linear-gradient(to bottom, #ffffff 0%, rgba(255,255,255,0) 100%)"></div>
+
+      <div style="display: flex; justify-content: flex-end; padding-bottom: 4px">
+        <div style="background: #f0f0ec; border-radius: 10px; padding: 11px 20px; font-size: 21px; line-height: 1.3; letter-spacing: -0.01em">Compare to client model</div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 11px">
+        <svg viewBox="0 0 58 42" aria-hidden="true" style="width: 30px; height: 22px">
+          <path d="M33.2617 6.31543H38.5947L44.4883 12.6309H32.4189L27.9287 17.4023H34.2441L57.8213 41.2607H19.2266L12.7715 37.752L11.9287 41.2607L4.91211 35.3662V19.0869H0L12.7715 6.31543H9.96387L16.2793 0H27.3672L33.2617 6.31543ZM24.7002 5.05273C23.6803 5.05279 22.8535 5.87953 22.8535 6.89941C22.8536 7.9192 23.6804 8.74604 24.7002 8.74609C25.72 8.74609 26.5468 7.91923 26.5469 6.89941C26.5469 5.8795 25.7201 5.05273 24.7002 5.05273Z" fill="#141a2e"></path>
+        </svg>
+        <span style="font-size: 21px; font-weight: 700; letter-spacing: -0.01em">Raven</span>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 12px; font-size: 19px; color: #77777c; padding: 2px 0 4px">
+        <svg viewBox="0 0 18 18" aria-hidden="true" style="width: 20px; height: 20px; flex: 0 0 20px">
+          <path d="M3.5 9.5 L7.2 13.2 L14.5 5" fill="none" stroke="#3d8b5a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+        <span style="color: #1d1d1f">Checked sources in the vault</span>
+        <span style="display: inline-flex; align-items: center; border: 3px solid #e6e6e1; border-radius: 7px; padding: 1px 11px; font-size: 17px; color: #1d1d1f">Raven Agent</span>
+        <svg viewBox="0 0 18 18" aria-hidden="true" style="width: 18px; height: 18px">
+          <path d="M4.5 6.8 L9 11.5 L13.5 6.8" fill="none" stroke="#77777c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+      </div>
+
+      
+        <div style="display: flex; flex-direction: column; gap: 10px">
+          <p style="margin: 0; font-size: 20px; line-height: 1.45; letter-spacing: -0.01em; text-wrap: pretty">LTM PF Adjusted EBITDA is <strong>$309.0MM</strong> on the firm-adjusted basis, growing to <strong>$385.0MM</strong> by 2028E in the client model.</p>
+
+          <div style="border: 3px solid #e6e6e1; border-radius: 12px; padding: 14px 24px 16px">
+            <div style="font-size: 15px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: #77777c">Project Alpha</div>
+            <div style="margin-top: 2px; font-family: 'Source Serif 4', Georgia, serif; font-size: 34px; font-weight: 400; letter-spacing: -0.01em; line-height: 1.1">Financial Summary</div>
+            <div style="height: 3px; background: #e6e6e1; margin: 10px 0 8px"></div>
+
+            <div style="display: flex; justify-content: flex-end; font-size: 17px; color: #77777c; margin-bottom: 10px">PF Adjusted EBITDA</div>
+
+            <div style="display: flex; align-items: flex-end">
+              <div style="flex: 1 1 auto"></div>
+              
+                <div style="width: 200px; flex: 0 0 200px; text-align: center">
+                  <div style="font-size: 17px; color: #77777c">LTM</div>
+                  <div style="margin-top: 1px; font-size: 40px; font-weight: 700; letter-spacing: -0.025em">309.0</div>
+                </div>
+              
+                <div style="width: 200px; flex: 0 0 200px; text-align: center">
+                  <div style="font-size: 17px; color: #77777c">2026E</div>
+                  <div style="margin-top: 1px; font-size: 40px; font-weight: 700; letter-spacing: -0.025em">335.0</div>
+                </div>
+              
+                <div style="width: 200px; flex: 0 0 200px; text-align: center">
+                  <div style="font-size: 17px; color: #77777c">2027E</div>
+                  <div style="margin-top: 1px; font-size: 40px; font-weight: 700; letter-spacing: -0.025em">360.0</div>
+                </div>
+              
+                <div style="width: 200px; flex: 0 0 200px; text-align: center">
+                  <div style="font-size: 17px; color: #77777c">2028E</div>
+                  <div style="margin-top: 1px; font-size: 40px; font-weight: 700; letter-spacing: -0.025em">385.0</div>
+                </div>
+              
+            </div>
+
+            <div style="margin-top: 10px; background: #f3f3ee; border-radius: 8px; display: flex; align-items: center; padding: 10px 0">
+              <div style="flex: 1 1 auto; padding-left: 16px">
+                <div style="font-size: 19px; font-weight: 700">Net Debt</div>
+                <div style="font-size: 16px; color: #77777c">1230.0</div>
+              </div>
+              
+                <div style="width: 200px; flex: 0 0 200px; text-align: center; font-size: 30px; font-weight: 700; letter-spacing: -0.02em; color: #1d1d1f">4.0x</div>
+              
+                <div style="width: 200px; flex: 0 0 200px; text-align: center; font-size: 30px; font-weight: 700; letter-spacing: -0.02em; color: #1d1d1f">3.7x</div>
+              
+                <div style="width: 200px; flex: 0 0 200px; text-align: center; font-size: 30px; font-weight: 700; letter-spacing: -0.02em; color: #1d1d1f">3.4x</div>
+              
+                <div style="width: 200px; flex: 0 0 200px; text-align: center; font-size: 30px; font-weight: 700; letter-spacing: -0.02em; color: #1d1d1f">3.2x</div>
+              
+            </div>
+          </div>
+        </div>
+      
+
+      
+        <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 2px">
+          <p style="margin: 0; font-size: 20px; line-height: 1.4; letter-spacing: -0.01em; text-wrap: pretty">Every multiple ties to net debt of <strong>$1,230.0MM</strong>, so the move from 4.0x to 3.2x is all EBITDA growth with no paydown.</p>
+          <div style="display: flex; align-items: center; gap: 12px">
+            <span style="font-size: 15px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: #77777c">Sources</span>
+            <span style="display: inline-flex; align-items: center; border: 3px solid #5b3fd6; background: rgba(91,63,214,0.06); color: #5b3fd6; border-radius: 7px; padding: 2px 13px; font-size: 18px; font-weight: 500">Lender Model p.1</span>
+            <span style="display: inline-flex; align-items: center; border: 3px solid #e6e6e1; color: #77777c; border-radius: 7px; padding: 2px 13px; font-size: 18px">Client Model</span>
+          </div>
+        </div>
+      
+
+    </div>
+
+    <div style="flex: 0 0 140px; box-sizing: border-box; padding: 0 28px 14px; display: flex; flex-direction: column; gap: 8px">
+      <div style="border: 3px solid #e6e6e1; border-radius: 14px; padding: 12px 18px 10px; display: flex; flex-direction: column; gap: 8px">
+        <div style="display: flex; align-items: center; min-height: 30px">
+          <span style="font-size: 21px; letter-spacing: -0.01em; color: #77777c">Ask about any deal, or type / for a skill</span>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between">
+          <div style="display: flex; align-items: center; gap: 22px; color: #77777c; font-size: 19px">
+            <svg viewBox="0 0 22 22" aria-hidden="true" style="width: 22px; height: 22px">
+              <path d="M16 10 L10 16 a3.6 3.6 0 0 1-5.1-5.1 L12.2 3.7 a2.5 2.5 0 0 1 3.5 3.5 L8.6 14.6" fill="none" stroke="#77777c" stroke-width="3" stroke-linecap="round"></path>
+            </svg>
+            <span style="display: inline-flex; align-items: center; gap: 8px">
+              <svg viewBox="0 0 22 22" aria-hidden="true" style="width: 22px; height: 22px">
+                <circle cx="11" cy="11" r="8" fill="none" stroke="#77777c" stroke-width="3"></circle>
+                <path d="M3 11 H19 M11 3 a12 12 0 0 1 0 16 a12 12 0 0 1 0-16" fill="none" stroke="#77777c" stroke-width="3"></path>
+              </svg>
+              Web
+            </span>
+            <span style="display: inline-flex; align-items: center; gap: 8px">
+              <svg viewBox="0 0 22 22" aria-hidden="true" style="width: 22px; height: 22px">
+                <g fill="none" stroke="#77777c" stroke-width="3">
+                  <rect x="3.5" y="3.5" width="6.5" height="6.5" rx="1.6"></rect>
+                  <rect x="12" y="3.5" width="6.5" height="6.5" rx="1.6"></rect>
+                  <rect x="3.5" y="12" width="6.5" height="6.5" rx="1.6"></rect>
+                  <rect x="12" y="12" width="6.5" height="6.5" rx="1.6"></rect>
+                </g>
+              </svg>
+              Skills
+            </span>
+          </div>
+          <button type="button" aria-label="Send" style="width: 44px; height: 44px; border: none; border-radius: 999px; background: #141a2e; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0">
+            <svg viewBox="0 0 22 22" aria-hidden="true" style="width: 20px; height: 20px">
+              <path d="M11 17 V5.5 M5.6 11 L11 5 L16.4 11" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div style="font-size: 16px; line-height: 1.3; color: #77777c; text-align: center">Raven reads your deal room to answer. Check figures against the sources it cites.</div>
+    </div>
+
+  </div>
+
+  
+    <div style="position: absolute; left: 36px; top: 418px; width: 300px; box-sizing: border-box; background: #ffffff; border: 3px solid #e6e6e1; border-radius: 12px; box-shadow: 0 16px 38px rgba(0,0,0,0.10); padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 14px">
+      <div style="display: flex; align-items: flex-start; gap: 12px">
+        <svg viewBox="0 0 26 26" aria-hidden="true" style="width: 28px; height: 28px; flex: 0 0 28px">
+          <path d="M6.5 2.5 H15.5 L20.5 7.5 V23.5 H6.5 Z" fill="none" stroke="#1d1d1f" stroke-width="3" stroke-linejoin="round"></path>
+          <path d="M15.5 2.5 V7.5 H20.5" fill="none" stroke="#1d1d1f" stroke-width="3" stroke-linejoin="round"></path>
+        </svg>
+        <div>
+          <div style="font-size: 18px; font-weight: 700; line-height: 1.25">Project Alpha — Lender Model</div>
+          <div style="font-size: 16px; color: #77777c; margin-top: 2px">pp. 1–2</div>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 9px">
+        <div style="height: 10px; border-radius: 3px; background: #ecece6; width: 100%"></div>
+        <div style="height: 10px; border-radius: 3px; background: #ecece6; width: 88%"></div>
+        <div style="height: 10px; border-radius: 3px; background: #ecece6; width: 94%"></div>
+        <div style="height: 10px; border-radius: 3px; background: #ecece6; width: 62%"></div>
+        <div style="height: 10px; border-radius: 3px; background: #ecece6; width: 80%"></div>
+      </div>
+    </div>
+  
+
+</div></div></div>
+  <div class="sc" id="s05"><div style="width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: linear-gradient(198deg, #060606 0%, #000000 58%, #040404 100%); font-family: 'Google Sans', 'Google Sans Text', 'DM Sans', system-ui, sans-serif; color: #ffffff">
+
+  <svg viewBox="0 0 58 42" aria-hidden="true" style="position: absolute; left: -420px; top: 140px; width: 1100px; height: 806px; opacity: 0.15">
+    <path d="M33.2617 6.31543H38.5947L44.4883 12.6309H32.4189L27.9287 17.4023H34.2441L57.8213 41.2607H19.2266L12.7715 37.752L11.9287 41.2607L4.91211 35.3662V19.0869H0L12.7715 6.31543H9.96387L16.2793 0H27.3672L33.2617 6.31543ZM24.7002 5.05273C23.6803 5.05279 22.8535 5.87953 22.8535 6.89941C22.8536 7.9192 23.6804 8.74604 24.7002 8.74609C25.72 8.74609 26.5468 7.91923 26.5469 6.89941C26.5469 5.8795 25.7201 5.05273 24.7002 5.05273Z" fill="#C7D0BE"></path>
+  </svg>
+
+  <div style="position: absolute; left: 0; top: 232px; width: 1920px; display: flex; flex-direction: column; align-items: center; gap: 48px">
+    <svg viewBox="0 0 58 42" aria-hidden="true" style="width: 300px; height: 217px">
+      <path d="M33.2617 6.31543H38.5947L44.4883 12.6309H32.4189L27.9287 17.4023H34.2441L57.8213 41.2607H19.2266L12.7715 37.752L11.9287 41.2607L4.91211 35.3662V19.0869H0L12.7715 6.31543H9.96387L16.2793 0H27.3672L33.2617 6.31543ZM24.7002 5.05273C23.6803 5.05279 22.8535 5.87953 22.8535 6.89941C22.8536 7.9192 23.6804 8.74604 24.7002 8.74609C25.72 8.74609 26.5468 7.91923 26.5469 6.89941C26.5469 5.8795 25.7201 5.05273 24.7002 5.05273Z" fill="#C7D0BE"></path>
+    </svg>
+    <div style="font-size: 92px; font-weight: 500; line-height: 1.1; letter-spacing: 0.26em; text-indent: 0.26em; color: #ffffff">RAVEN</div>
+    <div style="font-size: 40px; font-weight: 400; line-height: 1.1; letter-spacing: -0.02em; color: #ffffff">Credit work, connected.</div>
+  </div>
+
+</div></div>
+  <div id="caps"></div>
+  <div id="flash"></div>
+</div></div>
+<div id="hud"></div>
 <div id="bar">
-  <button id="play">Play</button>
-  <input id="scrub" type="range" min="0" max="1000" value="0" step="1">
-  <span id="tc">0.00 / 43.00</span>
-  <select id="spd"><option value="0.25">0.25x</option><option value="0.5">0.5x</option><option value="1" selected>1x</option></select>
-  <button id="subsb">Subs</button>
-  <button id="cleanb">Clean</button>
-  <span id="names"></span>
-  <span class="hint">Space — play/pause · ← → — 0.1s (Shift: 1s) · Home — start · S — subtitles · C — clean mode (Esc to exit)</span>
+  <button id="play">► Play</button>
+  <span id="tc">0:00.0 / 0:43.0</span>
+  <input id="scrub" type="range" min="0" max="43" step="0.02" value="0">
+  <button class="sp" data-v="0.25">0.25×</button>
+  <button class="sp" data-v="0.5">0.5×</button>
+  <button class="sp on" data-v="1">1×</button>
+  <button id="subs" class="on">Subs</button>
+  <button id="clean">Clean</button>
 </div>
-
 <script>
-/* ============================================================
-   SPEC — the rev-4 geometry export from Claude Design, verbatim.
-   1920x1080, two dark palettes and one light one, the schema, the
-   workflow carousel, the dialogue shell and every figure in the film.
-   Nothing here is hand-edited: to change a layout, re-export.
-   ============================================================ */
-const SPEC = {"meta":{"project":"Raven | Shorts No.1","revision":4,"date":"2026-10-08","status":"for approval","duration":43.0,"canvas":{"w":1920,"h":1080,"fps":30},"safeArea":{"top":40,"bottom":825,"side":60,"subtitleBand":255},"note":"Background bleeds to the frame edges; content stays inside safeArea. The lower 255 px are left empty for the YouTube subtitle band."},"type":{"sans":"IBM Plex Sans","mono":"IBM Plex Mono","productSans":"Open Sans","note":"Dark shots are set in IBM Plex Sans. Light shots 03 and 04 use Open Sans, matching the client vignette HTML."},"palette":{"darkBrand":{"base":"#000000","undertone":"#02100a","ink":"#ffffff","sage":"#c7d0be","muted":"#b2b2b2","arcLight":"#dcf2e3","horizonGlow":"rgba(150,215,175,0.30)","groundSheen":"rgba(70,130,95,0.22)"},"darkSchema":{"bg":"#0b0f0e","panel":"#101614","text":"#f4f5f2","muted":"#9ca7a1","accentGreen":"#7fd39a","accentGreen10":"rgba(127,211,154,0.10)","wireSoft":"rgba(127,211,154,0.16)","cardStroke":"rgba(127,211,154,0.75)","railWindow":"rgba(16,22,20,0.55)","railWindowDim":"rgba(16,22,20,0.25)","railItem":"#8c978f","railItemActive":"#ffffff","railItemDim":"#8c978f","railChevron":"#5d6b64","railAgentIdle":"rgba(146,166,154,0.35)","railAgentIdleText":"#8c978f","railAgentActiveText":"#ffffff","agentGlow":"0 8px 30px rgba(127,211,154,0.26)","ruleInactive":"#333c38"},"lightProduct":{"bg":"#ffffff","ink":"#1d1d1f","muted":"#77777c","line":"#e6e6e1","shade":"#f3f3ee","bubble":"#f0f0ec","purple":"#5b3fd6","chg":"rgba(91,63,214,0.10)","ok":"#3d8b5a","pills":{"oneTime":"#3d6a22","nonCash":"#2a5391","normalizing":"#8a5a12","synergy":"#6b3aa0","proForma":"#1f6a64","tintAlpha":0.14},"note":"Values taken verbatim from the client vignette HTML. The purple appears only inside the product interface — nowhere else in the film."}},"frames":[{"id":"01","shot":1,"name":"Name on black","t0":0.0,"t1":5.0,"theme":"darkBrand"},{"id":"02a","shot":2,"name":"Sources","t0":5.0,"t1":8.0,"theme":"darkSchema"},{"id":"02b","shot":2,"name":"Converge","t0":8.0,"t1":9.5,"theme":"darkSchema"},{"id":"02c","shot":2,"name":"The layer","t0":9.5,"t1":11.0,"theme":"darkSchema"},{"id":"02d","shot":2,"name":"Two outputs","t0":11.0,"t1":12.5,"theme":"darkSchema"},{"id":"02e","shot":2,"name":"Workflow carousel","t0":12.5,"t1":16.0,"theme":"darkSchema"},{"id":"02f","shot":2,"name":"Agent","t0":16.0,"t1":19.0,"theme":"darkSchema"},{"id":"03a","shot":3,"name":"First prompt","t0":19.0,"t1":21.5,"theme":"lightProduct"},{"id":"03b","shot":3,"name":"The table builds","t0":21.5,"t1":24.5,"theme":"lightProduct"},{"id":"03c","shot":3,"name":"25% haircut","t0":24.5,"t1":27.5,"theme":"lightProduct"},{"id":"03d","shot":3,"name":"Cap table","t0":27.5,"t1":31.0,"theme":"lightProduct"},{"id":"04a","shot":4,"name":"Summary","t0":31.0,"t1":33.5,"theme":"lightProduct"},{"id":"04b","shot":4,"name":"Prompt to the agent","t0":33.5,"t1":36.0,"theme":"lightProduct"},{"id":"04c","shot":4,"name":"The source","t0":36.0,"t1":39.0,"theme":"lightProduct"},{"id":"05","shot":5,"name":"Credit work, connected","t0":39.0,"t1":43.0,"theme":"darkBrand"}],"voiceover":[{"shot":1,"t0":0.0,"line":"Raven is built for corporate credit — around the way credit professionals actually work."},{"shot":2,"t0":5.0,"line":"Raven brings together deal documents, third-party data, firm data and firm credit policies along with the analysis Raven has already completed — so the team can build on what's known instead of starting over each time."},{"shot":3,"t0":19.0,"line":"Through Raven Agent, credit teams can engage in natural language, apply repeatable workflows, and carry the analysis forward."},{"shot":4,"t0":31.0,"line":"Every figure is sourced, traceable, and auditable — adding confidence to the analysis as the work moves forward."},{"shot":5,"t0":39.0,"line":"Raven. The AI platform for corporate credit."}],"brandLockup":{"mark":{"viewBox":"0 0 58 42","source":"sign.svg"},"shot01":{"markW":320,"markH":232,"markTop":250,"wordmark":{"size":92,"tracking":"0.30em","marginTop":34,"fill":"ink"},"arc":{"cx":960,"cy":1560,"r":1500,"strokeWidth":2.5,"stroke":"arcLight"},"horizon":{"y":700,"h":2},"glow":{"y":618,"h":170},"footnote":{"text":"raven.ai","x":140,"y":784,"size":26,"fill":"muted"}},"shot05":{"markW":320,"markH":232,"markTop":206,"wordmark":{"size":92,"tracking":"0.30em","marginTop":34,"fill":"ink"},"tagline":{"text":"Credit work, connected.","size":38,"marginTop":30,"fill":"muted"},"arc":{"cx":960,"cy":1560,"r":1500,"strokeWidth":2.5,"stroke":"arcLight"},"horizon":{"y":730,"h":2},"glow":{"y":648,"h":170}}},"schema":{"sources":[{"label":"Deal documents","centerX":240,"labelY":100,"ruleX":140,"ruleY":152,"lit":76,"litX":34},{"label":"Third-party data","centerX":600,"labelY":100,"ruleX":500,"ruleY":152,"lit":76,"litX":62},{"label":"Firm credit policies","centerX":960,"labelY":100,"ruleX":860,"ruleY":152,"lit":76,"litX":48},{"label":"Firm data","centerX":1320,"labelY":100,"ruleX":1220,"ruleY":152,"lit":76,"litX":70},{"label":"Raven credit intelligence","centerX":1680,"labelY":100,"ruleX":1580,"ruleY":152,"lit":200,"litX":0}],"ruleW":200,"ruleH":4,"labelSize":30,"convergePoint":{"x":960,"y":292},"card":{"x":760,"y":286,"w":400,"h":400,"r":0,"stroke":"cardStroke","strokeWidth":1.5,"markW":112,"wordmarkSize":40,"submark":"The intelligence layer","submarkSize":24},"outputs":[{"label":"Underwriting","side":"left","lineFrom":760,"lineTo":442,"y":486,"labelX":60,"labelW":360,"size":36},{"label":"Monitoring","side":"right","lineFrom":1160,"lineTo":1478,"y":486,"labelX":1500,"size":36}]},"rail":{"window":{"x":60,"y":736,"w":1516,"h":86,"r":43,"fill":"railWindow","stroke":null,"strokeWidth":0,"shadow":null},"fade":{"w":120,"to":"bg"},"strip":{"y":736,"h":86,"gap":84,"totalW":2228,"fontSize":32,"items":[{"label":"Deal screen","x":0,"w":176,"centerX":88},{"label":"EBITDA walk","x":260,"w":200,"centerX":360},{"label":"Sensitize model","x":544,"w":244,"centerX":666},{"label":"Peer analysis","x":872,"w":208,"centerX":976},{"label":"IC Memo","x":1164,"w":120,"centerX":1224},{"label":"Legal review","x":1368,"w":192,"centerX":1464},{"label":"Compare deals","x":1644,"w":216,"centerX":1752},{"label":"Portfolio snapshot","x":1944,"w":284,"centerX":2086}],"chevron":{"d":"M0 0 L8 9 L0 18","stroke":"railChevron","strokeWidth":2,"x":[218,502,830,1122,1326,1602,1902]}},"itemStyle":"railItem","activeStyle":"railItemActive","dimStyle":"railItemDim","activeScale":1.06,"itemBaselineY":782,"activeUnderline":{"y":796,"h":3,"r":2,"fill":"accentGreen","padX":0},"stops":[{"index":0,"scrollX":-670},{"index":1,"scrollX":-398},{"index":2,"scrollX":-92},{"index":3,"scrollX":218},{"index":4,"scrollX":466},{"index":5,"scrollX":706},{"index":6,"scrollX":994},{"index":7,"scrollX":1328}],"timing":{"travel":0.25,"dwell":0.2,"stopCount":8,"total":3.5},"agent":{"label":"Raven Agent","x":1600,"y":747,"w":240,"h":62,"r":31,"textX":1732,"textY":786,"textAlign":"center","dot":{"cx":1672,"cy":778,"r":5.5},"idle":{"fill":"none","stroke":"railAgentIdle","strokeWidth":1,"style":"railAgentIdleText","dotFill":"railAgentIdleText","opacity":1,"scale":1.0,"shadow":null},"active":{"fill":"accentGreen10","stroke":"accentGreen","strokeWidth":2,"style":"railAgentActiveText","dotFill":"accentGreen","opacity":1,"scale":1.15,"shadow":"agentGlow"}},"notes":["Item x / w / centerX are in strip coordinates, measured from the strip's left edge; totalW is the full strip width.","scrollX is the strip offset at which that item sits in the centre of the window.","At the last stop the strip's right edge lands 900 px from the window's left edge, so nothing is left beyond the right edge.","The agent capsule is in frame coordinates, outside the strip, and does not move. idle = frame 02e, active = frame 02f.","In frame 02f every item is set in dimStyle; there is no active stop and no underline.","Item widths were measured at IBM Plex Sans 32 px. Changing the typeface means recomputing widths and, with them, every centerX, chevron x and scrollX."]},"dialogue":{"columnX":310,"columnW":1300,"bubble":{"r":16,"padX":24,"padY":14,"size":26,"fill":"bubble","align":"right"},"agentHeader":{"y":150,"markW":36,"name":"Raven","context":"· Project Alpha","size":23},"status":{"rowH":58,"size":23,"tickFill":"ok","secondsAlign":"right"},"table":{"y":290,"fontSize":19,"padX":14,"padY":6},"input":{"x":310,"y":676,"w":1300,"r":14,"placeholder":"Ask about any deal, or type / for a skill","controls":["attach","Web","Skills"],"send":{"d":52,"fill":"ink","arrow":"up"},"source":"ui-01-agent-empty-state"},"note":"No sparkle icon anywhere — the Raven bird mark replaces it in the answer header and in every prompt capsule."},"figures":{"units":"USD in millions","period":"LTM 6/30/2026","ebitdaWalk":{"columns":["Item","Deal docs","Firm adj.","Type"],"rows":[{"label":"Reported EBITDA","deal":258.0,"firm":258.0,"firmHaircut":258.0,"type":null,"subtotal":true,"changes":false},{"label":"(+) Restructuring & Other Transaction Related Costs","deal":20.0,"firm":20.0,"firmHaircut":15.0,"type":"One-time","signed":true},{"label":"(+) Non-Cash Impairments","deal":8.0,"firm":8.0,"firmHaircut":6.0,"type":"Non-cash","signed":true},{"label":"(+/-) Other Management Adjustments","deal":4.0,"firm":4.0,"firmHaircut":3.0,"type":"Normalizing","signed":true},{"label":"Adjusted EBITDA","deal":290.0,"firm":290.0,"firmHaircut":282.0,"type":null,"subtotal":true},{"label":"(+) Pro Forma Acquired EBITDA","deal":12.0,"firm":12.0,"firmHaircut":9.0,"type":"Pro forma","signed":true},{"label":"(+) Run-rate Cost Savings","deal":24.0,"firm":24.0,"firmHaircut":18.0,"type":"Synergy","signed":true},{"label":"PF Adjusted EBITDA","deal":326.0,"firm":326.0,"firmHaircut":309.0,"type":null,"subtotal":true}],"haircut":0.75,"note":"Reported EBITDA does not move under the haircut; every other Firm adj. cell is highlighted on chg in frame 03c."},"capTable":{"columns":["Facility","Amount","Pricing","Maturity","Cum. leverage on 326.0","Cum. leverage on 309.0"],"rows":[{"facility":"Revolver (drawn)","sub":"$100.0 commitment","amount":25.0,"pricing":"S + 375","maturity":"2031","cum":25.0,"onDeal":"0.08x","onRevised":"0.08x"},{"facility":"First Lien Term Loan","amount":950.0,"pricing":"S + 475","maturity":"2033","cum":975.0,"onDeal":"2.99x","onRevised":"3.16x"},{"facility":"Second Lien Term Loan","amount":300.0,"pricing":"S + 850","maturity":"2034","cum":1275.0,"onDeal":"3.91x","onRevised":"4.13x"},{"facility":"Total Debt","amount":1275.0,"subtotal":true,"onDeal":"3.91x","onRevised":"4.13x"},{"facility":"Less: Cash","amount":-45.0},{"facility":"Net Debt","amount":1230.0,"subtotal":true,"onDeal":"3.77x","onRevised":"3.98x"}],"formula":"cumulative debt / PF Adjusted EBITDA, two decimal places"},"financialSummary":{"label":"PF Adjusted EBITDA","periods":["LTM","2026E","2027E","2028E"],"values":[309.0,335.0,360.0,385.0],"netDebt":1230.0,"multiples":["4.0x","3.7x","3.4x","3.2x"],"sources":[{"label":"Lender Model p.1","state":"active"},{"label":"Client Model","state":"dim"}],"note":"These continue shot 03 rather than restarting. Revision 3 carried 115.0/125.0/135.0/145.0 and Net Debt 450.0, which broke the story."}},"open":[{"id":"vo-rerecord","text":"Shot 02 now runs six beats against one voiceover line. A pause of about five seconds, or an extra line, is needed."},{"id":"closing-copy","text":"The voice says 'The AI platform for corporate credit' while the closing card reads 'Credit work, connected'. The mismatch is deliberate — to be confirmed."},{"id":"aspect","text":"16:9 or a 9:16 vertical. The carousel and the tables do not fit vertically as drawn."},{"id":"legal","text":"Deal names and figures to be cleared before publication."},{"id":"assets","text":"Vector logo, brandbook, licensed typefaces."},{"id":"music","text":"Track and usage licence."}]};
+const D = {"duration": 43.0, "scenes": [{"id": "s01", "name": "Name on black", "t0": 0.0, "t1": 5.0}, {"id": "s02", "name": "The layer and the workflows", "t0": 5.0, "t1": 19.0}, {"id": "s03", "name": "A question in plain words", "t0": 19.0, "t1": 31.0}, {"id": "s04", "name": "Where the number came from", "t0": 31.0, "t1": 39.0}, {"id": "s05", "name": "Credit work, connected", "t0": 39.0, "t1": 43.0}], "frames": [{"id": "frame-01", "t0": 0.0, "t1": 5.0, "name": "Name on black"}, {"id": "frame-02a", "t0": 5.0, "t1": 7.0, "name": "Sources"}, {"id": "frame-02b", "t0": 7.0, "t1": 8.6, "name": "Converge"}, {"id": "frame-02c", "t0": 8.6, "t1": 10.0, "name": "The layer"}, {"id": "frame-02d", "t0": 10.0, "t1": 11.0, "name": "Two outputs"}, {"id": "frame-02e", "t0": 11.0, "t1": 15.8, "name": "Carousel travelling, at rest on IC Memo"}, {"id": "frame-02f", "t0": 15.8, "t1": 19.0, "name": "Stop on Raven Agent"}, {"id": "frame-03a", "t0": 19.0, "t1": 21.6, "name": "The request is typed"}, {"id": "frame-03b", "t0": 21.6, "t1": 25.6, "name": "The table assembles"}, {"id": "frame-03c", "t0": 25.6, "t1": 28.4, "name": "The Firm adj. column"}, {"id": "frame-03d", "t0": 28.4, "t1": 31.0, "name": "Debt structure"}, {"id": "frame-04a", "t0": 31.0, "t1": 33.0, "name": "Turn and status"}, {"id": "frame-04b", "t0": 33.0, "t1": 36.2, "name": "Financial Summary"}, {"id": "frame-04c", "t0": 36.2, "t1": 39.0, "name": "The source"}, {"id": "frame-05", "t0": 39.0, "t1": 43.0, "name": "Credit work, connected"}], "vo": [{"t0": 0.0, "t1": 2.5, "text": "Raven is built for corporate credit — around the"}, {"t0": 2.5, "t1": 5.0, "text": "way credit professionals actually work."}, {"t0": 5.0, "t1": 8.5, "text": "Raven brings together deal documents, third-party data, firm"}, {"t0": 8.5, "t1": 12.0, "text": "data and firm credit policies along with the analysis Raven"}, {"t0": 12.0, "t1": 15.5, "text": "has already completed — so the team can build on what's known"}, {"t0": 15.5, "t1": 19.0, "text": "instead of starting over each time."}, {"t0": 19.0, "t1": 25.0, "text": "Through Raven Agent, credit teams can engage in natural language, apply"}, {"t0": 25.0, "t1": 31.0, "text": "repeatable workflows, and carry the analysis forward."}, {"t0": 31.0, "t1": 35.0, "text": "Every figure is sourced, traceable, and auditable — adding"}, {"t0": 35.0, "t1": 39.0, "text": "confidence to the analysis as the work moves forward."}, {"t0": 39.0, "t1": 43.0, "text": "Raven. The AI platform for corporate credit."}], "beats": [{"id": "frame-03a", "t0": 19.0, "t1": 21.6, "name": "The request is typed", "new": [], "rows": null}, {"id": "frame-03b", "t0": 21.6, "t1": 25.6, "name": "The table assembles", "new": [0, 1], "rows": [3, 10]}, {"id": "frame-03c", "t0": 25.6, "t1": 28.4, "name": "The Firm adj. column", "new": [0, 1, 2], "rows": [1, 10]}, {"id": "frame-03d", "t0": 28.4, "t1": 31.0, "name": "Debt structure", "new": [1, 2], "rows": [1, 8]}, {"id": "frame-04a", "t0": 31.0, "t1": 33.0, "name": "Turn and status", "new": [1, 2, 3], "rows": null}, {"id": "frame-04b", "t0": 33.0, "t1": 36.2, "name": "Financial Summary", "new": [4], "rows": null}, {"id": "frame-04c", "t0": 36.2, "t1": 39.0, "name": "The source", "new": [5], "rows": null}], "rail": {"centres": [100.0, 373.0, 671.0, 976.5, 1227.0, 1470.0, 1758.0, 2091.0, 2414.0], "labels": ["Deal screen", "EBITDA walk", "Sensitize model", "Peer analysis", "IC Memo", "Legal review", "Compare deals", "Portfolio snapshot", "Raven Agent"], "from": 740.0, "to": -1574.0}};
+const $ = s => document.querySelector(s);
+const cl=(x,a,b)=>x<a?a:(x>b?b:x);
+const sg=(t,t0,d)=>cl((t-t0)/d,0,1);
+const eo=p=>1-Math.pow(1-p,3);
+const eio=p=>p<.5?4*p*p*p:1-Math.pow(-2*p+2,3)/2;
+const eis=p=>-(Math.cos(Math.PI*p)-1)/2;   /* мягче: ниже пиковая скорость */
+function set(el,o,dy,sc){ if(!el) return;
+  el.style.opacity=o;
+  let tr='';
+  if(dy) tr+='translateY('+dy+'px) ';
+  if(sc!==undefined && sc!==null) tr+='scale('+sc+')';
+  el.style.transform=tr;
+}
+const kids = el => Array.from(el.children);
 
-/* The export maps a carousel stop to a strip offset, but its stated
-   origin is 60 px off: every item, chevron and underline in the
-   reference frames lands at  x = itemX + RAIL0 - scrollX  with
-   RAIL0 = 120. Measured across all eight stops in 02e and 02f. */
-const RAIL0 = 120;
+/* ── сцена 01 ───────────────────────────────────────────────── */
+const S1 = $('#s01').firstElementChild, s1 = kids(S1);
+(function(){ const h=s1[2]; const parts=h.innerHTML.split(/<br\s*\/?>/i);
+  h.innerHTML = parts.map(p=>'<span class="ln"><i>'+p+'</i></span>').join('');
+  h.style.transformOrigin='left top';
+})();
+const s1lines = Array.from(s1[2].querySelectorAll('.ln>i'));
+function scene01(t){
+  s1[0].style.opacity = 0.15*eo(sg(t,0.15,2.0));
+  s1[0].style.transform = 'scale('+(1.05-0.05*eo(sg(t,0.15,2.6)))+')';
+  s1[0].style.transformOrigin='70% 50%';
+  const p1=eo(sg(t,1.75,0.9)); set(s1[1],p1,(1-p1)*16);
+  s1lines.forEach((ln,i)=>{ const p=eo(sg(t,2.15+i*0.22,0.85));
+    ln.style.transform='translateY('+((1-p)*110)+'%)'; ln.style.opacity=0.15+0.85*p; });
+  const p3=eo(sg(t,3.35,0.8)); set(s1[3],p3,(1-p3)*12);
+}
 
-/* Same story for the strip's baseline: the export says 782, the frames
-   put every item's baseline on 791 and draw the chevrons at ~10 px,
-   centred on 781.5. The agent capsule's own text is correct as exported. */
-const RAILBASE = 791, CHEVH = 10, CHEVCY = 781.5;
+/* ── сцена 02 ───────────────────────────────────────────────── */
+const S2 = $('#s02').firstElementChild, s2 = kids(S2);
+const srcCols = kids(s2[0]);
+const arcs    = Array.from(s2[1].querySelectorAll('path'));
+const sqKids  = kids(s2[2]);
+const outSvg  = s2[3].querySelector('svg');
+const outPath = Array.from(outSvg.querySelectorAll('path'));
+const outPoly = Array.from(outSvg.querySelectorAll('polygon'));
+const outLab  = kids(s2[3]).filter(e=>e.tagName!=='svg'&&e.tagName!=='SVG');
+const railBox = s2[4], strip = railBox.firstElementChild;
+const railItems = kids(strip).filter(e=>/column/.test(e.getAttribute('style')||''));
+const railChev  = kids(strip).filter(e=>railItems.indexOf(e)<0);
+arcs.forEach(p=>{const L=p.getTotalLength();p.style.strokeDasharray=L;p._L=L;});
+outPath.forEach(p=>{const L=p.getTotalLength();p.style.strokeDasharray=L;p._L=L;});
+srcCols.forEach(c=>{ kids(c)[1].style.transformOrigin='50% 50%'; });
+railItems.forEach(it=>{ const k=kids(it); it._lab=k[0]; it._ul=k[1];
+  it._ul.style.background='#C7D0BE'; it._ul.style.width='0px'; it._ul.style.transition='none'; });
+strip.style.left='0px';
+const R = D.rail, RIN=11.0, TR0=11.4, TR1=14.6, SET=15.0;
+function scene02(t){
+  srcCols.forEach((c,i)=>{ const p=eo(sg(t,5.0+i*0.03,0.45));
+    set(c,p,(1-p)*18); kids(c)[1].style.transform='scaleX('+(0.05+0.95*p)+')'; });
+  s2[1].style.opacity = t>=5.6 ? 1 : 0;
+  arcs.forEach((p,i)=>{ const q=eo(sg(t,5.65+i*0.03,0.5)); p.style.strokeDashoffset=p._L*(1-q); });
+  const ps=eo(sg(t,6.5,0.7)); set(s2[2],ps,0,0.93+0.07*ps);
+  s2[2].style.transformOrigin='50% 50%';
+  const pm=eo(sg(t,6.8,0.55)), pt=eo(sg(t,7.0,0.55));
+  set(sqKids[0],pm,(1-pm)*10); set(sqKids[1],pt,(1-pt)*10);
+  outPath.forEach((p,i)=>{ const q=eo(sg(t,7.9+i*0.08,0.6)); p.style.strokeDashoffset=p._L*(1-q); });
+  outPoly.forEach((p,i)=>{ p.style.opacity=eo(sg(t,8.35+i*0.08,0.3)); });
+  outLab.forEach((e,i)=>{ const q=eo(sg(t,8.3+i*0.08,0.5)); set(e,q,(1-q)*10); });
+  s2[3].style.opacity = t>=7.85?1:0;
+  const pr=eo(sg(t,RIN,0.5));
+  railBox.style.opacity=pr; railBox.style.transformOrigin='50% 50%';
+  railBox.style.transform='scaleY('+(0.55+0.45*pr)+')';
+  let off;
+  if(t<TR0){ off=R.from; }
+  else if(t<TR1){ const p=eis(sg(t,TR0,TR1-TR0)); off=R.from+(R.to-42-R.from)*p; }
+  else { const p=eo(sg(t,TR1,SET-TR1)); off=(R.to-42)+42*p; }
+  strip.style.transform='translateX('+off+'px)';
+  const land=eo(sg(t,TR1+0.1,0.45));
+  railItems.forEach((it,i)=>{
+    const d=Math.abs(R.centres[i]+off-840);
+    let a=0.35+0.42*Math.max(0,1-d/230);
+    if(i===railItems.length-1) a=Math.max(a,0.35+0.65*land);
+    it._lab.style.color='rgba(255,255,255,'+a.toFixed(3)+')';
+    const w = i===railItems.length-1 ? it._lab.getBoundingClientRect().width/ST*land : 0;
+    it._ul.style.width=w.toFixed(1)+'px';
+  });
+  railChev.forEach(c=>{ c.style.opacity=0.9; });
+}
 
-/* ============================================================
-   TIMELINE — five scenes, 43 s. Edit seconds here, nothing else.
-   Shots 02, 03 and 04 are continuous scenes, not cuts; their
-   internal beats live in B02 / B03 / B04, in seconds from the
-   scene's own start.
-   ============================================================ */
-const TL = {
-  total: 43.0,
-  xfade: 0.45,
-  scenes: [
-    { id:'01', name:'Name on black',           t0: 0.0,  t1: 5.0  },
-    { id:'02', name:'The layer and the Agent', t0: 5.0,  t1:19.0  },
-    { id:'03', name:'Asking in plain words',   t0:19.0,  t1:31.0  },
-    { id:'04', name:'Where the number comes from', t0:31.0, t1:39.0 },
-    { id:'05', name:'Credit work, connected',  t0:39.0,  t1:43.0  }
-  ]
-};
-
-const B01 = { glow:0.0, arc:0.15, bird:0.95, wordmark:1.55, foot:2.15, settle:3.4 };
-const B05 = { glow:0.0, arc:0.10, bird:0.50, wordmark:1.05, tagline:1.55, fade:3.35 };
-
-/* Shot 02. The carousel is the whole point of the lower third: eight
-   stops in 3.4 s with a short magnetic dwell on each, then the strip
-   stops dead and the Agent capsule is the only thing left alive. */
-/* The scene is 14 s because it is pinned to one voiceover line, and the
-   content runs about eleven at a brisk pace. The spare seconds go to the
-   source build — the only part of the scene the voice actually describes —
-   not to the carousel, which stays short. Re-pace the build against the
-   recorded line when the MP3 lands. */
-const B02 = {
-  src:   { start:0.15, step:0.42, dur:0.40 },
-  wire:  { start:2.30, step:0.09, dur:0.55 },
-  card:  3.25, cardDur:0.45, cardBird:3.55, cardWord:3.72, cardSub:3.88,
-  out:   { line:4.15, dur:0.45, label:4.40 },
-  rail:  { window:4.95, dur:0.40,
-           start:5.45, travel:0.30, dwell:0.32 },   /* slice = travel + dwell */
-  agent: 11.05, agentDur:0.55, dim:11.00, dimDur:0.50
-};
-
-/* Shot 03 — the dialogue, re-instated at the client's request. */
-const B03 = {
-  bubble1:0.10, type1:0.45, header:0.80,
-  status:{ start:1.15, step:0.34, dur:0.34 },
-  statusOut:2.45,
-  legend:2.60, thead:2.85,
-  rows:{ start:3.05, step:0.14, dur:0.40 },
-  bubble2:5.60, type2:0.40, haircut:6.25, haircutDur:0.75, legend2:6.20,
-  bubble3:8.60, type3:0.40, walkOut:8.95, walkDur:0.55,
-  capIn:9.25, capDur:0.65, capRows:{ start:9.50, step:0.11, dur:0.40 }
-};
-
-/* Shot 04 — the audit trail. */
-const B04 = {
-  card:0.10, cardDur:0.60, eyebrow:0.50, title:0.70, rule:0.95,
-  label:1.15, periods:1.30, values:1.45, band:1.75, mult:1.90,
-  capsule:2.60, capsuleDur:0.50, vault:3.15,
-  dim:2.85, dimDur:0.60, up:2.85, upDur:0.65,
-  doc:5.10, docDur:0.70, shift:5.10, shiftDur:0.80, undim:5.30,
-  docLines:{ start:5.60, step:0.07, dur:0.30 }, sources:6.10, pills:6.25
-};
-
-/* Stand-in captions at the size YouTube renders them: ~4.4% of frame
-   height, Roboto, white on a 75% black box, bottom-centred above the
-   player's control bar. The spec keeps all content clear of this band
-   (safeArea.bottom = 825), so nothing important is covered. S hides. */
-const YTCAP = {
-  fontSize: 48, lineGap: 1.30, maxWidth: 1560,
-  blockBottom: 970, maxLines: 2,
-  bg: 'rgba(8,8,8,0.75)', pad: { x: 14, y: 6 }
-};
-
-const CUES = SPEC.voiceover.map((v,i,a)=>{
-  const end = a[i+1] ? a[i+1].t0 : TL.total;
-  return [v.t0 + 0.15, end - 0.15, v.line];
+/* ── сцены 03–04: одно окно чата ─────────────────── */
+const CH = $('#chat');
+function remember(el){ if(el._d===undefined) el._d = el.style.display || ''; return el; }
+const beats = D.beats.map(b=>{
+  const el = CH.querySelector('[data-id="'+b.id+'"]');
+  const frame = el.firstElementChild;
+  const win = frame.children[0];
+  const feed = win.children[1];
+  const comp = win.children[2];
+  const nodes = kids(feed);
+  const o = {d:b, el, win, feed, comp, nodes, extra:kids(frame).slice(1), S:[]};
+  /* расписание построения такта */
+  let t = b.t0 + 0.10;
+  const news = b.new.map(i=>nodes[i]).filter(Boolean);
+  news.forEach((n,k)=>{ if(k < news.length-1){ o.S.push({el:remember(n),t0:t,d:0.5,y:18}); t += 0.22; } });
+  const last = news[news.length-1];
+  if(last){
+    const ck = kids(last);
+    if(b.rows){
+      o.S.push({el:remember(last),t0:b.t0+0.05,d:0.08,y:0});
+      const rb = ck[b.rows[0]], rows = kids(rb);
+      ck.forEach((c,i)=>{ if(i < b.rows[0]){ o.S.push({el:remember(c),t0:t,d:0.45,y:12}); t += 0.2; } });
+      o.S.push({el:remember(rb),t0:t,d:0.15,y:0});
+      const tail = 0.5, after = 0.3;
+      const budget = Math.max(0.7, (b.t1 - tail) - (t + 0.1) - after);
+      const step = Math.min(0.17, budget / rows.length);
+      rows.forEach((r,i)=>o.S.push({el:remember(r),t0:t+0.08+i*step,d:0.3,y:7}));
+      t = t + 0.08 + rows.length*step + 0.22;
+      ck.forEach((c,i)=>{ if(i > b.rows[0]){ o.S.push({el:remember(c),t0:t,d:0.45,y:10}); t += 0.18; } });
+    } else {
+      o.S.push({el:remember(last),t0:t,d:0.08,y:0});
+      ck.forEach(c=>{ o.S.push({el:remember(c),t0:t,d:0.5,y:14}); t += 0.2; });
+    }
+  }
+  o.extra.forEach(x=>o.S.push({el:remember(x),t0:b.t0+0.25,d:0.6,y:14,sc:1}));
+  return o;
 });
-
-/* ===================== easing & helpers ===================== */
-const cl  = (v,a,b)=> v<a?a : v>b?b : v;
-const seg = (t,s,d)=> d<=0 ? (t>=s?1:0) : cl((t-s)/d,0,1);
-const eo  = p => p<=0?0 : p>=1?1 : 1-Math.pow(2,-9*p);
-const eio = p => p<=0?0 : p>=1?1 : (p<.5 ? 4*p*p*p : 1-Math.pow(-2*p+2,3)/2);
-const E   = (t,s,d)=> eo(seg(t,s,d));
-const EI  = (t,s,d)=> eio(seg(t,s,d));
-const lerp= (a,b,p)=> a+(b-a)*p;
-
-const NS='http://www.w3.org/2000/svg';
-const svg = document.getElementById('svg');
-const P   = SPEC.palette;
-const DB  = P.darkBrand, DS = P.darkSchema, LP = P.lightProduct;
-const BIRD_D = "M33.2617 6.31543H38.5947L44.4883 12.6309H32.4189L27.9287 17.4023H34.2441L57.8213 41.2607H19.2266L12.7715 37.752L11.9287 41.2607L4.91211 35.3662V19.0869H0L12.7715 6.31543H9.96387L16.2793 0H27.3672L33.2617 6.31543ZM24.7002 5.05273C23.6803 5.05279 22.8535 5.87953 22.8535 6.89941C22.8536 7.9192 23.6804 8.74604 24.7002 8.74609C25.72 8.74609 26.5468 7.91923 26.5469 6.89941C26.5469 5.8795 25.7201 5.05273 24.7002 5.05273Z";
-const SANS = '"IBM Plex Sans",-apple-system,Segoe UI,Helvetica,Arial,sans-serif';
-const MONO = '"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace';
-const OSAN = '"Open Sans",-apple-system,Segoe UI,Helvetica,Arial,sans-serif';
-
-function mk(tag, attrs){
-  const n = document.createElementNS(NS, tag);
-  if(attrs) for(const k in attrs){ if(attrs[k]!=null) n.setAttribute(k, attrs[k]); }
-  return n;
-}
-function txt(s, o){
-  const t = mk('text', {
-    x:o.x, y:o.y, fill:o.fill, 'font-size':o.size,
-    'font-family':o.face||SANS, 'font-weight':o.weight||400,
-    'text-anchor':o.anchor||'start', 'letter-spacing':o.track||null,
-    'dominant-baseline':o.base||null, opacity:o.opacity!=null?o.opacity:null
-  });
-  t.textContent = s;
-  return t;
-}
-function bird(x, y, w, fill){
-  const k = w/58;
-  const g = mk('g',{transform:`translate(${x} ${y}) scale(${k})`});
-  g.appendChild(mk('path',{d:BIRD_D, fill:fill}));
-  return g;
-}
-function op(el,v){ el.style.opacity = v; }
-function tr(el,s){ el.setAttribute('transform', s); }
-function dash(el, p){
-  if(el.__len==null){ try{ el.__len = el.getTotalLength(); }catch(e){ el.__len = 0; } }
-  const L = el.__len || 0;
-  el.setAttribute('stroke-dasharray', L);
-  el.setAttribute('stroke-dashoffset', L*(1-p));
-}
-function typeInto(el, full, p){ el.textContent = full.slice(0, Math.round(full.length*p)); }
-function hex2rgb(h){ return [parseInt(h.slice(1,3),16), parseInt(h.slice(3,5),16), parseInt(h.slice(5,7),16)]; }
-function mixCol(a, b, p){
-  const A=hex2rgb(a), B=hex2rgb(b);
-  return `rgb(${Math.round(lerp(A[0],B[0],p))},${Math.round(lerp(A[1],B[1],p))},${Math.round(lerp(A[2],B[2],p))})`;
-}
-const fmt = v => (v<0 ? '('+Math.abs(v).toFixed(1)+')' : v.toFixed(1));
-const sgn = v => (v>0?'+':'') + v.toFixed(1);
-
-/* ===================== defs ===================== */
-(function(){
-  const d = mk('defs');
-  d.innerHTML = `
-    <radialGradient id="brandGlow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%"   stop-color="${DB.undertone}" stop-opacity="1"/>
-      <stop offset="100%" stop-color="${DB.base}"      stop-opacity="0"/>
-    </radialGradient>
-    <linearGradient id="horizonLine" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%"   stop-color="${DB.arcLight}" stop-opacity="0"/>
-      <stop offset="22%"  stop-color="${DB.arcLight}" stop-opacity=".30"/>
-      <stop offset="50%"  stop-color="${DB.arcLight}" stop-opacity=".85"/>
-      <stop offset="78%"  stop-color="${DB.arcLight}" stop-opacity=".30"/>
-      <stop offset="100%" stop-color="${DB.arcLight}" stop-opacity="0"/>
-    </linearGradient>
-    <radialGradient id="horizonBloom" cx="50%" cy="50%" r="50%">
-      <stop offset="0%"   stop-color="${DB.horizonGlow}"/>
-      <stop offset="100%" stop-color="rgba(150,215,175,0)"/>
-    </radialGradient>
-    <radialGradient id="groundSheen" cx="50%" cy="0%" r="72%">
-      <stop offset="0%"   stop-color="${DB.groundSheen}"/>
-      <stop offset="100%" stop-color="rgba(70,130,95,0)"/>
-    </radialGradient>
-    <radialGradient id="schemaGlow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%"   stop-color="rgba(127,211,154,.065)"/>
-      <stop offset="100%" stop-color="rgba(127,211,154,0)"/>
-    </radialGradient>
-    <radialGradient id="nodeBloom" cx="50%" cy="50%" r="50%">
-      <stop offset="0%"   stop-color="rgba(170,255,200,.85)"/>
-      <stop offset="42%"  stop-color="rgba(127,211,154,.22)"/>
-      <stop offset="100%" stop-color="rgba(127,211,154,0)"/>
-    </radialGradient>
-    <linearGradient id="cardFill" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%"   stop-color="#141b18"/>
-      <stop offset="100%" stop-color="#0d1211"/>
-    </linearGradient>
-    <radialGradient id="cardFloor" cx="50%" cy="50%" r="50%">
-      <stop offset="0%"   stop-color="rgba(127,211,154,.30)"/>
-      <stop offset="100%" stop-color="rgba(127,211,154,0)"/>
-    </radialGradient>
-    <linearGradient id="fadeL" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%"   stop-color="${DS.bg}" stop-opacity="1"/>
-      <stop offset="100%" stop-color="${DS.bg}" stop-opacity="0"/>
-    </linearGradient>
-    <linearGradient id="fadeR" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%"   stop-color="${DS.bg}" stop-opacity="0"/>
-      <stop offset="100%" stop-color="${DS.bg}" stop-opacity="1"/>
-    </linearGradient>
-    <filter id="wireGlow" x="-20%" y="-60%" width="140%" height="220%">
-      <feGaussianBlur stdDeviation="3.2" result="b"/>
-      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
-    <filter id="agentGlow" x="-60%" y="-180%" width="220%" height="460%">
-      <feDropShadow dx="0" dy="8" stdDeviation="15" flood-color="#7fd39a" flood-opacity="0.26"/>
-    </filter>
-    <filter id="softCard" x="-10%" y="-20%" width="120%" height="140%">
-      <feDropShadow dx="0" dy="2" stdDeviation="6" flood-color="#000" flood-opacity="0.06"/>
-    </filter>
-    <clipPath id="railClip"><rect x="${SPEC.rail.window.x}" y="${SPEC.rail.window.y}" width="${SPEC.rail.window.w}" height="${SPEC.rail.window.h}"/></clipPath>`;
-  svg.appendChild(d);
+/* печать запроса в первом такте */
+const typeHost = (function(){
+  const sp = Array.from(beats[0].comp.querySelectorAll('div,span'))
+    .filter(e=>e.children.length===0 && /Provide the EBITDA walk/.test(e.textContent));
+  if(!sp.length) return null;
+  const e = sp[0]; e._full = e.textContent; e._car = e.nextElementSibling; return e;
 })();
-
-const SC = {};
-function sceneG(bg){
-  const g = mk('g',{class:'scene'});
-  g.appendChild(mk('rect',{x:0,y:0,width:1920,height:1080,fill:bg}));
-  svg.appendChild(g);
-  return g;
+function chat(t){
+  beats.forEach(b=>{
+    const d = b.d, op = sg(t, d.t0, 0.34);
+    b.el.style.display = op>0 ? 'block' : 'none';
+    b.el.style.opacity = op;
+    if(op<=0) return;
+    const sl = eo(sg(t, d.t0, 0.55));
+    b.feed.style.transform = 'translateY('+((1-sl)*16)+'px)';
+    b.S.forEach(it=>{
+      const p = eo(sg(t, it.t0, it.d));
+      if(p<=0){ it.el.style.display='none'; return; }
+      it.el.style.display = it.el._d;
+      it.el.style.opacity = p;
+      const sc = it.sc ? ' scale('+(0.94+0.06*p)+')' : '';
+      it.el.style.transform = 'translateY('+((1-p)*(it.y||0))+'px)'+sc;
+      if(it.sc) it.el.style.transformOrigin = '0% 50%';
+    });
+  });
+  if(typeHost){
+    const full = typeHost._full, p = sg(t, 19.3, 1.45);
+    typeHost.textContent = full.slice(0, Math.round(full.length*p));
+    if(typeHost._car) typeHost._car.style.opacity =
+      (t>=19.15 && t<21.05 && (p>=1 ? Math.floor(t*2.2)%2===0 : true)) ? 1 : 0;
+  }
 }
 
-/* ============================================================
-   SHOTS 01 and 05 — the brand frames. Same construction, two
-   different lock-ups: the name alone, then the name with the line.
-   ============================================================ */
-function brandScene(cfg, withTagline){
-  const g = sceneG(DB.base);
-  const inner = mk('g'); g.appendChild(inner);
-
-  inner.appendChild(mk('rect',{x:0,y:0,width:1920,height:1080,fill:'url(#brandGlow)'}));
-
-  const hy = cfg.horizon.y;
-  const ground = mk('g');
-  ground.appendChild(mk('ellipse',{cx:960,cy:hy+150,rx:1500,ry:230,fill:'url(#groundSheen)'}));
-  ground.appendChild(mk('ellipse',{cx:960,cy:hy,rx:1150,ry:120,fill:'url(#horizonBloom)'}));
-  ground.appendChild(mk('rect',{x:0,y:hy,width:1920,height:cfg.horizon.h,fill:'url(#horizonLine)'}));
-  inner.appendChild(ground);
-
-  const a = cfg.arc, r = a.r;
-  const y0 = a.cy - Math.sqrt(Math.max(0, r*r - a.cx*a.cx));
-  const arc = mk('path',{
-    d:`M0 ${y0.toFixed(2)} A ${r} ${r} 0 0 1 1920 ${y0.toFixed(2)}`,
-    fill:'none', stroke:DB.arcLight, 'stroke-width':a.strokeWidth, opacity:0.55 });
-  inner.appendChild(arc);
-
-  const markX = 960 - cfg.markW/2;
-  const markG = bird(markX, cfg.markTop, cfg.markW, DB.ink);
-  inner.appendChild(markG);
-
-  /* Baselines measured off the reference frames: the export gives the
-     lock-up's block offsets, not text baselines. */
-  const w = cfg.wordmark;
-  const wmY = cfg.markTop + cfg.markH + w.marginTop + w.size*1.011;
-  const wm = txt('RAVEN',{ x:960 + w.size*0.15, y:wmY, fill:DB.ink, size:w.size,
-    weight:400, anchor:'middle', track:w.tracking });
-  inner.appendChild(wm);
-
-  let tag = null;
-  if(withTagline){
-    const tg = cfg.tagline;
-    tag = txt(tg.text,{ x:960, y:wmY + tg.marginTop + tg.size*1.66, fill:DB.muted,
-      size:tg.size, anchor:'middle' });
-    inner.appendChild(tag);
-  }
-  let foot = null;
-  if(cfg.footnote){
-    const f = cfg.footnote;
-    foot = txt(f.text,{ x:f.x, y:f.y + f.size*0.96, fill:DB.muted, size:f.size });
-    inner.appendChild(foot);
-  }
-  const black = mk('rect',{x:0,y:0,width:1920,height:1080,fill:'#000',opacity:0});
-  g.appendChild(black);
-  return { g, inner, ground, arc, markG, wm, tag, foot, black };
-}
-SC['01'] = brandScene(SPEC.brandLockup.shot01, false);
-
-/* ============================================================
-   SHOT 02 — the intelligence layer, then the workflow carousel,
-   then the Agent alone. One continuous scene, six beats.
-   ============================================================ */
-SC['02'] = (function(){
-  const S = SPEC.schema, R = SPEC.rail;
-  const g = sceneG(DS.bg);
-  g.appendChild(mk('ellipse',{cx:960,cy:470,rx:780,ry:430,fill:'url(#schemaGlow)'}));
-  const inner = mk('g'); g.appendChild(inner);
-
-  /* --- sources --- */
-  const srcs = S.sources.map(s=>{
-    const q = mk('g');
-    q.appendChild(txt(s.label,{ x:s.centerX, y:s.labelY+31, fill:DS.text,
-      size:S.labelSize, weight:500, anchor:'middle' }));
-    q.appendChild(mk('rect',{x:s.ruleX,y:s.ruleY,width:S.ruleW,height:S.ruleH,
-      rx:S.ruleH/2, fill:DS.ruleInactive}));
-    const lit = mk('rect',{x:s.ruleX+s.litX,y:s.ruleY,width:s.lit,height:S.ruleH,
-      rx:S.ruleH/2, fill:DS.accentGreen});
-    q.appendChild(lit);
-    inner.appendChild(q);
-    return { q, lit, w:s.lit };
-  });
-
-  /* --- wires converging into the top edge of the card --- */
-  const CP = S.convergePoint;
-  const wires = S.sources.map(s=>{
-    const x0 = s.centerX, y1 = s.ruleY + 10;
-    const c1x = x0, c1y = y1 + 64;
-    const c2x = CP.x + (x0 - CP.x)*0.17, c2y = CP.y - 20;
-    const p = mk('path',{ d:`M${x0} ${y1} C${c1x} ${c1y} ${c2x.toFixed(1)} ${c2y} ${CP.x} ${CP.y}`,
-      fill:'none', stroke:DS.accentGreen, 'stroke-width':1.4, opacity:.85, filter:'url(#wireGlow)' });
-    inner.appendChild(p);
-    return p;
-  });
-  const node = mk('ellipse',{cx:CP.x,cy:CP.y-6,rx:86,ry:62,fill:'url(#nodeBloom)'});
-  inner.appendChild(node);
-
-  /* --- outputs --- */
-  const outs = S.outputs.map(o=>{
-    const q = mk('g');
-    const dir = o.side === 'left' ? 1 : -1;
-    const tip = o.lineTo;
-    q.appendChild(mk('line',{x1:o.lineFrom,y1:o.y,x2:tip,y2:o.y,stroke:DS.accentGreen,'stroke-width':1.4}));
-    q.appendChild(mk('path',{ d:`M${tip} ${o.y} l${14*dir} -8 M${tip} ${o.y} l${14*dir} 8`,
-      fill:'none', stroke:DS.accentGreen, 'stroke-width':1.4 }));
-    inner.appendChild(q);
-    const lab = txt(o.label,{ x:o.side==='left' ? o.labelX+o.labelW : o.labelX, y:o.y+13,
-      fill:DS.text, size:o.size, anchor:o.side==='left' ? 'end' : 'start' });
-    inner.appendChild(lab);
-    return { line:q, lab };
-  });
-
-  /* --- the layer card --- */
-  const c = S.card;
-  const cardG = mk('g');
-  cardG.appendChild(mk('rect',{x:c.x,y:c.y,width:c.w,height:c.h,rx:c.r,
-    fill:'url(#cardFill)', stroke:DS.cardStroke, 'stroke-width':c.strokeWidth}));
-  cardG.appendChild(mk('ellipse',{cx:c.x+c.w/2,cy:c.y+c.h-30,rx:108,ry:16,fill:'url(#cardFloor)'}));
-  const cBird = bird(c.x+c.w/2 - c.markW/2, c.y+91, c.markW, DB.ink);
-  const cWord = txt('RAVEN',{ x:c.x+c.w/2 + c.wordmarkSize*0.15, y:c.y+244, fill:DB.ink,
-    size:c.wordmarkSize, anchor:'middle', track:'0.26em' });
-  const cSub  = txt(c.submark,{ x:c.x+c.w/2, y:c.y+299, fill:DS.muted,
-    size:c.submarkSize, anchor:'middle' });
-  cardG.appendChild(cBird); cardG.appendChild(cWord); cardG.appendChild(cSub);
-  inner.appendChild(cardG);
-
-  /* --- the workflow carousel --- */
-  const railG = mk('g'); inner.appendChild(railG);
-  const W = R.window;
-  const win = mk('rect',{x:W.x,y:W.y,width:W.w,height:W.h,rx:W.r,fill:DS.railWindow});
-  railG.appendChild(win);
-
-  const clipG = mk('g',{'clip-path':'url(#railClip)'});
-  railG.appendChild(clipG);
-  const strip = mk('g'); clipG.appendChild(strip);
-
-  const items = R.strip.items.map(it=>{
-    const t = txt(it.label,{ x:it.centerX, y:RAILBASE, fill:DS.railItem,
-      size:R.strip.fontSize, anchor:'middle' });
-    strip.appendChild(t);
-    return { t, it };
-  });
-  R.strip.chevron.x.forEach(cx=>{
-    const k = CHEVH/18;
-    const p = mk('path',{ d:R.strip.chevron.d, fill:'none', stroke:DS.railChevron,
-      'stroke-width':R.strip.chevron.strokeWidth/k,
-      transform:`translate(${(cx-4*k).toFixed(2)} ${CHEVCY-CHEVH/2}) scale(${k.toFixed(4)})` });
-    strip.appendChild(p);
-  });
-  const uline = mk('rect',{ x:0, y:R.activeUnderline.y, width:0, height:R.activeUnderline.h,
-    rx:R.activeUnderline.r, fill:DS.accentGreen, opacity:0 });
-  strip.appendChild(uline);
-
-  const fade = R.fade.w;
-  railG.appendChild(mk('rect',{x:W.x-2,y:W.y,width:fade,height:W.h,fill:'url(#fadeL)'}));
-  railG.appendChild(mk('rect',{x:W.x+W.w-fade+2,y:W.y,width:fade,height:W.h,fill:'url(#fadeR)'}));
-
-  /* the Agent capsule sits outside the strip and never moves */
-  const A = R.agent;
-  const agentG = mk('g');
-  const aBox = mk('rect',{x:A.x,y:A.y,width:A.w,height:A.h,rx:A.r,fill:'none',
-    stroke:DS.railAgentIdle,'stroke-width':1});
-  const aDot = mk('circle',{cx:1646,cy:A.dot.cy,r:A.dot.r,fill:DS.railAgentIdleText});
-  const aTxt = txt(A.label,{ x:A.textX, y:A.textY, fill:DS.railAgentIdleText,
-    size:24, weight:500, anchor:'middle' });
-  agentG.appendChild(aBox); agentG.appendChild(aDot); agentG.appendChild(aTxt);
-  railG.appendChild(agentG);
-
-  const white = mk('rect',{x:0,y:0,width:1920,height:1080,fill:'#ffffff',opacity:0});
-  g.appendChild(white);
-
-  return { g, inner, srcs, wires, node, outs, cardG, cBird, cWord, cSub,
-           railG, win, strip, items, uline, agentG, aBox, aDot, aTxt, white, A, R };
-})();
-
-/* ============================================================
-   SHOT 03 — the dialogue. Three prompts, each one rebuilding the
-   table underneath. The shell is the real product: no sparkle,
-   the Raven mark in the answer header, the real input bar.
-   ============================================================ */
-SC['03'] = (function(){
-  const D = SPEC.dialogue, FG = SPEC.figures;
-  const g = sceneG(LP.bg);
-  const inner = mk('g'); g.appendChild(inner);
-  const X0 = D.columnX, X1 = D.columnX + D.columnW;
-
-  /* prompt bubble, right-aligned */
-  const bubG = mk('g');
-  const bub = mk('rect',{x:0,y:52,width:0,height:63,rx:D.bubble.r,fill:LP.bubble});
-  const bubT = txt('',{ x:X1-D.bubble.padX, y:93, fill:LP.ink, size:D.bubble.size,
-    anchor:'end', face:OSAN });
-  bubG.appendChild(bub); bubG.appendChild(bubT); inner.appendChild(bubG);
-
-  /* answer header */
-  const hdr = mk('g');
-  hdr.appendChild(bird(X0, D.agentHeader.y + 5, D.agentHeader.markW, LP.ink));
-  hdr.appendChild(txt('Raven',{ x:X0+50, y:D.agentHeader.y+27, fill:LP.ink,
-    size:D.agentHeader.size, weight:700, face:OSAN }));
-  hdr.appendChild(txt('· Project Alpha',{ x:X0+140, y:D.agentHeader.y+27, fill:LP.muted,
-    size:D.agentHeader.size, face:OSAN }));
-  inner.appendChild(hdr);
-
-  /* status rows */
-  const STAT = [
-    ['Pulling the EBITDA walk from the vault', '12s', true],
-    ['Reading the reconciliation already computed in the vault', '10s', false],
-    ['Loading Deal docs values and pre-filling Firm adj.', '8s', false]
-  ];
-  const statG = mk('g'); inner.appendChild(statG);
-  const stats = STAT.map((s,i)=>{
-    const y = 231 + i*D.status.rowH;
-    const q = mk('g');
-    q.appendChild(mk('path',{ d:`M${X0+2} ${y-5} l9 10 l17 -20`, fill:'none',
-      stroke:LP.ok, 'stroke-width':2.6, 'stroke-linecap':'round', 'stroke-linejoin':'round' }));
-    q.appendChild(txt(s[0],{ x:X0+38, y:y+8, fill:LP.muted, size:D.status.size, face:OSAN }));
-    if(s[2]){
-      q.appendChild(mk('rect',{x:X0+466,y:y-14,width:136,height:33,rx:6,
-        fill:'none',stroke:LP.line,'stroke-width':1}));
-      q.appendChild(txt('Raven Agent',{ x:X0+534, y:y+7, fill:LP.muted, size:19,
-        anchor:'middle', face:OSAN }));
-    }
-    q.appendChild(txt(s[1],{ x:X1, y:y+8, fill:LP.muted, size:D.status.size,
-      anchor:'end', face:OSAN }));
-    statG.appendChild(q);
-    return q;
-  });
-
-  /* ---- the EBITDA walk ---- */
-  const walkG = mk('g'); inner.appendChild(walkG);
-  const legG = mk('g'); walkG.appendChild(legG);
-  legG.appendChild(txt('USD in millions (MM)',{ x:X0, y:229, fill:LP.ink, size:23,
-    weight:700, face:OSAN }));
-  const legMid = txt('Deal docs — source of record, locked',{ x:X0+249, y:229,
-    fill:LP.muted, size:21, face:OSAN });
-  legG.appendChild(legMid);
-  const legDot = mk('circle',{cx:X0+640,cy:221,r:5,fill:LP.purple});
-  const legRight = txt('Firm adjustment — pre-filled, editable',{ x:X0+656, y:229,
-    fill:LP.purple, size:22, face:OSAN });
-  legG.appendChild(legDot); legG.appendChild(legRight);
-
-  const COLX = { item:X0+14, deal:1128, firm:1388, type:1596 };
-  const RY = [292,329,369,409,449,486,526,567,602];
-  const theadG = mk('g'); walkG.appendChild(theadG);
-  theadG.appendChild(txt('Item',{ x:COLX.item, y:276, fill:LP.muted, size:21, face:OSAN }));
-  theadG.appendChild(txt('Deal docs',{ x:COLX.deal, y:276, fill:LP.muted, size:21,
-    anchor:'end', face:OSAN }));
-  theadG.appendChild(txt('Firm adj.',{ x:COLX.firm, y:276, fill:LP.muted, size:21,
-    anchor:'end', face:OSAN }));
-  theadG.appendChild(txt('Type',{ x:COLX.type, y:276, fill:LP.muted, size:21,
-    anchor:'end', face:OSAN }));
-  theadG.appendChild(mk('line',{x1:X0,y1:292,x2:X1,y2:292,stroke:LP.line,'stroke-width':1}));
-
-  const TAGC = { 'One-time':LP.pills.oneTime, 'Non-cash':LP.pills.nonCash,
-    'Normalizing':LP.pills.normalizing, 'Synergy':LP.pills.synergy, 'Pro forma':LP.pills.proForma };
-  function tint(hex){ const c=hex2rgb(hex); return `rgba(${c[0]},${c[1]},${c[2]},${LP.pills.tintAlpha})`; }
-
-  const rows = FG.ebitdaWalk.rows.map((r,i)=>{
-    const yA = RY[i], yB = RY[i+1], h = yB-yA, cy = yA + h/2 + 8;
-    const q = mk('g');
-    if(r.subtotal) q.appendChild(mk('rect',{x:X0,y:yA+1,width:D.columnW,height:h-1,fill:LP.shade}));
-    q.appendChild(mk('line',{x1:X0,y1:yB,x2:X1,y2:yB,stroke:LP.line,'stroke-width':1}));
-    q.appendChild(mk('line',{x1:855,y1:yA,x2:855,y2:yB,stroke:LP.line,'stroke-width':1}));
-    q.appendChild(mk('line',{x1:1404,y1:yA,x2:1404,y2:yB,stroke:LP.line,'stroke-width':1}));
-    q.appendChild(txt(r.label,{ x:COLX.item, y:cy, fill:LP.ink, size:22,
-      weight:r.subtotal?700:400, face:OSAN }));
-    const dealT = txt(r.signed? sgn(r.deal) : fmt(r.deal),{ x:COLX.deal, y:cy,
-      fill:r.subtotal?LP.ink:LP.muted, size:22, weight:r.subtotal?700:400,
-      anchor:'end', face:OSAN });
-    q.appendChild(dealT);
-    const hl = mk('rect',{x:1162,y:yA+1,width:242,height:h-1,fill:LP.chg,opacity:0});
-    q.appendChild(hl);
-    const firmT = txt(r.signed? sgn(r.firm) : fmt(r.firm),{ x:COLX.firm, y:cy,
-      fill:LP.purple, size:22, weight:r.subtotal?700:400, anchor:'end', face:OSAN });
-    q.appendChild(firmT);
-    if(r.type){
-      const w = r.type.length*11 + 26;
-      q.appendChild(mk('rect',{x:COLX.type-w,y:cy-25,width:w,height:33,rx:16,fill:tint(TAGC[r.type])}));
-      q.appendChild(txt(r.type,{ x:COLX.type-w/2, y:cy-2, fill:TAGC[r.type], size:19,
-        weight:600, anchor:'middle', face:OSAN }));
-    } else {
-      q.appendChild(txt('–',{ x:COLX.type, y:cy, fill:LP.muted, size:22, anchor:'end', face:OSAN }));
-    }
-    walkG.appendChild(q);
-    return { q, firmT, hl, r, cy };
-  });
-
-  /* ---- the cap table ---- */
-  const capG = mk('g'); inner.appendChild(capG);
-  capG.appendChild(txt('USD in millions (MM)',{ x:X0, y:229, fill:LP.ink, size:23,
-    weight:700, face:OSAN }));
-  const CC = { fac:X0+14, amt:759, pri:789, mat:919, d1:1307, d2:1597 };
-  const chd = mk('g'); capG.appendChild(chd);
-  [['Facility',CC.fac,'start',LP.muted],['Amount',CC.amt,'end',LP.muted],
-   ['Pricing',CC.pri,'start',LP.muted],['Maturity',CC.mat,'start',LP.muted],
-   ['Cum. leverage on 326.0',CC.d1,'end',LP.muted],
-   ['Cum. leverage on 309.0',CC.d2,'end',LP.purple]].forEach(c=>{
-    chd.appendChild(txt(c[0],{ x:c[1], y:279, fill:c[3], size:21, anchor:c[2], face:OSAN }));
-  });
-  chd.appendChild(mk('line',{x1:X0,y1:296,x2:X1,y2:296,stroke:LP.line,'stroke-width':1}));
-  const CRY = [296,360,407,454,503,550,597];
-  const capRows = FG.capTable.rows.map((r,i)=>{
-    const yA = CRY[i], yB = CRY[i+1], h = yB-yA, cy = yA + h/2 + 8;
-    const q = mk('g');
-    if(r.subtotal) q.appendChild(mk('rect',{x:X0,y:yA+1,width:D.columnW,height:h-1,fill:LP.shade}));
-    if(!r.subtotal && i<3) q.appendChild(mk('line',{x1:X0,y1:yB,x2:X1,y2:yB,stroke:LP.line,'stroke-width':1}));
-    const ty = r.sub ? cy-10 : cy;
-    q.appendChild(txt(r.facility,{ x:CC.fac, y:ty, fill:LP.ink, size:22,
-      weight:r.subtotal?700:400, face:OSAN }));
-    if(r.sub) q.appendChild(txt(r.sub,{ x:CC.fac, y:ty+26, fill:LP.muted, size:17, face:OSAN }));
-    q.appendChild(txt(fmt(r.amount),{ x:CC.amt, y:cy, fill:LP.ink, size:22,
-      weight:r.subtotal?700:400, anchor:'end', face:OSAN }));
-    if(r.pricing) q.appendChild(txt(r.pricing,{ x:CC.pri, y:cy, fill:LP.ink, size:22, face:OSAN }));
-    if(r.maturity) q.appendChild(txt(r.maturity,{ x:CC.mat, y:cy, fill:LP.ink, size:22, face:OSAN }));
-    if(r.onDeal) q.appendChild(txt(r.onDeal,{ x:CC.d1, y:cy, fill:LP.ink, size:22,
-      weight:r.subtotal?700:400, anchor:'end', face:OSAN }));
-    if(r.onRevised) q.appendChild(txt(r.onRevised,{ x:CC.d2, y:cy, fill:LP.purple, size:22,
-      weight:r.subtotal?700:400, anchor:'end', face:OSAN }));
-    capG.appendChild(q);
-    return q;
-  });
-
-  /* ---- the input bar, straight from ui-01 ---- */
-  const I = D.input;
-  const inp = mk('g'); inner.appendChild(inp);
-  inp.appendChild(mk('rect',{x:I.x,y:I.y,width:I.w,height:147,rx:I.r,fill:'#ffffff',
-    stroke:LP.line,'stroke-width':1}));
-  inp.appendChild(txt(I.placeholder,{ x:I.x+26, y:I.y+48, fill:LP.muted, size:26, face:OSAN }));
-  inp.appendChild(mk('path',{
-    d:'M11 5 a5.5 5.5 0 0 1 8 8 l-12 12 a3.6 3.6 0 0 1-5.5-5.5 l11.5-11.5',
-    transform:`translate(${I.x+28} ${I.y+88})`, fill:'none', stroke:LP.muted,
-    'stroke-width':2, 'stroke-linecap':'round', 'stroke-linejoin':'round' }));
-  inp.appendChild(mk('circle',{cx:I.x+92,cy:I.y+102,r:11,fill:'none',stroke:LP.muted,'stroke-width':1.7}));
-  inp.appendChild(mk('path',{ d:`M${I.x+81} ${I.y+102} h22 M${I.x+92} ${I.y+91} a5.5 11 0 0 1 0 22 a5.5 11 0 0 1 0 -22`,
-    fill:'none', stroke:LP.muted, 'stroke-width':1.5 }));
-  inp.appendChild(txt('Web',{ x:I.x+112, y:I.y+110, fill:LP.muted, size:23, face:OSAN }));
-  [[0,0],[12,0],[0,12],[12,12]].forEach(d=>{
-    inp.appendChild(mk('rect',{x:I.x+190+d[0],y:I.y+92+d[1],width:9,height:9,rx:2,
-      fill:'none',stroke:LP.muted,'stroke-width':1.8}));
-  });
-  inp.appendChild(txt('Skills',{ x:I.x+222, y:I.y+110, fill:LP.muted, size:23, face:OSAN }));
-  inp.appendChild(mk('circle',{cx:I.x+I.w-50,cy:I.y+101,r:I.send.d/2,fill:LP.ink}));
-  inp.appendChild(mk('path',{ d:`M${I.x+I.w-50} ${I.y+113} V${I.y+89} M${I.x+I.w-60} ${I.y+99} l10 -10 l10 10`,
-    fill:'none', stroke:'#ffffff', 'stroke-width':2.4, 'stroke-linecap':'round',
-    'stroke-linejoin':'round' }));
-
-  return { g, inner, bubG, bub, bubT, hdr, statG, stats, walkG, legG, legMid, legDot,
-           legRight, theadG, rows, capG, chd, capRows, inp, X0, X1 };
-})();
-
-/* ============================================================
-   SHOT 04 — where the number comes from. The summary, the question,
-   the document behind the figure.
-   ============================================================ */
-SC['04'] = (function(){
-  const FS = SPEC.figures.financialSummary;
-  const g = sceneG(LP.bg);
-  const inner = mk('g'); g.appendChild(inner);
-
-  /* the prompt capsule — the Raven mark, never a sparkle */
-  const capsG = mk('g');
-  capsG.appendChild(mk('rect',{x:741,y:101,width:437,height:66,rx:33,fill:'#ffffff',
-    stroke:LP.line,'stroke-width':1,filter:'url(#softCard)'}));
-  capsG.appendChild(bird(776, 122, 34, LP.ink));
-  capsG.appendChild(txt('Compare to client model',{ x:824, y:146, fill:LP.ink,
-    size:27, face:OSAN }));
-  inner.appendChild(capsG);
-
-  const vaultG = mk('g');
-  vaultG.appendChild(mk('path',{ d:'M345 208 l9 10 l17 -20', fill:'none', stroke:LP.ok,
-    'stroke-width':2.6, 'stroke-linecap':'round', 'stroke-linejoin':'round' }));
-  vaultG.appendChild(txt('Call the vault and check sources',{ x:376, y:222, fill:LP.muted,
-    size:24, face:OSAN }));
-  inner.appendChild(vaultG);
-
-  /* the document, sliding in from the left */
-  const docG = mk('g');
-  docG.appendChild(mk('rect',{x:110,y:273,width:400,height:394,rx:16,fill:'#ffffff',
-    stroke:LP.line,'stroke-width':1,filter:'url(#softCard)'}));
-  docG.appendChild(mk('path',{ d:'M0 0 h22 l10 10 v34 h-32 z M22 0 v10 h10',
-    transform:'translate(147 306) scale(1.18)', fill:'none', stroke:LP.ink,
-    'stroke-width':1.8, 'stroke-linejoin':'round' }));
-  docG.appendChild(txt('Project Alpha — Lender',{ x:140, y:410, fill:LP.ink, size:26,
-    weight:600, face:OSAN }));
-  docG.appendChild(txt('Model',{ x:140, y:444, fill:LP.ink, size:26, weight:600, face:OSAN }));
-  docG.appendChild(txt('pp. 1–2',{ x:140, y:484, fill:LP.muted, size:22, face:MONO }));
-  const docLines = [340,300,320,195,260,200].map((w,i)=>{
-    const r = mk('rect',{x:140,y:515+i*19,width:w,height:9,rx:4,fill:LP.line,opacity:0});
-    docG.appendChild(r); return r;
-  });
-  inner.appendChild(docG);
-
-  /* the summary card — built at its shot-04a position, then moved */
-  const cardG = mk('g'); inner.appendChild(cardG);
-  const CX = 340, CY = 300, CW = 1240, CH = 487;
-  cardG.appendChild(mk('rect',{x:CX,y:CY,width:CW,height:CH,rx:18,fill:'#ffffff',
-    stroke:LP.line,'stroke-width':1,filter:'url(#softCard)'}));
-  const eyebrow = txt('PROJECT ALPHA',{ x:CX+38, y:CY+57, fill:LP.purple, size:23,
-    weight:700, track:'0.16em', face:OSAN });
-  const title = txt('Financial Summary',{ x:CX+38, y:CY+122, fill:LP.ink, size:48,
-    weight:700, face:OSAN });
-  const rule = mk('line',{x1:CX+38,y1:CY+159,x2:CX+1202,y2:CY+159,stroke:LP.line,'stroke-width':1});
-  const label = txt(FS.label,{ x:CX+1202, y:CY+205, fill:LP.muted, size:26,
-    anchor:'end', face:OSAN });
-  cardG.appendChild(eyebrow); cardG.appendChild(title); cardG.appendChild(rule); cardG.appendChild(label);
-
-  const PCX = [738, 967, 1197, 1427];
-  const periods = FS.periods.map((p,i)=>{
-    const t = txt(p,{ x:PCX[i], y:CY+251, fill:LP.muted, size:22, anchor:'middle', face:MONO });
-    cardG.appendChild(t); return t;
-  });
-  const values = FS.values.map((v,i)=>{
-    const t = txt(v.toFixed(1),{ x:PCX[i], y:CY+310, fill:LP.ink, size:42,
-      weight:700, anchor:'middle', face:OSAN });
-    cardG.appendChild(t); return t;
-  });
-  const bandG = mk('g');
-  bandG.appendChild(mk('rect',{x:CX+38,y:CY+343,width:1164,height:112,rx:4,fill:LP.shade}));
-  bandG.appendChild(txt('Net Debt',{ x:CX+58, y:CY+390, fill:LP.ink, size:26, weight:700, face:OSAN }));
-  bandG.appendChild(txt(FS.netDebt.toFixed(1),{ x:CX+80, y:CY+428, fill:LP.ink, size:26, face:MONO }));
-  cardG.appendChild(bandG);
-  const mults = FS.multiples.map((m,i)=>{
-    const t = txt(m,{ x:PCX[i], y:CY+411, fill:LP.purple, size:32, weight:700,
-      anchor:'middle', face:OSAN });
-    cardG.appendChild(t); return t;
-  });
-
-  /* source pills, under the card once it has moved right */
-  const srcG = mk('g');
-  srcG.appendChild(txt('SOURCES',{ x:580, y:755, fill:LP.muted, size:21, track:'0.10em', face:OSAN }));
-  const pills = FS.sources.map((s,i)=>{
-    const x = 725 + i*262, w = i===0 ? 239 : 174;
-    const q = mk('g');
-    q.appendChild(mk('rect',{x:x,y:724,width:w,height:46,rx:23,fill:'#ffffff',
-      stroke:s.state==='active'?LP.purple:LP.line,'stroke-width':s.state==='active'?1.6:1}));
-    q.appendChild(txt(s.label,{ x:x+w/2, y:754, fill:s.state==='active'?LP.purple:LP.muted,
-      size:23, weight:s.state==='active'?600:400, anchor:'middle', face:OSAN }));
-    srcG.appendChild(q); return q;
-  });
-  inner.appendChild(srcG);
-
-  const inkers = [title, label, ...values, ...periods, ...mults, eyebrow];
-  return { g, inner, capsG, vaultG, docG, docLines, cardG, eyebrow, title, rule, label,
-           periods, values, bandG, mults, srcG, pills, inkers, CX, CY };
-})();
-
-SC['05'] = brandScene(SPEC.brandLockup.shot05, true);
-
-/* ===================== caption layer ===================== */
-const CAPL = (function(){
-  const g = mk('g',{ id:'ytcap' }); svg.appendChild(g);
-  const lines = [];
-  for(let i=0;i<YTCAP.maxLines;i++){
-    const box = mk('rect',{ rx:3, fill:YTCAP.bg });
-    const t   = mk('text',{ 'text-anchor':'middle','dominant-baseline':'central',
-      'font-family':'Roboto,Arial,Helvetica,sans-serif','font-size':YTCAP.fontSize,
-      'font-weight':400, fill:'#ffffff' });
-    g.appendChild(box); g.appendChild(t); lines.push({box,t});
-  }
-  const probe = mk('text',{ 'font-family':'Roboto,Arial,Helvetica,sans-serif',
-    'font-size':YTCAP.fontSize, visibility:'hidden' });
-  svg.appendChild(probe);
-  const wcache = {};
-  function width(s){
-    if(wcache[s]!=null) return wcache[s];
-    probe.textContent = s;
-    return (wcache[s] = probe.getComputedTextLength());
-  }
-  function wrapAt(text, maxW){
-    const words = text.split(/\s+/), out = []; let cur = '';
-    for(const w of words){
-      const next = cur ? cur+' '+w : w;
-      if(cur && width(next) > maxW){ out.push(cur); cur = w; } else cur = next;
-    }
-    if(cur) out.push(cur);
-    return out;
-  }
-  /* narrow the measure until the lines divide evenly, so a cue never
-     ends on one orphan word held for seconds */
-  function wrap(text){
-    let first = null;
-    for(const f of [1,0.90,0.82,0.74,0.66]){
-      const ls = wrapAt(text, YTCAP.maxWidth*f);
-      if(!first) first = ls;
-      if(ls.length % YTCAP.maxLines === 0) return ls;
-    }
-    return first;
-  }
-  let CAPS = null;
-  function build(){
-    CAPS = [];
-    CUES.forEach(([t0,t1,text])=>{
-      const ls = wrap(text), groups = [];
-      for(let i=0;i<ls.length;i+=YTCAP.maxLines) groups.push(ls.slice(i,i+YTCAP.maxLines));
-      const d = (t1-t0)/groups.length;
-      groups.forEach((grp,i)=> CAPS.push([t0+i*d, t0+(i+1)*d, grp]));
-    });
-  }
-  function show(t){
-    if(!CAPS) build();
-    const c = CAPS.find(x=> t>=x[0] && t<x[1]);
-    if(!c){ g.style.opacity = 0; return; }
-    g.style.opacity = 1;
-    const grp = c[2], lh = YTCAP.fontSize*YTCAP.lineGap;
-    lines.forEach((ln,i)=>{
-      const str = grp[i];
-      if(str==null){ ln.box.setAttribute('opacity',0); ln.t.setAttribute('opacity',0); return; }
-      ln.box.setAttribute('opacity',1); ln.t.setAttribute('opacity',1);
-      const cy = YTCAP.blockBottom - (grp.length-1-i)*lh - lh/2;
-      const w = width(str);
-      ln.t.setAttribute('x',960); ln.t.setAttribute('y',cy); ln.t.textContent = str;
-      ln.box.setAttribute('x', 960 - w/2 - YTCAP.pad.x);
-      ln.box.setAttribute('y', cy - lh/2 + 1);
-      ln.box.setAttribute('width',  w + YTCAP.pad.x*2);
-      ln.box.setAttribute('height', lh - 2);
-    });
-  }
-  return { show, build };
-})();
-
-/* ===================== per-scene animation ===================== */
-function brandAnim(s, cfg, B, lt, withTag, fadeOut){
-  op(s.ground, E(lt, B.glow, 1.4));
-  const a = EI(lt, B.arc, 1.9);
-  dash(s.arc, a); op(s.arc, a>0 ? 0.55 : 0);
-  op(s.markG, E(lt, B.bird, 1.0));
-  op(s.wm,    E(lt, B.wordmark, 0.85));
-  if(s.tag)  op(s.tag,  E(lt, B.tagline, 0.85));
-  if(s.foot) op(s.foot, E(lt, B.foot, 0.7));
-  const k = lerp(1.035, 1.0, EI(lt, 0, B.settle || 3.2));
-  tr(s.inner, `translate(960 540) scale(${k}) translate(-960 -540)`);
-  if(fadeOut) s.black.setAttribute('opacity', EI(lt, B.fade, 0.65));
+/* ── сцена 05 ────────────────────────────────────────────────── */
+const S5=$('#s05').firstElementChild, s5=kids(S5), s5g=kids(s5[1]);
+function scene05(t){
+  s5[0].style.opacity=0.15*eo(sg(t,39.2,1.5));
+  s5g.forEach((e,i)=>{ const p=eo(sg(t,39.35+i*0.3,0.8));
+    e.style.opacity=p; e.style.transform='translateY('+((1-p)*14)+'px) scale('+(i===0?0.95+0.05*p:1)+')'; });
 }
 
-const ANIM = {
-
-  '01'(lt){ brandAnim(SC['01'], SPEC.brandLockup.shot01, B01, lt, false, false); },
-
-  '02'(lt){
-    const s = SC['02'], R = s.R, B = B02;
-
-    s.srcs.forEach((q,i)=>{
-      const p = E(lt, B.src.start + i*B.src.step, B.src.dur);
-      op(q.q, p);
-      q.lit.setAttribute('width', (q.w * EI(lt, B.src.start + i*B.src.step + 0.12, 0.55)).toFixed(1));
-    });
-
-    s.wires.forEach((w,i)=>{
-      const p = EI(lt, B.wire.start + i*B.wire.step, B.wire.dur);
-      dash(w, p); op(w, p>0 ? 0.85 : 0);
-    });
-    op(s.node, E(lt, B.wire.start + 0.55, 0.7) * (0.75 + 0.25*Math.sin(lt*2.1)));
-
-    const c = EI(lt, B.card, B.cardDur);
-    op(s.cardG, c);
-    const cc = SPEC.schema.card;
-    tr(s.cardG, `translate(${cc.x+cc.w/2} ${cc.y+cc.h/2}) scale(${lerp(0.9,1,c)}) translate(${-(cc.x+cc.w/2)} ${-(cc.y+cc.h/2)})`);
-    op(s.cBird, E(lt, B.cardBird, 0.6));
-    op(s.cWord, E(lt, B.cardWord, 0.6));
-    op(s.cSub,  E(lt, B.cardSub, 0.6));
-
-    s.outs.forEach((o,i)=>{
-      const p = EI(lt, B.out.line + i*0.08, B.out.dur);
-      op(o.line, p);
-      tr(o.line, `translate(${SPEC.schema.card.x + (i?SPEC.schema.card.w:0)} 0) scale(${p} 1) translate(${-(SPEC.schema.card.x + (i?SPEC.schema.card.w:0))} 0)`);
-      op(o.lab, E(lt, B.out.label + i*0.08, 0.55));
-    });
-
-    /* --- the carousel --- */
-    const rw = EI(lt, B.rail.window, B.rail.dur);
-    op(s.railG, rw);
-    const slice = B.rail.travel + B.rail.dwell;
-    const stops = R.stops;
-    let idx = 0, k = 1;
-    if(lt >= B.rail.start){
-      idx = cl(Math.floor((lt - B.rail.start)/slice), 0, stops.length-1);
-      const local = (lt - B.rail.start) - idx*slice;
-      k = eio(cl(local / B.rail.travel, 0, 1));
-    }
-    const from = stops[Math.max(0, idx-1)].scrollX, to = stops[idx].scrollX;
-    const scroll = lerp(from, to, k);
-    tr(s.strip, `translate(${(RAIL0 - scroll).toFixed(2)} 0)`);
-
-    const dimP = EI(lt, B.dim, B.dimDur);           /* shot 02f: everything steps back */
-    s.items.forEach((m,i)=>{
-      const act = (i === idx) && k > 0.45 ? 1 : 0;
-      const live = act * (1 - dimP);
-      m.t.setAttribute('fill', live > 0.5 ? DS.railItemActive : DS.railItem);
-      const sc = 1 + (R.activeScale - 1) * live;
-      m.t.setAttribute('transform',
-        `translate(${m.it.centerX} ${RAILBASE}) scale(${sc.toFixed(3)}) translate(${-m.it.centerX} ${-RAILBASE})`);
-      m.t.style.opacity = lerp(1, 0.78, dimP);
-    });
-    const a = s.items[idx].it;
-    s.uline.setAttribute('x', a.centerX - a.w/2);
-    s.uline.setAttribute('width', a.w);
-    s.uline.setAttribute('opacity', (k>0.45 ? 1 : 0) * (1 - dimP));
-    s.win.setAttribute('fill', dimP > 0 ? DS.railWindowDim : DS.railWindow);
-    s.win.setAttribute('opacity', 1);
-
-    /* --- the Agent --- */
-    const A = R.agent, ia = A.idle, aa = A.active;
-    const g = EI(lt, B.agent, B.agentDur);
-    const sc = lerp(ia.scale, aa.scale, g);
-    const cx = A.x + A.w/2, cy = A.y + A.h/2;
-    tr(s.agentG, `translate(${cx} ${cy}) scale(${sc.toFixed(3)}) translate(${-cx} ${-cy})`);
-    s.aBox.setAttribute('fill', g > 0.02 ? DS.accentGreen10 : 'none');
-    s.aBox.setAttribute('fill-opacity', g);
-    s.aBox.setAttribute('stroke', g > 0.5 ? DS.accentGreen : DS.railAgentIdle);
-    s.aBox.setAttribute('stroke-width', lerp(ia.strokeWidth, aa.strokeWidth, g));
-    s.aTxt.setAttribute('fill', mixCol(DS.railAgentIdleText, DS.railAgentActiveText, g));
-    s.aDot.setAttribute('fill', mixCol(DS.railAgentIdleText, DS.accentGreen, g));
-    s.aDot.setAttribute('opacity', lerp(1, 0.55 + 0.45*Math.sin((lt-B.agent)*3.4), g));
-    s.agentG.setAttribute('filter', g > 0.5 ? 'url(#agentGlow)' : null);
-
-    /* hand over to the light interface on a whiteout, not a grey dissolve */
-    s.white.setAttribute('opacity', EI(lt, 13.55, 0.45) * 0.9);
-  },
-
-  '03'(lt){
-    const s = SC['03'], B = B03, D = SPEC.dialogue;
-
-    /* which prompt is on screen */
-    let cue = 0, bt = B.bubble1, dur = B.type1, label = 'Provide the EBITDA walk for Project Alpha';
-    if(lt >= B.bubble3){ cue = 2; bt = B.bubble3; dur = B.type3; label = 'Produce an opening cap table'; }
-    else if(lt >= B.bubble2){ cue = 1; bt = B.bubble2; dur = B.type2; label = 'Haircut the adjustments by 25%'; }
-    const tp = seg(lt, bt, dur);
-    typeInto(s.bubT, label, tp);
-    op(s.bubG, E(lt, bt, 0.25));
-    const bw = s.bubT.getComputedTextLength ? s.bubT.getComputedTextLength() : 0;
-    s.bub.setAttribute('x', s.X1 - bw - D.bubble.padX*2);
-    s.bub.setAttribute('width', bw + D.bubble.padX*2);
-
-    op(s.hdr, E(lt, B.header, 0.5));
-
-    const sOut = 1 - EI(lt, B.statusOut, 0.35);
-    s.stats.forEach((q,i)=> op(q, E(lt, B.status.start + i*B.status.step, B.status.dur) * sOut));
-
-    /* the walk: builds, then takes the haircut, then leaves */
-    const wOut = 1 - EI(lt, B.walkOut, B.walkDur);
-    op(s.walkG, wOut);
-    tr(s.walkG, `translate(0 ${(-70*(1-wOut)).toFixed(1)})`);
-    op(s.legG, E(lt, B.legend, 0.45));
-    op(s.theadG, E(lt, B.thead, 0.45));
-
-    const hc = EI(lt, B.haircut, B.haircutDur);
-    if(lt >= B.legend2){
-      s.legMid.textContent = 'Deal docs — locked';
-      s.legRight.textContent = 'Firm adjustment — 75% haircut applied';
-      s.legDot.setAttribute('cx', s.X0 + 467);
-      s.legRight.setAttribute('x', s.X0 + 483);
-    } else {
-      s.legMid.textContent = 'Deal docs — source of record, locked';
-      s.legRight.textContent = 'Firm adjustment — pre-filled, editable';
-      s.legDot.setAttribute('cx', s.X0 + 640);
-      s.legRight.setAttribute('x', s.X0 + 656);
-    }
-
-    s.rows.forEach((row,i)=>{
-      op(row.q, E(lt, B.rows.start + i*B.rows.step, B.rows.dur));
-      const r = row.r;
-      const v = lerp(r.firm, r.firmHaircut, hc);
-      row.firmT.textContent = r.signed ? sgn(v) : fmt(v);
-      const moves = r.firm !== r.firmHaircut;
-      row.hl.setAttribute('opacity', moves ? EI(lt, B.haircut, 0.5) : 0);
-    });
-
-    /* the cap table slides up into its place */
-    const cp = EI(lt, B.capIn, B.capDur);
-    op(s.capG, cp);
-    tr(s.capG, `translate(0 ${(90*(1-cp)).toFixed(1)})`);
-    op(s.chd, E(lt, B.capIn + 0.1, 0.4));
-    s.capRows.forEach((q,i)=> op(q, E(lt, B.capRows.start + i*B.capRows.step, B.capRows.dur)));
-
-    op(s.inp, E(lt, 0.35, 0.6));
-  },
-
-  '04'(lt){
-    const s = SC['04'], B = B04;
-
-    const c = EI(lt, B.card, B.cardDur);
-    op(s.cardG, c);
-
-    /* the card steps up for the question, then right for the document */
-    const up    = EI(lt, B.up, B.upDur);
-    const shift = EI(lt, B.shift, B.shiftDur);
-    const dx = 240 * shift;
-    const dy = lerp(0, -28, up) + lerp(0, -10, shift);
-    tr(s.cardG, `translate(${dx.toFixed(1)} ${dy.toFixed(1)}) scale(${lerp(0.985,1,c).toFixed(3)})`);
-
-    op(s.eyebrow, E(lt, B.eyebrow, 0.4));
-    op(s.title,   E(lt, B.title, 0.45));
-    const r = EI(lt, B.rule, 0.55);
-    tr(s.rule, `translate(${s.CX+38} 0) scale(${r} 1) translate(${-(s.CX+38)} 0)`);
-    op(s.rule, r>0?1:0);
-    op(s.label, E(lt, B.label, 0.4));
-    s.periods.forEach((t,i)=> op(t, E(lt, B.periods + i*0.06, 0.35)));
-    s.values.forEach((t,i)=> op(t, E(lt, B.values + i*0.07, 0.4)));
-    const bd = EI(lt, B.band, 0.5);
-    op(s.bandG, bd);
-    s.mults.forEach((t,i)=> op(t, E(lt, B.mult + i*0.07, 0.4)));
-
-    /* dim while the agent is asked, bright again once the source is open */
-    const dim = EI(lt, B.dim, B.dimDur) * (1 - EI(lt, B.undim, 0.5));
-    s.inkers.forEach(t=>{
-      const base = t === s.eyebrow ? LP.purple : (s.mults.includes(t) ? LP.purple :
-                   (s.periods.includes(t) || t === s.label ? LP.muted : LP.ink));
-      t.setAttribute('fill', mixCol(base, LP.muted, dim));
-    });
-
-    op(s.capsG, EI(lt, B.capsule, B.capsuleDur));
-    tr(s.capsG, `translate(0 ${(-14*(1-EI(lt,B.capsule,B.capsuleDur))).toFixed(1)})`);
-    op(s.vaultG, E(lt, B.vault, 0.4));
-
-    const dp = EI(lt, B.doc, B.docDur);
-    op(s.docG, dp);
-    tr(s.docG, `translate(${(-150*(1-dp)).toFixed(1)} 0)`);
-    s.docLines.forEach((l,i)=> l.setAttribute('opacity', E(lt, B.docLines.start + i*B.docLines.step, B.docLines.dur)));
-
-    op(s.srcG, E(lt, B.sources, 0.45));
-    s.pills.forEach((p,i)=> op(p, E(lt, B.pills + i*0.12, 0.4)));
-  },
-
-  '05'(lt){ brandAnim(SC['05'], SPEC.brandLockup.shot05, B05, lt, true, true); }
-};
-
-/* ===================== transport ===================== */
-const scrub = document.getElementById('scrub');
-const tc = document.getElementById('tc');
-const namesEl = document.getElementById('names');
-let T = 0, playing = false, last = 0;
-
-/* Scenes are opaque and stacked in order, so a cross-dissolve is the
-   incoming scene fading in ON TOP — fading both would dip to black. */
-function sceneAlpha(sc, t){
-  const x = TL.xfade, lastSc = sc.t1 >= TL.total;
-  if(t < sc.t0 - x) return 0;
-  if(!lastSc && t >= sc.t1) return 0;
-  return sc.t0 === 0 ? 1 : cl((t - (sc.t0 - x)) / x, 0, 1);
-}
-
+/* ── переходы и общий рендер ─────────────────────────────────── */
+const SC={s01:$('#s01'),s02:$('#s02'),chat:$('#chat'),s05:$('#s05')};
+const FL=$('#flash'), CAP=$('#caps'), HUD=$('#hud');
+let ST=1;
+function show(k,v){ SC[k].style.display=v?'block':'none'; }
 function render(t){
-  let active = null;
-  TL.scenes.forEach(sc=>{
-    const a = sceneAlpha(sc, t), g = SC[sc.id].g;
-    if(a<=0){ g.classList.remove('on'); g.style.opacity = 0; return; }
-    g.classList.add('on'); g.style.opacity = a;
-    ANIM[sc.id](cl(t - sc.t0, 0, sc.t1 - sc.t0), sc.t1 - sc.t0);
-    if(t>=sc.t0 && t<sc.t1) active = sc;
-  });
-  if(!active) active = TL.scenes[TL.scenes.length-1];
-  namesEl.textContent = active.id + ' · ' + active.name;
-  CAPL.show(t);
-  tc.textContent = t.toFixed(2) + ' / ' + TL.total.toFixed(2);
-  scrub.value = Math.round(t / TL.total * 1000);
+  show('s01', t<4.82); show('s02', t>=4.72 && t<19.45);
+  show('chat', t>=19.0 && t<38.95); show('s05', t>=38.9);
+  if(t<4.9) scene01(t);
+  if(t>=4.6 && t<19.2) scene02(t);
+  if(t>=18.8 && t<39.1) chat(t);
+  if(t>=38.6) scene05(t);
+  let f=0,col='#fff';
+  if(t>=4.6&&t<5.1){ f = t<4.8 ? sg(t,4.6,0.2) : 1-sg(t,4.82,0.28); col='#fff'; }
+  else if(t>=38.6&&t<39.35){ f = t<38.85 ? sg(t,38.6,0.25) : 1-sg(t,39.0,0.35); col='#000'; }
+  else if(t>=42.0){ f=sg(t,42.0,1.0); col='#000'; }
+  FL.style.background=col; FL.style.opacity=f;
+  let txt=''; for(const c of D.vo) if(t>=c.t0&&t<c.t1){ txt=c.text; break; }
+  if(CAP._t!==txt){ CAP._t=txt; CAP.innerHTML = txt?('<span>'+txt+'</span>'):''; }
+  const fr=D.frames.find(f=>t>=f.t0&&t<f.t1)||D.frames[D.frames.length-1];
+  const scn=D.scenes.find(s=>t>=s.t0&&t<s.t1)||D.scenes[D.scenes.length-1];
+  HUD.textContent = fr.id+' · '+fr.name+'  |  '+scn.id+' · '+scn.name;
 }
 
-function loop(ts){
-  if(playing){
-    if(!last) last = ts;
-    T += (ts - last)/1000 * parseFloat(document.getElementById('spd').value);
-    last = ts;
-    if(T >= TL.total){ T = TL.total; playing = false; document.getElementById('play').textContent = 'Replay'; }
-    render(T);
-  } else last = 0;
-  requestAnimationFrame(loop);
-}
-function setPlay(v){
-  if(v && T >= TL.total) T = 0;
-  playing = v; last = 0;
-  document.getElementById('play').textContent = playing ? 'Pause' : (T>=TL.total ? 'Replay' : 'Play');
-}
-document.getElementById('play').onclick = ()=> setPlay(!playing);
-scrub.oninput = e => { T = e.target.value/1000*TL.total; render(T); setPlay(false); };
-document.getElementById('cleanb').onclick = ()=>{ document.body.classList.toggle('clean'); fit(); };
-document.getElementById('subsb').onclick  = ()=>{ document.body.classList.toggle('nosubs'); };
-
-addEventListener('keydown', e=>{
-  const step = e.shiftKey ? 1 : 0.1;
-  if(e.code==='Space'){ e.preventDefault(); setPlay(!playing); }
-  else if(e.key==='ArrowRight'){ T = cl(T+step,0,TL.total); render(T); setPlay(false); }
-  else if(e.key==='ArrowLeft'){  T = cl(T-step,0,TL.total); render(T); setPlay(false); }
-  else if(e.key==='Home'){ T = 0; render(T); setPlay(false); }
-  else if(e.key==='s'||e.key==='S'){ document.body.classList.toggle('nosubs'); }
-  else if(e.key==='c'||e.key==='C'){ document.body.classList.toggle('clean'); fit(); }
-  else if(e.key==='Escape'){ document.body.classList.remove('clean'); fit(); }
+/* ── плеер ───────────────────────────────────────────────────── */
+let t=0, playing=false, last=0, rate=1;
+const PL=$('#play'), SB=$('#scrub'), TC=$('#tc');
+function fmt(x){ const m=Math.floor(x/60), s=(x-60*m); return m+':'+(s<10?'0':'')+s.toFixed(1); }
+function ui(){ SB.value=t; TC.textContent=fmt(t)+' / '+fmt(D.duration); }
+function loop(ts){ if(playing){ const dt=(ts-last)/1000; last=ts;
+    t+=dt*rate; if(t>=D.duration){ t=D.duration; setPlay(false); }
+    render(t); ui(); } requestAnimationFrame(loop); }
+function setPlay(v){ playing=v; PL.textContent=v?'❚❚ Pause':'► Play'; last=performance.now();
+  if(v && t>=D.duration){ t=0; } }
+PL.onclick=()=>setPlay(!playing);
+SB.oninput=()=>{ t=parseFloat(SB.value); render(t); ui(); };
+document.querySelectorAll('.sp').forEach(b=>b.onclick=()=>{
+  rate=parseFloat(b.dataset.v); document.querySelectorAll('.sp').forEach(x=>x.classList.remove('on')); b.classList.add('on'); });
+$('#subs').onclick=()=>{ document.body.classList.toggle('nosubs'); $('#subs').classList.toggle('on'); };
+$('#clean').onclick=()=>{ document.body.classList.toggle('clean'); };
+addEventListener('keydown',e=>{
+  if(e.code==='Space'){e.preventDefault();setPlay(!playing);}
+  else if(e.code==='ArrowRight'){t=cl(t+(e.shiftKey?1:0.1),0,D.duration);render(t);ui();}
+  else if(e.code==='ArrowLeft'){t=cl(t-(e.shiftKey?1:0.1),0,D.duration);render(t);ui();}
+  else if(e.code==='Home'){t=0;render(t);ui();}
+  else if(e.key==='s'||e.key==='S'){$('#subs').click();}
+  else if(e.key==='c'||e.key==='C'){$('#clean').click();}
+  else if(e.code==='Escape'){document.body.classList.remove('clean');}
 });
-
-/* Fit the frame into the viewport, reserving a strip for the control
-   bar. The captions sit inside the frame, so nothing else is needed. */
-const stage = document.getElementById('stage');
-function fit(){
-  const clean = document.body.classList.contains('clean');
-  const barH  = clean ? 0 : (document.getElementById('bar').offsetHeight + 28);
-  const avail = Math.max(120, innerHeight - barH);
-  const k = Math.min(innerWidth/1920, avail/1080);
-  stage.style.top = (avail/2) + 'px';
-  stage.style.transform = `translate(-50%,-50%) scale(${k})`;
-}
-addEventListener('resize', fit);
-
-function start(){ CAPL.build(); fit(); render(0); requestAnimationFrame(loop); }
-if(document.fonts && document.fonts.ready) document.fonts.ready.then(start); else addEventListener('load', start);
-</script>
-</body>
-</html>
+function fit(){ ST=Math.min(innerWidth/1920, innerHeight/1080);
+  $('#stage').style.transform='translate(-50%,-50%) scale('+ST+')'; }
+addEventListener('resize',fit); fit();
+render(0); ui(); requestAnimationFrame(loop);
+window.__seek=x=>{t=x;render(t);ui();};
+</script></body></html>
